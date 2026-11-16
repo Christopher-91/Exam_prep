@@ -35,8 +35,42 @@
     --radius: 0.75rem; /* 12px border radius */
   }
 
+  .dark {
+    --background: 224 71% 4%;
+    --foreground: 210 40% 98%;
+
+    --card: 224 71% 6%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 224 71% 6%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 239 84% 67%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 215 28% 17%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 215 28% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 215 28% 17%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 215 28% 18%;
+    --input: 215 28% 18%;
+    --ring: 239 84% 67%;
+  }
+
   * {
     border-color: #e2e8f0;
+  }
+
+  .dark * {
+    border-color: #232733;
   }
 
   body {
@@ -47,9 +81,14 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  .dark body {
+    background-color: #0d0f14;
+    color: #f1f5f9;
+  }
 }
 
-/* Linear/Stripe style minimalist scrollbar */
+/* Linear / TakeUForward minimalist scrollbar */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -68,6 +107,14 @@
   background: #94a3b8;
 }
 
+.dark ::-webkit-scrollbar-thumb {
+  background: #2b3040;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #3e455b;
+}
+
 /* Clean SaaS Data Table Styles */
 .data-table th {
   font-weight: 600;
@@ -80,12 +127,26 @@
   background-color: #f8fafc;
 }
 
+.dark .data-table th {
+  color: #94a3b8;
+  border-bottom: 1px solid #232733;
+  background-color: #12151e;
+}
+
 .data-table td {
   padding: 0.875rem 1rem;
   font-size: 0.8125rem;
   border-bottom: 1px solid #f1f5f9;
 }
 
+.dark .data-table td {
+  border-bottom: 1px solid #1c202d;
+}
+
 .data-table tr:hover td {
   background-color: #f8fafc;
+}
+
+.dark .data-table tr:hover td {
+  background-color: #161924;
 }

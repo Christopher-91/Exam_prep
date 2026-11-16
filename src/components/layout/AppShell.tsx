@@ -14,6 +14,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useApp();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
+  // Check if current route is the public landing page
+  const isLandingPage = pathname === "/";
+
   // Check if current route is an authentication or onboarding route
   const isAuthRoute =
     pathname.startsWith("/login") ||
@@ -23,29 +26,34 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     pathname.startsWith("/verify-email") ||
     pathname.startsWith("/onboarding");
 
-  // Route Protection: Unauthenticated users cannot view dashboard routes
+  // Route Protection: Unauthenticated users attempting to access internal dashboard routes get redirected
   useEffect(() => {
-    if (!isAuthenticated && !isAuthRoute) {
+    if (!isAuthenticated && !isAuthRoute && !isLandingPage) {
       router.replace("/login");
     }
-  }, [isAuthenticated, isAuthRoute, router]);
+  }, [isAuthenticated, isAuthRoute, isLandingPage, router]);
 
-  // If in auth flow, render clean auth layout directly without sidebar/header
-  if (isAuthRoute) {
-    return <main className="min-h-screen bg-white">{children}</main>;
+  // Landing page renders in standalone public mode (with its own TakeUForward navbar & footer)
+  if (isLandingPage) {
+    return <main className="min-h-screen bg-white dark:bg-[#0c0d12]">{children}</main>;
   }
 
-  // If not authenticated yet, show clean loading state while redirecting
+  // Auth pages render in standalone clean layout without sidebar/header
+  if (isAuthRoute) {
+    return <main className="min-h-screen bg-white dark:bg-[#0c0d12]">{children}</main>;
+  }
+
+  // If not authenticated yet and accessing internal pages, show clean loading state while redirecting
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-500 text-xs">
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-[#0d0f14] text-slate-500 text-xs">
         Verifying authorization credentials...
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-50 text-slate-900 font-sans antialiased">
+    <div className="flex h-screen w-screen overflow-hidden bg-slate-50 dark:bg-[#0c0d12] text-slate-900 dark:text-slate-100 font-sans antialiased">
       {/* Structured Left Sidebar */}
       <Sidebar />
 
@@ -53,8 +61,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
         <Header onOpenSearch={() => setIsSearchOpen(true)} />
 
-        <main className="flex-1 overflow-y-auto p-5 md:p-8">
-          <div className="max-w-6xl mx-auto space-y-6">{children}</div>
+        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8">
+          <div className="max-w-[1400px] mx-auto space-y-6">{children}</div>
         </main>
       </div>
 
