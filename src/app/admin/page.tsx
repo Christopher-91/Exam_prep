@@ -288,11 +288,11 @@ export default function AdminWorkspacePage() {
           <div className="divide-y divide-slate-100 text-xs">
             {[
               {
-                name: "Alexander Vance",
-                email: "alexander.vance@stanford.edu",
+                name: "Rohan Christopher",
+                email: "rohan@acuitysystems.edu",
                 role: "Student",
                 exam: "SAT",
-                streak: "14 days",
+                streak: "1 day",
                 status: "Active",
               },
               {

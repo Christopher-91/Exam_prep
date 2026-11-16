@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useApp } from "@/context/AppContext";
-import { TakeUForwardDashboard } from "@/components/dashboards/TakeUForwardDashboard";
+import { StudentDashboard } from "@/components/dashboards/StudentDashboard";
 import { ParentDashboard } from "@/components/dashboards/ParentDashboard";
 import { ProfessionalDashboard } from "@/components/dashboards/ProfessionalDashboard";
 import { AdminDashboard } from "@/components/dashboards/AdminDashboard";
@@ -19,6 +19,6 @@ export default function DashboardPage() {
       return <AdminDashboard />;
     case "student":
     default:
-      return <TakeUForwardDashboard />;
+      return <StudentDashboard />;
   }
 }

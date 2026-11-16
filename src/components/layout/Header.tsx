@@ -4,14 +4,11 @@ import React, { useState, useRef, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Search,
-  Flame,
-  Coins,
   ChevronDown,
   CheckCircle2,
   Bell,
   User as UserIcon,
   LogOut,
-  Sparkles,
 } from "lucide-react";
 import { BRAND_CONFIG, SupportedExamId } from "@/config/brand.config";
 import { useApp } from "@/context/AppContext";
@@ -66,13 +63,13 @@ export function Header({ onOpenSearch }: HeaderProps) {
     if (pathname.startsWith("/exam-prep/mock-test")) return "Exam Simulation";
     if (pathname.startsWith("/exam-prep/results")) return "Diagnostic Report";
     if (pathname.startsWith("/exam-prep/adaptive")) return "Adaptive Practice";
-    if (pathname.startsWith("/exam-prep")) return "Prep Hub";
+    if (pathname.startsWith("/exam-prep")) return "Exam Preparation";
     if (pathname.startsWith("/study-materials")) return "Study Materials";
     if (pathname.startsWith("/flashcards")) return "Flashcards SM-2";
     if (pathname.startsWith("/interactive-learning")) return "Interactive Learning";
-    if (pathname.startsWith("/career-counselling")) return "Career Counselling";
-    if (pathname.startsWith("/study-planner")) return "Planly Planner";
-    if (pathname.startsWith("/analytics")) return "Analytics";
+    if (pathname.startsWith("/career-counselling")) return "Career Guidance";
+    if (pathname.startsWith("/study-planner")) return "Study Planner";
+    if (pathname.startsWith("/analytics")) return "Analytics & Readiness";
     if (pathname.startsWith("/admin")) return "Admin Console";
     if (pathname.startsWith("/settings")) return "Settings";
     return "Learning";
@@ -90,7 +87,7 @@ export function Header({ onOpenSearch }: HeaderProps) {
       {/* Left: Breadcrumbs & Target Exam Selector */}
       <div className="flex items-center gap-3">
         <div className="flex items-center gap-2">
-          <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">Prep</span>
+          <span className="text-xs text-slate-400 dark:text-slate-500 font-medium">Academic</span>
           <span className="text-xs text-slate-300 dark:text-slate-600">/</span>
           <h1 className="text-xs md:text-sm font-semibold text-slate-900 dark:text-white tracking-tight">
             {getModuleTitle()}
@@ -137,47 +134,19 @@ export function Header({ onOpenSearch }: HeaderProps) {
         </div>
       </div>
 
-      {/* Right: Search, Coins, Streak, Plus, ThemeToggle, Profile (Matches TakeUForward layout) */}
+      {/* Right: Search, ThemeToggle, Notifications, Profile */}
       <div className="flex items-center gap-2 md:gap-3">
         {/* Search Command-K Trigger */}
         <button
           onClick={onOpenSearch}
           className="flex items-center gap-2 px-2.5 py-1 text-xs text-slate-400 dark:text-slate-400 bg-slate-50 dark:bg-[#161820] border border-slate-200 dark:border-slate-800 rounded-md hover:bg-slate-100 dark:hover:bg-[#1c202a] transition-colors"
-          title="Search anything (Cmd+K)"
+          title="Search curriculum & exams (Cmd+K)"
         >
           <Search className="w-3.5 h-3.5 text-slate-400" />
           <span className="hidden sm:inline">Search</span>
           <kbd className="hidden sm:inline-block px-1 py-0.2 text-[10px] bg-white dark:bg-[#101217] border border-slate-200 dark:border-slate-700 rounded text-slate-400 font-mono">
             ⌘K
           </kbd>
-        </button>
-
-        {/* Coins Pill Widget (TakeUForward style: 🪙 120) */}
-        <div
-          className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 border border-amber-200/80 dark:border-amber-900/50 cursor-pointer hover:bg-amber-100/80 dark:hover:bg-amber-950/50 transition-colors"
-          title="Earn coins by completing problems and mock tests"
-        >
-          <Coins className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-          <span className="tabular-nums">120</span>
-        </div>
-
-        {/* Streak Pill Widget (TakeUForward style: 🔥 14) */}
-        <div
-          className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-orange-50 dark:bg-orange-950/30 text-orange-700 dark:text-orange-400 border border-orange-200/80 dark:border-orange-900/50 cursor-pointer hover:bg-orange-100/80 dark:hover:bg-orange-950/50 transition-colors"
-          title="14-day study streak! Practice daily to keep it alive"
-        >
-          <Flame className="w-3.5 h-3.5 text-orange-500 fill-orange-500" />
-          <span className="tabular-nums">14</span>
-        </div>
-
-        {/* TakeUForward "+ Plus" Upgrade Pill Button */}
-        <button
-          onClick={() => router.push("/settings")}
-          className="flex items-center gap-1 px-3 py-1 rounded-md text-xs font-semibold bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 border border-amber-400/60 dark:border-amber-500/40 transition-colors shadow-2xs"
-          title="Upgrade to Acuity Plus for unlimited AI diagnostic tests"
-        >
-          <span className="text-amber-600 dark:text-amber-400 font-bold">+</span>
-          <span>Plus</span>
         </button>
 
         {/* Light / Dark Mode Toggle (Default: Light Mode) */}

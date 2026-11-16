@@ -444,7 +444,7 @@ export default function StudyPlannerPage() {
               <div>
                 <div className="font-semibold text-slate-900">Google Calendar</div>
                 <div className="text-[11px] text-slate-500">
-                  {googleConnected ? "Connected (alexander.vance@stanford.edu)" : "Not connected"}
+                  {googleConnected ? `Connected (${profile.email})` : "Not connected"}
                 </div>
               </div>
             </div>

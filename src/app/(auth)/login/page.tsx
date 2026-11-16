@@ -50,7 +50,7 @@ export default function LoginPage() {
 
   const handleDemoSignIn = async (role: UserRole) => {
     const demoAccounts: Record<UserRole, { email: string; pass: string }> = {
-      student: { email: "alexander.vance@stanford.edu", pass: "password123" },
+      student: { email: "rohan@acuitysystems.edu", pass: "password123" },
       parent: { email: "sarah.vance@gmail.com", pass: "password123" },
       professional: { email: "david.miller@mckinsey.com", pass: "password123" },
       admin: { email: "admin@acuityedu.com", pass: "password123" },

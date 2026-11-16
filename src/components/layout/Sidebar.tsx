@@ -5,24 +5,22 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
+  GraduationCap,
   BookOpen,
   Code2,
   Calendar,
-  Users,
   Layers,
   Puzzle,
   Compass,
   BarChart3,
+  Settings,
   HelpCircle,
-  CreditCard,
   LogOut,
   ChevronDown,
   ChevronRight,
   PanelLeftClose,
   PanelLeft,
   ShieldCheck,
-  Flame,
-  Sparkles,
 } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand.config";
 import { cn } from "@/lib/utils";
@@ -31,7 +29,7 @@ import { useApp } from "@/context/AppContext";
 export function Sidebar() {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
-  const [practiceOpen, setPracticeOpen] = useState(true);
+  const [practiceOpen, setPracticeOpen] = useState(false);
   const { profile, flashcards, tasks, activeRole, logout } = useApp();
 
   const dueFlashcards = flashcards.filter(
@@ -50,7 +48,7 @@ export function Sidebar() {
       {/* Brand Header */}
       <div className="flex items-center justify-between h-14 px-4 border-b border-slate-200 dark:border-slate-800/80">
         <Link href="/dashboard" className="flex items-center gap-2.5 overflow-hidden group">
-          <div className="w-7 h-7 rounded-lg bg-indigo-600 dark:bg-indigo-600 flex items-center justify-center text-white shrink-0 font-bold text-xs tracking-tight shadow-sm group-hover:scale-105 transition-transform">
+          <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white shrink-0 font-bold text-xs tracking-tight shadow-sm group-hover:scale-105 transition-transform">
             <span>A</span>
           </div>
           {!collapsed && (
@@ -59,7 +57,7 @@ export function Sidebar() {
                 {BRAND_CONFIG.shortName}
               </span>
               <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium tracking-wider uppercase mt-0.5">
-                takeuforward style
+                Learning Systems
               </span>
             </div>
           )}
@@ -75,11 +73,11 @@ export function Sidebar() {
 
       {/* Navigation Scroll Container */}
       <nav className="flex-1 px-3 py-2 space-y-4 overflow-y-auto">
-        {/* PREP GROUP (TakeUForward style) */}
+        {/* ACADEMIC MODULES */}
         <div>
           {!collapsed && (
             <div className="px-2.5 pb-1 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-              PREP
+              ACADEMIC
             </div>
           )}
 
@@ -89,7 +87,7 @@ export function Sidebar() {
               href="/dashboard"
               className={cn(
                 "flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs transition-colors",
-                pathname === "/dashboard" || pathname === "/"
+                pathname === "/dashboard"
                   ? "bg-slate-100 dark:bg-[#181a24] text-slate-900 dark:text-white font-semibold"
                   : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-[#14161f] font-medium"
               )}
@@ -98,7 +96,7 @@ export function Sidebar() {
               <LayoutDashboard
                 className={cn(
                   "w-4 h-4 shrink-0",
-                  pathname === "/dashboard" || pathname === "/"
+                  pathname === "/dashboard"
                     ? "text-indigo-600 dark:text-indigo-400"
                     : "text-slate-400 dark:text-slate-500"
                 )}
@@ -106,7 +104,7 @@ export function Sidebar() {
               {!collapsed && <span className="flex-1 truncate">Dashboard</span>}
             </Link>
 
-            {/* Prep Hub */}
+            {/* Exam Preparation */}
             <Link
               href="/exam-prep"
               className={cn(
@@ -115,9 +113,9 @@ export function Sidebar() {
                   ? "bg-slate-100 dark:bg-[#181a24] text-slate-900 dark:text-white font-semibold"
                   : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-[#14161f] font-medium"
               )}
-              title={collapsed ? "Prep Hub" : undefined}
+              title={collapsed ? "Exam Preparation" : undefined}
             >
-              <BookOpen
+              <GraduationCap
                 className={cn(
                   "w-4 h-4 shrink-0",
                   pathname === "/exam-prep"
@@ -125,10 +123,10 @@ export function Sidebar() {
                     : "text-slate-400 dark:text-slate-500"
                 )}
               />
-              {!collapsed && <span className="flex-1 truncate">Prep Hub</span>}
+              {!collapsed && <span className="flex-1 truncate">Exam Preparation</span>}
             </Link>
 
-            {/* Practice (Collapsible with Nested Topics like DSA, SQL, Aptitude in screenshot) */}
+            {/* Adaptive Practice */}
             {!collapsed ? (
               <div>
                 <button
@@ -142,7 +140,7 @@ export function Sidebar() {
                 >
                   <div className="flex items-center gap-2.5">
                     <Code2 className="w-4 h-4 text-slate-400 dark:text-slate-500" />
-                    <span>Practice</span>
+                    <span>Adaptive Practice</span>
                   </div>
                   {practiceOpen ? (
                     <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
@@ -157,7 +155,7 @@ export function Sidebar() {
                       href="/exam-prep/adaptive?topic=math"
                       className="block px-2 py-1 text-[11px] rounded text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-[#14161f] transition-colors"
                     >
-                      SAT Math Patterns
+                      Math Problems
                     </Link>
                     <Link
                       href="/exam-prep/adaptive?topic=verbal"
@@ -169,7 +167,7 @@ export function Sidebar() {
                       href="/exam-prep/adaptive?topic=diagnostic"
                       className="block px-2 py-1 text-[11px] rounded text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-[#14161f] transition-colors"
                     >
-                      Diagnostic Aptitude
+                      Diagnostic Test
                     </Link>
                   </div>
                 )}
@@ -178,76 +176,12 @@ export function Sidebar() {
               <Link
                 href="/exam-prep/adaptive"
                 className="flex items-center justify-center p-2 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-[#14161f]"
-                title="Practice"
+                title="Adaptive Practice"
               >
                 <Code2 className="w-4 h-4" />
               </Link>
             )}
 
-            {/* Planly */}
-            <Link
-              href="/study-planner"
-              className={cn(
-                "flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs transition-colors",
-                pathname === "/study-planner"
-                  ? "bg-slate-100 dark:bg-[#181a24] text-slate-900 dark:text-white font-semibold"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-[#14161f] font-medium"
-              )}
-              title={collapsed ? "Planly" : undefined}
-            >
-              <Calendar
-                className={cn(
-                  "w-4 h-4 shrink-0",
-                  pathname === "/study-planner"
-                    ? "text-indigo-600 dark:text-indigo-400"
-                    : "text-slate-400 dark:text-slate-500"
-                )}
-              />
-              {!collapsed && (
-                <>
-                  <span className="flex-1 truncate">Planly</span>
-                  {pendingTasks > 0 && (
-                    <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold">
-                      {pendingTasks}
-                    </span>
-                  )}
-                </>
-              )}
-            </Link>
-
-            {/* Community */}
-            <Link
-              href="/career-counselling"
-              className={cn(
-                "flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs transition-colors",
-                pathname === "/career-counselling"
-                  ? "bg-slate-100 dark:bg-[#181a24] text-slate-900 dark:text-white font-semibold"
-                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-[#14161f] font-medium"
-              )}
-              title={collapsed ? "Community" : undefined}
-            >
-              <Users
-                className={cn(
-                  "w-4 h-4 shrink-0",
-                  pathname === "/career-counselling"
-                    ? "text-indigo-600 dark:text-indigo-400"
-                    : "text-slate-400 dark:text-slate-500"
-                )}
-              />
-              {!collapsed && <span className="flex-1 truncate">Community & Mentors</span>}
-            </Link>
-          </div>
-        </div>
-
-        {/* ADDITIONAL GROUP (TakeUForward style) */}
-        <div>
-          {!collapsed && (
-            <div className="px-2.5 pb-1 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-              ADDITIONAL
-            </div>
-          )}
-
-          <div className="space-y-0.5">
             {/* Study Materials */}
             <Link
               href="/study-materials"
@@ -268,6 +202,37 @@ export function Sidebar() {
                 )}
               />
               {!collapsed && <span className="flex-1 truncate">Study Materials</span>}
+            </Link>
+
+            {/* Study Planner */}
+            <Link
+              href="/study-planner"
+              className={cn(
+                "flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs transition-colors",
+                pathname === "/study-planner"
+                  ? "bg-slate-100 dark:bg-[#181a24] text-slate-900 dark:text-white font-semibold"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-[#14161f] font-medium"
+              )}
+              title={collapsed ? "Study Planner" : undefined}
+            >
+              <Calendar
+                className={cn(
+                  "w-4 h-4 shrink-0",
+                  pathname === "/study-planner"
+                    ? "text-indigo-600 dark:text-indigo-400"
+                    : "text-slate-400 dark:text-slate-500"
+                )}
+              />
+              {!collapsed && (
+                <>
+                  <span className="flex-1 truncate">Study Planner</span>
+                  {pendingTasks > 0 && (
+                    <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold">
+                      {pendingTasks}
+                    </span>
+                  )}
+                </>
+              )}
             </Link>
 
             {/* Flashcards SM-2 */}
@@ -300,8 +265,19 @@ export function Sidebar() {
                 </>
               )}
             </Link>
+          </div>
+        </div>
 
-            {/* STEM Sandbox */}
+        {/* EXPLORE & TOOLS */}
+        <div>
+          {!collapsed && (
+            <div className="px-2.5 pb-1 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+              EXPLORE & TOOLS
+            </div>
+          )}
+
+          <div className="space-y-0.5">
+            {/* Interactive Learning / STEM Labs */}
             <Link
               href="/interactive-learning"
               className={cn(
@@ -310,7 +286,7 @@ export function Sidebar() {
                   ? "bg-slate-100 dark:bg-[#181a24] text-slate-900 dark:text-white font-semibold"
                   : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-[#14161f] font-medium"
               )}
-              title={collapsed ? "STEM Sandbox" : undefined}
+              title={collapsed ? "Interactive Learning" : undefined}
             >
               <Puzzle
                 className={cn(
@@ -321,6 +297,28 @@ export function Sidebar() {
                 )}
               />
               {!collapsed && <span className="flex-1 truncate">STEM Sandbox</span>}
+            </Link>
+
+            {/* Career Counselling */}
+            <Link
+              href="/career-counselling"
+              className={cn(
+                "flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs transition-colors",
+                pathname === "/career-counselling"
+                  ? "bg-slate-100 dark:bg-[#181a24] text-slate-900 dark:text-white font-semibold"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-[#14161f] font-medium"
+              )}
+              title={collapsed ? "Career Counselling" : undefined}
+            >
+              <Compass
+                className={cn(
+                  "w-4 h-4 shrink-0",
+                  pathname === "/career-counselling"
+                    ? "text-indigo-600 dark:text-indigo-400"
+                    : "text-slate-400 dark:text-slate-500"
+                )}
+              />
+              {!collapsed && <span className="flex-1 truncate">Career Guidance</span>}
             </Link>
 
             {/* Analytics */}
@@ -342,7 +340,29 @@ export function Sidebar() {
                     : "text-slate-400 dark:text-slate-500"
                 )}
               />
-              {!collapsed && <span className="flex-1 truncate">Analytics</span>}
+              {!collapsed && <span className="flex-1 truncate">Analytics & Readiness</span>}
+            </Link>
+
+            {/* Settings */}
+            <Link
+              href="/settings"
+              className={cn(
+                "flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-xs transition-colors",
+                pathname === "/settings"
+                  ? "bg-slate-100 dark:bg-[#181a24] text-slate-900 dark:text-white font-semibold"
+                  : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-[#14161f] font-medium"
+              )}
+              title={collapsed ? "Settings" : undefined}
+            >
+              <Settings
+                className={cn(
+                  "w-4 h-4 shrink-0",
+                  pathname === "/settings"
+                    ? "text-indigo-600 dark:text-indigo-400"
+                    : "text-slate-400 dark:text-slate-500"
+                )}
+              />
+              {!collapsed && <span className="flex-1 truncate">Settings</span>}
             </Link>
           </div>
         </div>
@@ -366,7 +386,7 @@ export function Sidebar() {
         )}
       </nav>
 
-      {/* Footer Navigation (TakeUForward style: Contact support, See plans & pricing, User profile) */}
+      {/* Footer Navigation */}
       <div className="p-3 border-t border-slate-200 dark:border-slate-800/80 space-y-1">
         <button
           onClick={() => window.alert("Customer support: support@acuitysystems.edu")}
@@ -376,18 +396,10 @@ export function Sidebar() {
           {!collapsed && <span>Contact support</span>}
         </button>
 
-        <Link
-          href="/settings"
-          className="flex items-center gap-2 px-2 py-1.5 rounded-md text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-[#161820] transition-colors"
-        >
-          <CreditCard className="w-4 h-4 text-slate-400" />
-          {!collapsed && <span>See plans and pricing</span>}
-        </Link>
-
         {/* Quick User Log out or Profile */}
         {!collapsed && (
           <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs px-2 text-slate-500 dark:text-slate-400">
-            <span className="truncate">{profile.name}</span>
+            <span className="truncate font-medium">{profile.name}</span>
             <button
               onClick={logout}
               className="text-slate-400 hover:text-rose-500 transition-colors"

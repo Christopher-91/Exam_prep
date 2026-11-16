@@ -128,8 +128,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     role: DEFAULT_USER_PROFILE.activeRole,
     isEmailVerified: true,
     onboarded: true,
-    institution: "Stanford University",
-    createdAt: "2026-09-01T08:00:00Z",
+    institution: DEFAULT_USER_PROFILE.institution,
+    createdAt: DEFAULT_USER_PROFILE.createdAt,
   });
 
   const [profile, setProfile] = useState<UserProfile>(DEFAULT_USER_PROFILE);
@@ -217,14 +217,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
 
     let role: UserRole = "student";
-    let name = "Alexander Vance";
+    // Derive a clean, human name from the email (e.g. rohan.christopher@gmail.com -> Rohan Christopher)
+    const derivedName = email
+      .split("@")[0]
+      .replace(/[._-]/g, " ")
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+    let name = derivedName || "Student Candidate";
 
     if (email.includes("parent")) {
       role = "parent";
-      name = "Sarah Vance";
+      name = derivedName ? `${derivedName} (Parent)` : "Parent Guardian";
     } else if (email.includes("pro") || email.includes("mckinsey")) {
       role = "professional";
-      name = "David K. Miller";
+      name = derivedName || "Professional Candidate";
     } else if (email.includes("admin")) {
       role = "admin";
       name = "Academic Administrator";
@@ -238,7 +243,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       role,
       isEmailVerified: true,
       onboarded: true,
-      institution: "Stanford University",
+      institution: "Academy",
       createdAt: new Date().toISOString(),
     };
 
@@ -264,13 +269,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const loginWithGoogle = async () => {
     const authUser: AuthUser = {
       id: `usr-google-${Date.now()}`,
-      name: "Alexander Vance",
-      email: "alexander.vance@stanford.edu",
+      name: profile.name || "Student Candidate",
+      email: profile.email || "candidate@acuitysystems.edu",
       avatarUrl: DEFAULT_USER_PROFILE.avatarUrl,
       role: "student",
       isEmailVerified: true,
       onboarded: true,
-      institution: "Stanford University",
+      institution: "Academy",
       createdAt: new Date().toISOString(),
     };
 

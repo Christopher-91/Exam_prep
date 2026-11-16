@@ -33,7 +33,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     }
   }, [isAuthenticated, isAuthRoute, isLandingPage, router]);
 
-  // Landing page renders in standalone public mode (with its own TakeUForward navbar & footer)
+  // Landing page renders in standalone public mode with top navigation
   if (isLandingPage) {
     return <main className="min-h-screen bg-white dark:bg-[#0c0d12]">{children}</main>;
   }
