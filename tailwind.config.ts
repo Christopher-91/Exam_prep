@@ -21,14 +21,15 @@ const config: Config = {
           foreground: "hsl(var(--popover-foreground))",
         },
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "#4f46e5", // Indigo 600
+          foreground: "#ffffff",
           50: "#eef2ff",
           100: "#e0e7ff",
           200: "#c7d2fe",
-          500: "#4f46e5",
-          600: "#4338ca",
-          700: "#3730a3",
+          500: "#6366f1",
+          600: "#4f46e5",
+          700: "#4338ca",
+          800: "#3730a3",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -50,17 +51,31 @@ const config: Config = {
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
       },
+      boxShadow: {
+        "subtle": "0 1px 2px rgba(15, 23, 42, 0.04)",
+        "card": "0 1px 3px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(15, 23, 42, 0.03)",
+        "dropdown": "0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.06)",
+      },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        xl: "0.75rem", // 12px
+        lg: "0.5rem",
+        md: "0.375rem",
+        sm: "0.25rem",
       },
       fontFamily: {
-        sans: ["var(--font-inter)", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
+        sans: [
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "Segoe UI",
+          "Roboto",
+          "Plus Jakarta Sans",
+          "Inter",
+          "Helvetica Neue",
+          "sans-serif",
+        ],
       },
     },
   },
   plugins: [],
 };
 export default config;
-

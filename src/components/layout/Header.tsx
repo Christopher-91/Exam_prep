@@ -126,14 +126,14 @@ export function Header({ onOpenSearch }: HeaderProps) {
                     setShowExamMenu(false);
                   }}
                   className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between hover:bg-slate-50 transition-colors ${
-                    selectedExam === exam.id ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-700"
+                    selectedExam === exam.id ? "bg-indigo-50 font-semibold text-indigo-700" : "text-slate-700"
                   }`}
                 >
                   <div>
                     <div>{exam.name}</div>
                     <div className="text-[10px] text-slate-400">{exam.provider} • Max {exam.maxScore}</div>
                   </div>
-                  {selectedExam === exam.id && <CheckCircle2 className="w-3.5 h-3.5 text-slate-900" />}
+                  {selectedExam === exam.id && <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600" />}
                 </button>
               ))}
             </div>
@@ -165,7 +165,7 @@ export function Header({ onOpenSearch }: HeaderProps) {
           >
             <Bell className="w-4 h-4" />
             {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-slate-900 ring-2 ring-white" />
+              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-indigo-600 ring-2 ring-white" />
             )}
           </button>
 
@@ -245,12 +245,12 @@ export function Header({ onOpenSearch }: HeaderProps) {
                       setActiveRole(r.id);
                       setShowUserMenu(false);
                     }}
-                    className={`w-full text-left px-2.5 py-1.5 rounded text-xs flex items-center justify-between transition-colors ${
-                      activeRole === r.id ? "bg-slate-100 font-semibold text-slate-950" : "text-slate-600 hover:bg-slate-50"
+                    className={`w-full text-left px-2.5 py-1.5 rounded-md text-xs flex items-center justify-between transition-colors ${
+                      activeRole === r.id ? "bg-indigo-50 font-semibold text-indigo-700" : "text-slate-600 hover:bg-slate-50"
                     }`}
                   >
                     <span>{r.label}</span>
-                    {activeRole === r.id && <span className="text-[10px] font-bold text-slate-900">Active</span>}
+                    {activeRole === r.id && <span className="text-[10px] font-bold text-indigo-600">Active</span>}
                   </button>
                 ))}
               </div>

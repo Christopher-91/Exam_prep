@@ -16,7 +16,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Puzzle,
-  Building2,
 } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand.config";
 import { cn } from "@/lib/utils";
@@ -44,6 +43,7 @@ export function Sidebar() {
       href: "/exam-prep",
       icon: GraduationCap,
       badge: BRAND_CONFIG.supportedExams.find((e) => e.id === profile.selectedExam)?.code || "SAT",
+      isExamBadge: true,
     },
     {
       title: "Study Materials",
@@ -94,16 +94,16 @@ export function Sidebar() {
       {/* Brand Header */}
       <div className="flex items-center justify-between h-14 px-4 border-b border-slate-200">
         <Link href="/" className="flex items-center gap-2.5 overflow-hidden">
-          <div className="w-7 h-7 rounded bg-slate-900 flex items-center justify-center text-white shrink-0 font-bold text-xs tracking-tight shadow-2xs">
+          <div className="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white shrink-0 font-bold text-xs tracking-tight shadow-sm">
             A
           </div>
           {!collapsed && (
             <div className="flex flex-col truncate">
-              <span className="text-xs font-bold text-slate-950 tracking-tight leading-none">
+              <span className="text-xs font-bold text-slate-900 tracking-tight leading-none">
                 {BRAND_CONFIG.shortName}
               </span>
               <span className="text-[10px] text-slate-400 font-medium tracking-wider uppercase mt-0.5">
-                Education Systems
+                Learning Systems
               </span>
             </div>
           )}
@@ -120,10 +120,10 @@ export function Sidebar() {
       {/* Role Pill Banner */}
       {!collapsed && (
         <div className="px-3 pt-3 pb-1">
-          <div className="flex items-center justify-between px-2.5 py-1.5 rounded border border-slate-200 bg-slate-50/70 text-[11px]">
+          <div className="flex items-center justify-between px-2.5 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-[11px]">
             <span className="text-slate-500 font-medium">Workspace</span>
-            <span className="font-semibold text-slate-900 capitalize flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-slate-900" />
+            <span className="font-semibold text-slate-900 capitalize flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-600" />
               {activeRole}
             </span>
           </div>
@@ -141,25 +141,27 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-2.5 px-2.5 py-2 rounded text-xs font-medium transition-colors relative group",
+                "flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs transition-colors relative group",
                 isActive
-                  ? "bg-slate-100 text-slate-950 font-semibold"
-                  : "text-slate-600 hover:text-slate-950 hover:bg-slate-50"
+                  ? "bg-indigo-50 text-indigo-700 font-semibold"
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium"
               )}
               title={collapsed ? item.title : undefined}
             >
               <Icon
                 className={cn(
                   "w-4 h-4 shrink-0 transition-colors",
-                  isActive ? "text-slate-900" : "text-slate-400 group-hover:text-slate-700"
+                  isActive ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-600"
                 )}
               />
               {!collapsed && <span className="flex-1 truncate">{item.title}</span>}
               {!collapsed && item.badge && (
                 <span
                   className={cn(
-                    "text-[10px] px-1.5 py-0.2 rounded font-semibold shrink-0",
-                    isActive ? "bg-slate-200 text-slate-900" : "bg-slate-100 text-slate-600"
+                    "text-[10px] px-2 py-0.5 rounded-full font-semibold shrink-0 transition-colors",
+                    item.isExamBadge
+                      ? "bg-slate-100 text-slate-600"
+                      : "bg-indigo-50 text-indigo-700 border border-indigo-200"
                   )}
                 >
                   {item.badge}
@@ -174,23 +176,23 @@ export function Sidebar() {
           <Link
             href="/admin"
             className={cn(
-              "flex items-center gap-2.5 px-2.5 py-2 rounded text-xs font-medium transition-colors group",
+              "flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs transition-colors group",
               pathname === "/admin"
-                ? "bg-slate-900 text-white font-semibold"
-                : "text-slate-600 hover:text-slate-950 hover:bg-slate-50"
+                ? "bg-indigo-50 text-indigo-700 font-semibold"
+                : "text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-medium"
             )}
             title={collapsed ? "Admin Workspace" : undefined}
           >
             <ShieldCheck
               className={cn(
                 "w-4 h-4 shrink-0",
-                pathname === "/admin" ? "text-white" : "text-slate-400 group-hover:text-slate-700"
+                pathname === "/admin" ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-600"
               )}
             />
             {!collapsed && (
               <>
                 <span className="flex-1 truncate">Admin Console</span>
-                <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-200 text-slate-800 font-semibold">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 font-semibold">
                   Staff
                 </span>
               </>
@@ -199,21 +201,23 @@ export function Sidebar() {
         </div>
       </nav>
 
-      {/* Understated Institutional Footer status */}
+      {/* Bottom Goal Widget ("Candidate Goal") */}
       {!collapsed && (
-        <div className="p-3 m-2.5 rounded border border-slate-200 bg-slate-50/50 text-xs text-slate-600 space-y-1">
+        <div className="p-3.5 m-2.5 rounded-xl border border-slate-200 bg-slate-50 text-xs text-slate-600 space-y-1.5 shadow-2xs">
           <div className="flex items-center justify-between text-[11px]">
-            <span className="font-semibold text-slate-700 uppercase tracking-wider text-[10px]">Candidate Goal</span>
-            <span className="font-bold text-slate-900">
+            <span className="font-semibold text-slate-500 uppercase tracking-wider text-[10px]">Candidate Goal</span>
+            <span className="font-bold text-slate-900 tabular-nums">
               {profile.targetScore} ({BRAND_CONFIG.supportedExams.find((e) => e.id === profile.selectedExam)?.code})
             </span>
           </div>
-          <div className="w-full bg-slate-200 rounded-full h-1 mt-1 overflow-hidden">
-            <div className="bg-slate-900 h-full rounded-full" style={{ width: "76%" }} />
+          <div className="w-full bg-slate-200 rounded-full h-1.5 mt-1 overflow-hidden">
+            <div className="bg-indigo-600 h-full rounded-full transition-all" style={{ width: "76%" }} />
           </div>
           <div className="text-[10px] text-slate-400 pt-0.5 flex items-center justify-between">
             <span>Exam Date:</span>
-            <span>{new Date(profile.targetDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
+            <span className="font-medium text-slate-600">
+              {new Date(profile.targetDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+            </span>
           </div>
         </div>
       )}

@@ -22,12 +22,13 @@ import { BRAND_CONFIG } from "@/config/brand.config";
 import { computePredictiveReadiness } from "@/lib/readiness-engine";
 import {
   ResponsiveContainer,
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   Tooltip,
   CartesianGrid,
+  ReferenceLine,
 } from "recharts";
 
 export function StudentDashboard() {
@@ -63,104 +64,136 @@ export function StudentDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Clean Page Header (No oversized gradient banner) */}
+      {/* Clean Page Header with Visual Hierarchy */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              {examDetails?.name} Candidate
+          <div className="flex items-center gap-2.5 mb-1.5 flex-wrap">
+            <span className="bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-full px-3 py-0.5 text-xs font-semibold tracking-wide">
+              {examDetails?.name.toUpperCase()} CANDIDATE
             </span>
             <span className="text-slate-300">•</span>
-            <span className="text-xs font-medium text-slate-600">
+            <span className="text-xs font-medium text-slate-500">
               Exam in {readiness.daysRemaining} days ({new Date(profile.targetDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })})
             </span>
           </div>
-          <h2 className="text-xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
             Academic Performance Overview
-          </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Targeting score of <strong>{profile.targetScore}</strong> ({readiness.readinessPercentage}% readiness index).
+          </h1>
+          <p className="text-sm text-slate-500 mt-0.5">
+            Targeting score of <strong className="text-slate-900 font-semibold">{profile.targetScore}</strong> ({readiness.readinessPercentage}% readiness index).
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <Link href="/exam-prep/adaptive">
-            <Button variant="outline" size="sm">
+            <button className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-semibold rounded-lg px-4 py-2 text-xs transition-colors shadow-2xs">
               Adaptive Practice
-            </Button>
+            </button>
           </Link>
           <Link href="/exam-prep/mock-test/sat-mock-1">
-            <Button variant="primary" size="sm">
+            <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg px-4 py-2 text-xs shadow-sm transition-colors">
               Launch Full Exam Simulation
-            </Button>
+            </button>
           </Link>
         </div>
       </div>
 
-      {/* 4 Performance Metric Cards */}
+      {/* 4 Revitalized KPI Performance Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card hover={false}>
-          <div className="flex items-center justify-between text-xs text-slate-500">
-            <span>Predicted Score Interval</span>
-            <span className="text-[10px] font-semibold text-slate-400">95% CI</span>
+        {/* Card 1: Predicted Score Interval */}
+        <Card hover={false} className="p-5">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              Predicted Score Interval
+            </span>
+            <div className="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+              <GraduationCap className="w-4 h-4" />
+            </div>
           </div>
-          <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-bold text-slate-900 tracking-tight">
+          <div className="mt-3 flex items-baseline gap-1.5">
+            <span className="text-3xl font-extrabold text-slate-900 tracking-tight tabular-nums">
               {readiness.estimatedScoreMin} – {readiness.estimatedScoreMax}
             </span>
-            <span className="text-xs text-slate-400">/ {examDetails?.maxScore}</span>
+            <span className="text-xs font-medium text-slate-400">/ {examDetails?.maxScore}</span>
           </div>
-          <div className="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
-            <span className="text-emerald-700 font-medium">▲ {readiness.improvementTrend}</span>
-            <span className="text-slate-400">Confidence: {readiness.confidenceScore}%</span>
+          <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
+            <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full text-xs font-semibold">
+              ▲ {readiness.improvementTrend}
+            </span>
+            <span className="text-slate-400 font-medium">Confidence: {readiness.confidenceScore}%</span>
           </div>
         </Card>
 
-        <Card hover={false}>
-          <div className="flex items-center justify-between text-xs text-slate-500">
-            <span>Daily Preparation Allocation</span>
-            <Clock className="w-3.5 h-3.5 text-slate-400" />
+        {/* Card 2: Daily Study Target */}
+        <Card hover={false} className="p-5">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              Daily Study Target
+            </span>
+            <div className="w-9 h-9 rounded-lg bg-sky-50 text-sky-600 flex items-center justify-center shrink-0">
+              <Clock className="w-4 h-4" />
+            </div>
           </div>
-          <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-bold text-slate-900 tracking-tight">1.8 hrs</span>
-            <span className="text-xs text-slate-400">/ {profile.dailyStudyTargetHours} hrs goal</span>
+          <div className="mt-3 flex items-baseline gap-1.5">
+            <span className="text-3xl font-extrabold text-slate-900 tracking-tight tabular-nums">1.8 hrs</span>
+            <span className="text-xs font-medium text-slate-400">/ {profile.dailyStudyTargetHours} hrs goal</span>
           </div>
-          <div className="mt-2.5">
-            <div className="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
-              <div className="bg-slate-900 h-full rounded-full" style={{ width: "52%" }} />
+          <div className="mt-3.5 space-y-1.5">
+            <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+              <div className="bg-indigo-600 h-full rounded-full transition-all" style={{ width: "52%" }} />
+            </div>
+            <div className="flex justify-between items-center text-[11px] text-slate-400 pt-0.5">
+              <span>52% completed</span>
+              <span className="font-semibold text-slate-600">1.7 hrs remaining</span>
             </div>
           </div>
         </Card>
 
-        <Card hover={false}>
-          <div className="flex items-center justify-between text-xs text-slate-500">
-            <span>Active Recall Due Queue</span>
-            <Layers className="w-3.5 h-3.5 text-slate-400" />
+        {/* Card 3: Active Recall Queue */}
+        <Card hover={false} className="p-5">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              Active Recall Queue
+            </span>
+            <div className="w-9 h-9 rounded-lg bg-violet-50 text-violet-600 flex items-center justify-center shrink-0">
+              <Layers className="w-4 h-4" />
+            </div>
           </div>
-          <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-bold text-slate-900 tracking-tight">{dueFlashcards.length} cards</span>
-            <span className="text-xs text-slate-500">due today</span>
+          <div className="mt-3 flex items-baseline gap-1.5">
+            <span className="text-3xl font-extrabold text-slate-900 tracking-tight tabular-nums">
+              {dueFlashcards.length} cards
+            </span>
+            <span className="text-xs font-medium text-slate-400">due today</span>
           </div>
-          <div className="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
+          <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
             <span className="text-slate-500">{flashcards.length} total across decks</span>
-            <Link href="/flashcards" className="font-semibold text-slate-900 hover:underline">
+            <Link href="/flashcards" className="font-semibold text-indigo-600 hover:text-indigo-700">
               Review →
             </Link>
           </div>
         </Card>
 
-        <Card hover={false}>
-          <div className="flex items-center justify-between text-xs text-slate-500">
-            <span>Preparation Consistency</span>
-            <TrendingUp className="w-3.5 h-3.5 text-slate-400" />
+        {/* Card 4: Preparation Consistency */}
+        <Card hover={false} className="p-5">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+              Preparation Consistency
+            </span>
+            <div className="w-9 h-9 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+              <TrendingUp className="w-4 h-4" />
+            </div>
           </div>
-          <div className="mt-2 flex items-baseline gap-1.5">
-            <span className="text-2xl font-bold text-slate-900 tracking-tight">{profile.streakDays} Days</span>
-            <span className="text-xs text-slate-500">continuous</span>
+          <div className="mt-3 flex items-baseline gap-1.5">
+            <span className="text-3xl font-extrabold text-slate-900 tracking-tight tabular-nums">
+              {profile.streakDays} Days
+            </span>
+            <span className="text-xs font-medium text-slate-400">continuous</span>
           </div>
-          <div className="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
+          <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
             <span className="text-slate-500">{profile.totalStudyHours} total hrs</span>
-            <span className="text-slate-600 font-medium">Regular pacing</span>
+            <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full text-xs font-semibold">
+              On Track
+            </span>
           </div>
         </Card>
       </div>
@@ -169,52 +202,93 @@ export function StudentDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column (2 spans): Score Trend, Schedule, and Mock Test Log */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Score Trajectory Chart */}
-          <Card hover={false}>
-            <CardHeader className="flex-row items-center justify-between pb-3">
+          {/* Score Trajectory Chart with Soft Vertical Gradient */}
+          <Card hover={false} className="p-5">
+            <CardHeader className="flex-row items-center justify-between pb-3 border-b border-slate-100 mb-3">
               <div>
-                <CardTitle>Score Trajectory vs. Target Benchmark</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-sm font-bold text-slate-900 tracking-tight">
+                  Score Trajectory vs. Target Benchmark
+                </CardTitle>
+                <CardDescription className="text-xs text-slate-500 mt-0.5">
                   Tracking calibration across standardized administrations against benchmark {profile.targetScore}
                 </CardDescription>
               </div>
-              <Badge variant="neutral">Goal: {profile.targetScore}</Badge>
+              <div className="flex items-center gap-2">
+                <span className="bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-full px-2.5 py-0.5 text-xs font-semibold">
+                  Goal: {profile.targetScore}
+                </span>
+              </div>
             </CardHeader>
 
-            <div className="h-56 w-full pt-2">
+            <div className="h-60 w-full pt-2">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="scoreGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#4f46e5" stopOpacity={0.14} />
+                      <stop offset="100%" stopColor="#4f46e5" stopOpacity={0.0} />
+                    </linearGradient>
+                  </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                  <XAxis dataKey="test" tick={{ fontSize: 11, fill: "#64748b" }} tickLine={false} axisLine={false} />
-                  <YAxis domain={[1200, 1600]} tick={{ fontSize: 11, fill: "#64748b" }} tickLine={false} axisLine={false} />
+                  <XAxis
+                    dataKey="test"
+                    tick={{ fontSize: 11, fill: "#64748b" }}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <YAxis
+                    domain={[1200, 1600]}
+                    tick={{ fontSize: 11, fill: "#64748b" }}
+                    tickLine={false}
+                    axisLine={false}
+                  />
                   <Tooltip
                     contentStyle={{
                       backgroundColor: "#0f172a",
                       color: "#fff",
-                      borderRadius: "4px",
-                      fontSize: "11px",
+                      borderRadius: "6px",
+                      fontSize: "12px",
                       border: "none",
+                      boxShadow: "0 4px 6px -1px rgba(15, 23, 42, 0.12)",
                     }}
                   />
-                  <Line
+                  <ReferenceLine
+                    y={profile.targetScore}
+                    stroke="#94a3b8"
+                    strokeDasharray="4 4"
+                    label={{
+                      value: `Target ${profile.targetScore}`,
+                      fill: "#94a3b8",
+                      fontSize: 10,
+                      position: "insideTopRight",
+                    }}
+                  />
+                  <Area
                     type="monotone"
                     dataKey="score"
-                    stroke="#0f172a"
-                    strokeWidth={2}
-                    dot={{ r: 3.5, fill: "#0f172a" }}
+                    stroke="#4f46e5"
+                    strokeWidth={2.5}
+                    fillOpacity={1}
+                    fill="url(#scoreGradient)"
+                    dot={{ r: 4, fill: "#4f46e5", stroke: "#ffffff", strokeWidth: 2 }}
+                    activeDot={{ r: 6, fill: "#4f46e5", stroke: "#ffffff", strokeWidth: 2 }}
                     name="Scaled Score"
                   />
-                </LineChart>
+                </AreaChart>
               </ResponsiveContainer>
             </div>
           </Card>
 
-          {/* Today's Structured Schedule (Table/List format, not inside individual bubbles) */}
-          <Card hover={false}>
-            <CardHeader className="flex-row items-center justify-between pb-3">
+          {/* Today's Structured Schedule */}
+          <Card hover={false} className="p-5">
+            <CardHeader className="flex-row items-center justify-between pb-3 border-b border-slate-100 mb-3">
               <div>
-                <CardTitle>Scheduled Focus Sessions</CardTitle>
-                <CardDescription>Time-blocked study allocation for peak morning focus</CardDescription>
+                <CardTitle className="text-sm font-bold text-slate-900 tracking-tight">
+                  Scheduled Focus Sessions
+                </CardTitle>
+                <CardDescription className="text-xs text-slate-500 mt-0.5">
+                  Time-blocked study allocation for peak morning focus
+                </CardDescription>
               </div>
               <Link href="/study-planner">
                 <Button variant="ghost" size="xs">
@@ -227,40 +301,60 @@ export function StudentDashboard() {
               {scheduleBlocks.map((block) => (
                 <div
                   key={block.id}
-                  className="py-3 flex items-center justify-between hover:bg-slate-50/60 transition-colors px-1"
+                  className="py-3 flex items-center justify-between hover:bg-slate-50/70 transition-colors px-1 rounded-md"
                 >
                   <div className="flex items-center gap-3">
                     <span
-                      className={`w-6 h-6 rounded flex items-center justify-center font-bold text-[10px] ${
-                        block.completed ? "bg-slate-100 text-slate-500" : "bg-slate-900 text-white"
+                      className={`w-7 h-7 rounded-lg flex items-center justify-center font-bold text-[10px] ${
+                        block.completed
+                          ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                          : "bg-indigo-50 text-indigo-700 border border-indigo-200"
                       }`}
                     >
-                      {block.completed ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> : <Play className="w-2.5 h-2.5" />}
+                      {block.completed ? (
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                      ) : (
+                        <Play className="w-3 h-3 text-indigo-600" />
+                      )}
                     </span>
                     <div>
-                      <div className={`font-semibold ${block.completed ? "line-through text-slate-400" : "text-slate-900"}`}>
+                      <div
+                        className={`font-semibold ${
+                          block.completed ? "line-through text-slate-400" : "text-slate-900"
+                        }`}
+                      >
                         {block.topic}
                       </div>
-                      <div className="text-[11px] text-slate-400 mt-0.5">
+                      <div className="text-[11px] text-slate-500 mt-0.5">
                         {block.time} • {block.durationMinutes} mins • {block.subject}
                       </div>
                     </div>
                   </div>
 
-                  <Badge variant={block.completed ? "neutral" : "primary"}>
+                  <span
+                    className={`text-[11px] px-2.5 py-0.5 rounded-full font-semibold border ${
+                      block.completed
+                        ? "bg-slate-100 text-slate-600 border-slate-200"
+                        : "bg-indigo-50 text-indigo-700 border-indigo-200"
+                    }`}
+                  >
                     {block.completed ? "Completed" : "Scheduled"}
-                  </Badge>
+                  </span>
                 </div>
               ))}
             </div>
           </Card>
 
           {/* Recent Mock Examination Log (Data Table Format) */}
-          <Card hover={false}>
-            <CardHeader className="flex-row items-center justify-between pb-3">
+          <Card hover={false} className="p-5">
+            <CardHeader className="flex-row items-center justify-between pb-3 border-b border-slate-100 mb-3">
               <div>
-                <CardTitle>Examination Log & Verified Results</CardTitle>
-                <CardDescription>Official scaled score conversions</CardDescription>
+                <CardTitle className="text-sm font-bold text-slate-900 tracking-tight">
+                  Examination Log & Verified Results
+                </CardTitle>
+                <CardDescription className="text-xs text-slate-500 mt-0.5">
+                  Official scaled score conversions
+                </CardDescription>
               </div>
               <Link href="/exam-prep">
                 <Button variant="outline" size="xs">
@@ -286,13 +380,20 @@ export function StudentDashboard() {
                     <tr key={res.id}>
                       <td className="font-semibold text-slate-900">{res.testTitle}</td>
                       <td className="text-slate-500">{new Date(res.completedAt).toLocaleDateString()}</td>
-                      <td className="text-slate-600">{res.accuracyPercentage}%</td>
-                      <td className="font-bold text-slate-900">{res.scaledScore} / {res.maxScore}</td>
-                      <td>
-                        <Badge variant="neutral">{res.percentile}th %tile</Badge>
+                      <td className="text-slate-600 font-medium">{res.accuracyPercentage}%</td>
+                      <td className="font-bold text-slate-900 tabular-nums">
+                        {res.scaledScore} / {res.maxScore}
                       </td>
                       <td>
-                        <Link href={`/exam-prep/results/${res.id}`} className="text-slate-900 hover:underline font-semibold text-xs">
+                        <span className="bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-full px-2 py-0.5 text-xs font-semibold">
+                          {res.percentile}th %tile
+                        </span>
+                      </td>
+                      <td>
+                        <Link
+                          href={`/exam-prep/results/${res.id}`}
+                          className="text-indigo-600 hover:text-indigo-800 font-semibold text-xs"
+                        >
                           Report →
                         </Link>
                       </td>
@@ -306,23 +407,29 @@ export function StudentDashboard() {
 
         {/* Right Column (1 span): Limiting Bottlenecks & Tasks */}
         <div className="space-y-6">
-          {/* Limiting Factors Diagnostic */}
-          <Card hover={false} className="bg-slate-50/50">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xs uppercase tracking-wider text-slate-500">
-                Diagnostic Bottleneck Analysis
-              </CardTitle>
-              <CardDescription>Highest leverage topics for score improvement</CardDescription>
+          {/* Limiting Factors Diagnostic Bottleneck Analysis */}
+          <Card hover={false} className="p-5 border-slate-200">
+            <CardHeader className="pb-3 border-b border-slate-100 mb-3">
+              <div>
+                <CardTitle className="text-xs uppercase tracking-wider text-slate-500 font-semibold">
+                  Diagnostic Bottleneck Analysis
+                </CardTitle>
+                <CardDescription className="text-xs text-slate-500 mt-0.5">
+                  Highest leverage topics for score improvement
+                </CardDescription>
+              </div>
             </CardHeader>
 
-            <div className="space-y-3 pt-1 text-xs">
+            <div className="space-y-3 text-xs">
               {readiness.limitingFactors.map((f, i) => (
-                <div key={i} className="p-3 bg-white border border-slate-200 rounded space-y-1">
-                  <div className="flex items-center justify-between font-semibold text-slate-900">
-                    <span>{f.topic}</span>
-                    <span className="text-[11px] text-slate-500">{f.impactOnScore}</span>
+                <div key={i} className="bg-amber-50/50 border border-amber-200/80 rounded-lg p-3.5 space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-slate-900">{f.topic}</span>
+                    <span className="bg-rose-50 text-rose-700 border border-rose-200 px-2 py-0.5 rounded text-xs font-semibold">
+                      {f.impactOnScore}
+                    </span>
                   </div>
-                  <p className="text-[11px] text-slate-600 leading-snug">{f.recommendedAction}</p>
+                  <p className="text-[11px] text-slate-600 leading-relaxed">{f.recommendedAction}</p>
                 </div>
               ))}
 
@@ -333,11 +440,13 @@ export function StudentDashboard() {
           </Card>
 
           {/* Pending Tasks */}
-          <Card hover={false}>
-            <CardHeader className="flex-row items-center justify-between pb-3">
+          <Card hover={false} className="p-5">
+            <CardHeader className="flex-row items-center justify-between pb-3 border-b border-slate-100 mb-3">
               <div>
-                <CardTitle>Academic Tasks</CardTitle>
-                <CardDescription>{pendingTasks.length} pending items</CardDescription>
+                <CardTitle className="text-sm font-bold text-slate-900 tracking-tight">Academic Tasks</CardTitle>
+                <CardDescription className="text-xs text-slate-500 mt-0.5">
+                  {pendingTasks.length} pending items
+                </CardDescription>
               </div>
               <Link href="/study-planner">
                 <Button variant="ghost" size="xs">
@@ -351,13 +460,13 @@ export function StudentDashboard() {
                 <div
                   key={task.id}
                   onClick={() => toggleTask(task.id)}
-                  className="p-2.5 rounded border border-slate-100 hover:border-slate-200 bg-white flex items-start gap-2.5 cursor-pointer transition-colors"
+                  className="p-3 rounded-lg border border-slate-100 hover:border-slate-200 bg-white flex items-start gap-2.5 cursor-pointer transition-colors"
                 >
                   <input
                     type="checkbox"
                     checked={task.status === "completed"}
                     onChange={() => {}}
-                    className="mt-0.5 rounded text-slate-900 focus:ring-slate-900"
+                    className="mt-0.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
                   />
                   <div className="flex-1">
                     <div
@@ -377,9 +486,9 @@ export function StudentDashboard() {
           </Card>
 
           {/* Spaced Repetition Callout */}
-          <Card hover={false} className="border-slate-200">
-            <h4 className="font-semibold text-xs text-slate-900 mb-1">Daily Flashcard Queue</h4>
-            <p className="text-xs text-slate-500 mb-3 leading-relaxed">
+          <Card hover={false} className="p-5 border-slate-200">
+            <h4 className="font-bold text-xs text-slate-900 mb-1">Daily Flashcard Queue</h4>
+            <p className="text-xs text-slate-500 mb-3.5 leading-relaxed">
               Clear your {dueFlashcards.length} scheduled cards to maintain the SuperMemo SM-2 retention threshold.
             </p>
             <Link href="/flashcards" className="block">
