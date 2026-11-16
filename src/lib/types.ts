@@ -2,11 +2,19 @@ import { SupportedExamId } from "@/config/brand.config";
 
 export type UserRole = "student" | "parent" | "professional" | "admin";
 
-export interface UserProfile {
+export interface AuthUser {
   id: string;
   name: string;
   email: string;
   avatarUrl: string;
+  role: UserRole;
+  isEmailVerified: boolean;
+  onboarded: boolean;
+  institution?: string;
+  createdAt: string;
+}
+
+export interface UserProfile extends AuthUser {
   activeRole: UserRole;
   selectedExam: SupportedExamId;
   targetDate: string; // ISO date string
@@ -145,7 +153,7 @@ export interface FlashcardDeck {
   totalCards: number;
   dueTodayCount: number;
   masteredCount: number;
-  color: string;
+  color?: string;
 }
 
 // Study Materials
@@ -215,7 +223,7 @@ export interface CareerProfile {
   title: string;
   category: string;
   matchScore: number;
-  demandGrowth: string; // e.g. "+22% (Much faster than average)"
+  demandGrowth: string; // e.g. "+22% (Faster than average)"
   medianSalary: string;
   overview: string;
   requiredQualifications: string[];
@@ -277,7 +285,7 @@ export interface StudyTask {
 
 export interface StudyScheduleBlock {
   id: string;
-  time: string; // e.g. "09:00 - 10:30"
+  time: string; // e.g. "08:30 AM - 09:30 AM"
   subject: string;
   topic: string;
   type: "concept_review" | "practice_questions" | "flashcards" | "mock_test" | "revision";
@@ -302,7 +310,7 @@ export interface PredictiveReadiness {
   }[];
   strengthTopics: string[];
   dailyStudyRecommendationHours: number;
-  improvementTrend: "+12 pts this week" | "+40 pts this month" | string;
+  improvementTrend: string;
 }
 
 // Admin & Question Management
@@ -313,4 +321,3 @@ export interface AdminAuditLog {
   user: string;
   details: string;
 }
-

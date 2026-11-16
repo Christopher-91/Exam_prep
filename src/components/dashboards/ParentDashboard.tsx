@@ -4,14 +4,12 @@ import React, { useState } from "react";
 import Link from "next/link";
 import {
   Users,
-  Sparkles,
   ShieldCheck,
   Clock,
   Star,
   Award,
   ChevronRight,
   Play,
-  Heart,
   BookOpen,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/common/Card";
@@ -27,136 +25,123 @@ export function ParentDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Parent Portal Header */}
-      <div className="bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-900 rounded-2xl p-6 text-white shadow-md">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5" /> COPPA-Compliant Family Portal
-              </span>
-              <span className="text-xs text-slate-400">• Age-Appropriate STEM Learning</span>
-            </div>
-            <h2 className="text-2xl font-bold tracking-tight">Parental Dashboard & Learning Insights</h2>
-            <p className="text-xs text-slate-300 max-w-xl mt-1 leading-relaxed">
-              Monitor your children's cognitive development, interactive math experiments, scientific reasoning, and
-              screen time in a safe, ad-free educational environment.
-            </p>
+      {/* Clean Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              Family & Young Learner Portal
+            </span>
+            <span className="text-slate-300">•</span>
+            <span className="text-xs text-emerald-700 font-medium flex items-center gap-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" /> COPPA / FERPA Compliant
+            </span>
           </div>
-
-          <Link href="/interactive-learning">
-            <Button variant="primary" size="md" className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
-              <Sparkles className="w-4 h-4" /> Open Kids STEM Studio
-            </Button>
-          </Link>
+          <h2 className="text-xl font-bold text-slate-900 tracking-tight">
+            Child Learning Progress & Parental Controls
+          </h2>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Monitor cognitive milestones, mathematical exploration, and enforce screen-time boundaries.
+          </p>
         </div>
+
+        <Link href="/interactive-learning">
+          <Button variant="primary" size="sm">
+            Launch STEM Learning Lab
+          </Button>
+        </Link>
       </div>
 
       {/* Child Switcher Tabs */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2 pb-1 border-b border-slate-200">
         {childProfiles.map((child) => (
           <button
             key={child.id}
             onClick={() => setSelectedChildId(child.id)}
-            className={`flex items-center gap-3 px-4 py-2.5 rounded-xl border transition-all ${
+            className={`flex items-center gap-2.5 px-3 py-1.5 rounded-md border text-xs transition-colors ${
               selectedChildId === child.id
-                ? "bg-white border-emerald-500 shadow-md ring-2 ring-emerald-500/20"
-                : "bg-white/70 border-slate-200 hover:bg-white text-slate-600"
+                ? "bg-slate-900 text-white border-slate-900 font-semibold"
+                : "bg-white border-slate-200 hover:bg-slate-50 text-slate-700"
             }`}
           >
-            <img src={child.avatar} alt={child.name} className="w-8 h-8 rounded-full bg-slate-100 p-0.5" />
-            <div className="text-left">
-              <div className="text-xs font-bold text-slate-900">{child.name}</div>
-              <div className="text-[10px] text-slate-500">
-                Age {child.age} • Group {child.ageGroup}
-              </div>
-            </div>
+            <img src={child.avatar} alt={child.name} className="w-5 h-5 rounded-full bg-slate-100" />
+            <span>{child.name}</span>
+            <span className={`text-[10px] ${selectedChildId === child.id ? "text-slate-300" : "text-slate-400"}`}>
+              (Age {child.age})
+            </span>
           </button>
         ))}
       </div>
 
-      {/* Selected Child KPI Cards */}
+      {/* Selected Child Metric Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card hover={false}>
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500">Activities Completed</span>
-            <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600">
-              <Award className="w-4 h-4" />
-            </div>
+          <div className="flex items-center justify-between text-xs text-slate-500">
+            <span>Completed Interactive Units</span>
+            <Award className="w-3.5 h-3.5 text-slate-400" />
           </div>
-          <div className="mt-2 flex items-baseline gap-2">
+          <div className="mt-2 flex items-baseline gap-1.5">
             <span className="text-2xl font-bold text-slate-900">{activeChild.completedActivities}</span>
-            <span className="text-xs text-slate-400">interactive units</span>
+            <span className="text-xs text-slate-400">activities</span>
           </div>
-          <p className="text-[11px] text-emerald-600 mt-2 font-medium">Top 10% engagement this month</p>
+          <p className="text-[11px] text-slate-500 mt-2">Active this week</p>
         </Card>
 
         <Card hover={false}>
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500">Stars Earned</span>
-            <div className="p-2 rounded-lg bg-amber-50 text-amber-600">
-              <Star className="w-4 h-4 fill-amber-500 text-amber-500" />
-            </div>
+          <div className="flex items-center justify-between text-xs text-slate-500">
+            <span>Total Stars Earned</span>
+            <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
           </div>
-          <div className="mt-2 flex items-baseline gap-2">
+          <div className="mt-2 flex items-baseline gap-1.5">
             <span className="text-2xl font-bold text-slate-900">{activeChild.totalStars}</span>
-            <span className="text-xs text-amber-600 font-semibold">Stars ★</span>
+            <span className="text-xs text-amber-700 font-medium">Stars</span>
           </div>
-          <p className="text-[11px] text-slate-400 mt-2">New badge unlocked: Orbit Explorer</p>
+          <p className="text-[11px] text-slate-500 mt-2">Consistent engagement</p>
         </Card>
 
         <Card hover={false}>
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500">Weekly Learning Time</span>
-            <div className="p-2 rounded-lg bg-sky-50 text-sky-600">
-              <Clock className="w-4 h-4" />
-            </div>
+          <div className="flex items-center justify-between text-xs text-slate-500">
+            <span>Weekly Learning Duration</span>
+            <Clock className="w-3.5 h-3.5 text-slate-400" />
           </div>
-          <div className="mt-2 flex items-baseline gap-2">
+          <div className="mt-2 flex items-baseline gap-1.5">
             <span className="text-2xl font-bold text-slate-900">
               {Math.floor(activeChild.weeklyScreenMinutes / 60)}h {activeChild.weeklyScreenMinutes % 60}m
             </span>
-            <span className="text-xs text-slate-400">/ 180m limit</span>
+            <span className="text-xs text-slate-400">/ 3h limit</span>
           </div>
           <div className="w-full bg-slate-100 rounded-full h-1.5 mt-2.5 overflow-hidden">
             <div
-              className="bg-sky-500 h-full rounded-full"
+              className="bg-slate-900 h-full rounded-full"
               style={{ width: `${(activeChild.weeklyScreenMinutes / 180) * 100}%` }}
             />
           </div>
         </Card>
 
         <Card hover={false}>
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500">Safety & Privacy</span>
-            <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600">
-              <ShieldCheck className="w-4 h-4" />
-            </div>
+          <div className="flex items-center justify-between text-xs text-slate-500">
+            <span>Environment Safety</span>
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
           </div>
           <div className="mt-2">
-            <span className="text-sm font-bold text-emerald-700 flex items-center gap-1">
-              ✓ 100% Ad-Free & Protected
-            </span>
-            <p className="text-[11px] text-slate-400 mt-1">Zero third-party tracking, strict kid-safe sandbox.</p>
+            <span className="text-sm font-semibold text-emerald-800">100% Ad-Free & Protected</span>
+            <p className="text-[11px] text-slate-400 mt-1">Zero third-party trackers or external chat.</p>
           </div>
         </Card>
       </div>
 
       {/* Concept Mastery & Recommendations */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
+        <Card hover={false}>
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm">Concept Mastery for {activeChild.name}</CardTitle>
-            <CardDescription>Based on interactive simulation responses and quizzes</CardDescription>
+            <CardTitle>Concept Mastery for {activeChild.name}</CardTitle>
+            <CardDescription>Evaluated through visual manipulative exercises</CardDescription>
           </CardHeader>
 
-          <div className="space-y-4">
+          <div className="space-y-4 text-xs">
             <div>
-              <span className="text-xs font-semibold text-emerald-800 flex items-center gap-1.5 mb-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                Strong & Mastered Concepts
-              </span>
-              <div className="flex flex-wrap gap-2">
+              <span className="font-semibold text-slate-900 block mb-2">Mastered Principles:</span>
+              <div className="flex flex-wrap gap-1.5">
                 {activeChild.strongConcepts.map((c, i) => (
                   <Badge key={i} variant="success">
                     ✓ {c}
@@ -166,14 +151,11 @@ export function ParentDashboard() {
             </div>
 
             <div className="pt-3 border-t border-slate-100">
-              <span className="text-xs font-semibold text-amber-800 flex items-center gap-1.5 mb-2">
-                <span className="w-2 h-2 rounded-full bg-amber-500" />
-                Growth Areas & Suggested Practice
-              </span>
-              <div className="flex flex-wrap gap-2">
+              <span className="font-semibold text-slate-900 block mb-2">Areas for Reinforcement:</span>
+              <div className="flex flex-wrap gap-1.5">
                 {activeChild.growthAreas.map((g, i) => (
-                  <Badge key={i} variant="warning">
-                    ⚡ {g}
+                  <Badge key={i} variant="neutral">
+                    {g}
                   </Badge>
                 ))}
               </div>
@@ -181,38 +163,31 @@ export function ParentDashboard() {
           </div>
         </Card>
 
-        {/* Recommended STEM Activities */}
-        <Card>
+        <Card hover={false}>
           <CardHeader className="flex-row items-center justify-between pb-3">
             <div>
-              <CardTitle className="text-sm">Recommended Activities for Age {activeChild.ageGroup}</CardTitle>
-              <CardDescription>Visual interactive physics & math activities</CardDescription>
+              <CardTitle>Recommended Interactive Activities</CardTitle>
+              <CardDescription>Tailored for Age Group {activeChild.ageGroup}</CardDescription>
             </div>
             <Link href="/interactive-learning">
               <Button variant="ghost" size="xs">
-                Browse All →
+                Explore All →
               </Button>
             </Link>
           </CardHeader>
 
-          <div className="space-y-2.5">
+          <div className="divide-y divide-slate-100 text-xs">
             {childrenActivities.slice(0, 3).map((act) => (
-              <div
-                key={act.id}
-                className="p-3 rounded-xl border border-slate-200 hover:border-emerald-300 bg-white flex items-center justify-between group transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="text-2xl p-1 bg-slate-50 rounded-lg">{act.thumbnail}</div>
-                  <div>
-                    <div className="text-xs font-bold text-slate-800">{act.title}</div>
-                    <div className="text-[11px] text-slate-400">
-                      Age {act.ageGroup} • {act.category.toUpperCase()} • {act.starsEarned}/{act.maxStars} Stars
-                    </div>
+              <div key={act.id} className="py-3 flex items-center justify-between">
+                <div>
+                  <div className="font-semibold text-slate-900">{act.title}</div>
+                  <div className="text-[11px] text-slate-400">
+                    {act.category.toUpperCase()} • Age {act.ageGroup} • {act.starsEarned}/{act.maxStars} Stars
                   </div>
                 </div>
                 <Link href="/interactive-learning">
-                  <Button variant="outline" size="xs" className="group-hover:bg-emerald-50 group-hover:text-emerald-700">
-                    <Play className="w-3 h-3" /> Play
+                  <Button variant="secondary" size="xs">
+                    Open Lab
                   </Button>
                 </Link>
               </div>
@@ -223,4 +198,3 @@ export function ParentDashboard() {
     </div>
   );
 }
-

@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import {
-  Sparkles,
   X,
   Send,
   Bot,
@@ -31,12 +30,12 @@ export function ContextualAIAssistant() {
     {
       id: "welcome-1",
       sender: "ai",
-      text: `Welcome back, ${profile.name.split(" ")[0]}! I'm your **${BRAND_CONFIG.shortName} AI Learning Copilot**. I have synced with your ${selectedExam.toUpperCase()} progress, active tasks, and memory retention curves.`,
+      text: `Hello ${profile.name.split(" ")[0]}, I am your **${BRAND_CONFIG.shortName} Academic Copilot**. I have access to your ${selectedExam.toUpperCase()} syllabus, study planner, and active recall retention curves. How can I assist your preparation?`,
       timestamp: "Just now",
       suggestedActions: [
-        { label: "Predict My Score Readiness", action: "view_analytics" },
-        { label: "Generate 5-Question Drill", action: "start_drill" },
-        { label: "Optimize Today's Study Plan", action: "generate_plan" },
+        { label: "Predict Exam Readiness", action: "view_analytics" },
+        { label: "Adaptive Diagnostic Drill", action: "start_drill" },
+        { label: "Review Today's Focus Schedule", action: "generate_plan" },
       ],
     },
   ]);
@@ -89,7 +88,7 @@ export function ContextualAIAssistant() {
         {
           id: `err-${Date.now()}`,
           sender: "system",
-          text: "An error occurred while connecting to the AI inference engine. Please try again.",
+          text: "An error occurred while connecting to the inference engine. Please retry your query.",
           timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
         },
       ]);
@@ -123,23 +122,23 @@ export function ContextualAIAssistant() {
   };
 
   return (
-    <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-[450px] bg-white border-l border-slate-200/90 shadow-2xl flex flex-col animate-in slide-in-from-right duration-200">
+    <div className="fixed inset-y-0 right-0 z-50 w-full sm:w-[420px] bg-white border-l border-slate-200 shadow-xl flex flex-col animate-in slide-in-from-right duration-200">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3.5 border-b border-slate-100 bg-slate-900 text-white">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 bg-slate-900 text-white">
         <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg bg-indigo-500/20 border border-indigo-400/30 flex items-center justify-center text-indigo-300">
-            <Sparkles className="w-4 h-4 text-indigo-400" />
+          <div className="w-7 h-7 rounded bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 font-bold text-xs">
+            AC
           </div>
           <div>
-            <div className="flex items-center gap-1.5 font-semibold text-xs tracking-tight text-white">
-              <span>{BRAND_CONFIG.shortName} AI Assistant</span>
-              <span className="text-[10px] px-1.5 py-0.2 bg-indigo-500/30 text-indigo-200 rounded font-normal">
-                Online
+            <div className="flex items-center gap-1.5 font-semibold text-xs text-white">
+              <span>{BRAND_CONFIG.shortName} Academic Copilot</span>
+              <span className="text-[10px] px-1.5 py-0.2 bg-slate-800 text-slate-300 rounded border border-slate-700">
+                Active
               </span>
             </div>
             <div className="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5">
-              <span>Context:</span>
-              <span className="text-indigo-300 uppercase font-medium">{activeContext.module}</span>
+              <span>Scope:</span>
+              <span className="uppercase text-slate-300">{activeContext.module}</span>
               <span>•</span>
               <span className="text-slate-300">{selectedExam.toUpperCase()}</span>
             </div>
@@ -147,7 +146,7 @@ export function ContextualAIAssistant() {
         </div>
         <button
           onClick={closeAssistant}
-          className="p-1 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
+          className="p-1 text-slate-400 hover:text-white rounded hover:bg-slate-800 transition-colors"
           aria-label="Close assistant"
         >
           <X className="w-4 h-4" />
@@ -155,16 +154,16 @@ export function ContextualAIAssistant() {
       </div>
 
       {/* Context Badge Bar */}
-      <div className="px-4 py-2 bg-indigo-50/70 border-b border-indigo-100/60 flex items-center justify-between text-[11px] text-indigo-900">
+      <div className="px-4 py-2 bg-slate-50 border-b border-slate-200 flex items-center justify-between text-[11px] text-slate-700">
         <span className="flex items-center gap-1.5 font-medium">
-          <GraduationCap className="w-3.5 h-3.5 text-indigo-600" />
-          Target: {profile.targetScore} by {new Date(profile.targetDate).toLocaleDateString()}
+          <GraduationCap className="w-3.5 h-3.5 text-slate-500" />
+          Target: {profile.targetScore} ({new Date(profile.targetDate).toLocaleDateString()})
         </span>
-        <span className="text-[10px] text-indigo-600 font-semibold">Active Recall Ready</span>
+        <span className="text-[10px] text-slate-500 font-medium">Syllabus Synced</span>
       </div>
 
       {/* Messages stream */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs bg-slate-50/40">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3.5 text-xs bg-slate-50/50">
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -173,23 +172,23 @@ export function ContextualAIAssistant() {
             <div className="flex items-center gap-1.5 mb-1 px-1">
               {msg.sender === "ai" ? (
                 <>
-                  <Bot className="w-3.5 h-3.5 text-indigo-600" />
-                  <span className="text-[10px] font-semibold text-slate-600">Apex AI</span>
+                  <Bot className="w-3.5 h-3.5 text-slate-700" />
+                  <span className="text-[10px] font-semibold text-slate-700">Acuity Copilot</span>
                 </>
               ) : msg.sender === "user" ? (
                 <>
-                  <span className="text-[10px] font-semibold text-slate-600">You</span>
-                  <User className="w-3.5 h-3.5 text-slate-600" />
+                  <span className="text-[10px] font-semibold text-slate-700">You</span>
+                  <User className="w-3.5 h-3.5 text-slate-700" />
                 </>
               ) : null}
               <span className="text-[9px] text-slate-400">{msg.timestamp}</span>
             </div>
 
             <div
-              className={`p-3 rounded-2xl max-w-[90%] leading-relaxed ${
+              className={`p-3 rounded-lg max-w-[90%] leading-relaxed ${
                 msg.sender === "user"
-                  ? "bg-indigo-600 text-white rounded-tr-none shadow-sm"
-                  : "bg-white border border-slate-200 text-slate-800 rounded-tl-none shadow-sm"
+                  ? "bg-slate-900 text-white shadow-2xs"
+                  : "bg-white border border-slate-200 text-slate-800 shadow-2xs"
               }`}
             >
               <div className="whitespace-pre-line">{msg.text}</div>
@@ -201,9 +200,9 @@ export function ContextualAIAssistant() {
                     <button
                       key={i}
                       onClick={() => handleActionClick(act.action)}
-                      className="px-2.5 py-1 text-[11px] font-medium bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg border border-indigo-200/80 transition-colors flex items-center gap-1"
+                      className="px-2.5 py-1 text-[11px] font-medium bg-slate-50 hover:bg-slate-100 text-slate-800 rounded border border-slate-200 transition-colors flex items-center gap-1"
                     >
-                      {act.label} <ChevronRight className="w-3 h-3 text-indigo-400" />
+                      {act.label} <ChevronRight className="w-3 h-3 text-slate-400" />
                     </button>
                   ))}
                 </div>
@@ -213,38 +212,38 @@ export function ContextualAIAssistant() {
         ))}
 
         {loading && (
-          <div className="flex items-center gap-2 text-slate-400 text-xs py-2 px-1">
-            <div className="w-2 h-2 rounded-full bg-indigo-600 animate-ping" />
-            <span>AI is analyzing exam blueprints and formulation...</span>
+          <div className="flex items-center gap-2 text-slate-500 text-xs py-2 px-1">
+            <div className="w-2 h-2 rounded-full bg-slate-900 animate-ping" />
+            <span>Consulting syllabus blueprints and pedagogical references...</span>
           </div>
         )}
         <div ref={messagesEndRef} />
       </div>
 
       {/* Suggested Quick Prompts */}
-      <div className="px-3 py-1.5 bg-white border-t border-slate-100 flex items-center gap-1 overflow-x-auto no-scrollbar">
+      <div className="px-3 py-1.5 bg-white border-t border-slate-200 flex items-center gap-1 overflow-x-auto no-scrollbar">
         <button
           onClick={() => handleSendMessage("Explain the difference between permutations and combinations")}
-          className="text-[11px] whitespace-nowrap px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
+          className="text-[11px] whitespace-nowrap px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
         >
           Permutations vs Combinations
         </button>
         <button
           onClick={() => handleSendMessage("How does the SM-2 algorithm calculate interval increases?")}
-          className="text-[11px] whitespace-nowrap px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
+          className="text-[11px] whitespace-nowrap px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
         >
-          Explain SM-2 Spaced Repetition
+          SM-2 Spaced Repetition
         </button>
         <button
-          onClick={() => handleSendMessage("What are the top 3 high-paying careers matching my profile?")}
-          className="text-[11px] whitespace-nowrap px-2.5 py-1 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition-colors"
+          onClick={() => handleSendMessage("What are the top 3 high-growth careers matching my profile?")}
+          className="text-[11px] whitespace-nowrap px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors"
         >
           Top Matching Careers
         </button>
       </div>
 
       {/* Input bar */}
-      <div className="p-3 bg-white border-t border-slate-200/80">
+      <div className="p-3 bg-white border-t border-slate-200">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -256,19 +255,18 @@ export function ContextualAIAssistant() {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={`Ask anything about ${selectedExam.toUpperCase()}, tasks, concepts...`}
-            className="flex-1 px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+            placeholder={`Ask about ${selectedExam.toUpperCase()}, tasks, concepts...`}
+            className="flex-1 px-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-slate-900"
           />
           <button
             type="submit"
             disabled={!input.trim() || loading}
-            className="p-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-xl shadow-sm transition-colors"
+            className="p-2 bg-slate-900 hover:bg-slate-800 disabled:opacity-50 text-white rounded-md transition-colors"
           >
-            <Send className="w-4 h-4" />
+            <Send className="w-3.5 h-3.5" />
           </button>
         </form>
       </div>
     </div>
   );
 }
-

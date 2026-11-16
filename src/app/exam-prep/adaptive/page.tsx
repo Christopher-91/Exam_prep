@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import {
-  Sparkles,
   TrendingUp,
   Brain,
   CheckCircle2,
@@ -14,6 +13,8 @@ import {
   AlertCircle,
   HelpCircle,
   Lightbulb,
+  ChevronRight,
+  BookOpen,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/common/Card";
 import { Badge } from "@/components/common/Badge";
@@ -127,40 +128,79 @@ export default function AdaptiveTestingPage() {
     }
   };
 
-  // Convert theta to estimated percentile
+  // Convert theta to estimated percentile (-3 to +3 mapped to 1st - 99th percentile)
   const estimatedPercentile = Math.min(
     99,
-    Math.max(20, Math.round(50 + thetaAbility * 20))
+    Math.max(1, Math.round(50 + thetaAbility * 18.5))
   );
+
+  // Calculate gauge position percentage for theta (-3 = 0%, 0 = 50%, +3 = 100%)
+  const gaugePercent = Math.min(100, Math.max(0, ((thetaAbility + 3) / 6) * 100));
 
   return (
     <div className="space-y-6">
-      {/* Engine Banner */}
-      <div className="bg-slate-900 rounded-2xl p-6 text-white border border-slate-800 shadow-md">
+      {/* Breadcrumb Navigation & Page Header */}
+      <div>
+        <div className="flex items-center gap-1.5 text-xs text-slate-500 mb-1.5 font-medium">
+          <Link href="/exam-prep" className="hover:text-slate-900 transition-colors">
+            Exam Preparation
+          </Link>
+          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+          <span className="text-slate-900 font-semibold">Adaptive Diagnostic Engine</span>
+        </div>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5" /> AI Item Response Theory (IRT) Engine
-              </span>
-              <span className="text-xs text-slate-400">• Dynamic Difficulty Calibration</span>
-            </div>
-            <h2 className="text-xl md:text-2xl font-bold tracking-tight">Adaptive Assessment & Diagnostic Engine</h2>
-            <p className="text-xs text-slate-300 max-w-xl mt-1 leading-relaxed">
-              Questions automatically scale in real-time according to your demonstrated cognitive ability. The AI
-              identifies persistent misconceptions, detects guessing patterns, and isolates conceptual blindspots.
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+              Adaptive Diagnostic Assessment
+            </h1>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Item Response Theory (IRT) dynamic calibration calibrated for {selectedExam.toUpperCase()}. Difficulty scales continuously based on demonstrated latent ability.
             </p>
           </div>
+          <div className="flex items-center gap-2">
+            <Link href="/exam-prep">
+              <Button variant="outline" size="sm">
+                Exit to Test Hub
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
 
-          {/* Latency Ability Meter */}
-          <div className="bg-slate-800/80 p-3.5 rounded-xl border border-slate-700/80 text-right min-w-[200px]">
-            <span className="text-[10px] text-slate-400 uppercase tracking-wider block">Estimated Latent Ability (θ)</span>
-            <div className="text-xl font-bold text-indigo-400 flex items-baseline justify-end gap-1.5">
-              <span>{thetaAbility > 0 ? `+${thetaAbility}` : thetaAbility}</span>
-              <span className="text-xs text-slate-300">({estimatedPercentile}th %tile)</span>
+      {/* Latent Ability Calibration Bar (Psychometric Meter) */}
+      <div className="bg-white rounded-lg border border-slate-200 p-4 shadow-xs">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-md bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 font-mono text-sm font-bold">
+              θ
             </div>
-            <div className="text-[10px] text-emerald-400 mt-1 font-medium">
-              Target Level: {currentDifficulty.toUpperCase()}
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-semibold text-slate-900">Latent Cognitive Ability Parameter</span>
+                <span className="text-[10px] text-slate-400 font-mono">(SEM ±0.18)</span>
+              </div>
+              <div className="text-xs text-slate-500 mt-0.5">
+                Current estimate: <span className="font-semibold text-slate-900">{thetaAbility > 0 ? `+${thetaAbility}` : thetaAbility}</span> • Standardized Percentile: <span className="font-semibold text-slate-900">{estimatedPercentile}th %tile</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Visual Scale from -3 to +3 */}
+          <div className="w-full md:w-80 space-y-1.5">
+            <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+              <span>-3.0 (Foundational)</span>
+              <span>0.0 (Median)</span>
+              <span>+3.0 (Advanced)</span>
+            </div>
+            <div className="relative w-full h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+              <div
+                className="h-full bg-slate-800 rounded-full transition-all duration-300"
+                style={{ width: `${gaugePercent}%` }}
+              />
+            </div>
+            <div className="flex justify-between items-center text-[10px] text-slate-500">
+              <span>Item #{questionCount}</span>
+              <span className="font-medium text-slate-700 capitalize">Current Tier: {currentDifficulty}</span>
             </div>
           </div>
         </div>
@@ -168,19 +208,21 @@ export default function AdaptiveTestingPage() {
 
       {/* Main Adaptive Workspace */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left 2 Spans: The Adaptive Question Card */}
+        {/* Left 2 Spans: The Question Presentation Card */}
         <div className="lg:col-span-2 space-y-4">
           <Card className="p-6">
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-200">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold px-2 py-0.5 rounded bg-indigo-50 text-indigo-700">
-                  Item #{questionCount}
+                <span className="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-800 border border-slate-200">
+                  Item {questionCount}
                 </span>
-                <span className="text-xs text-slate-500">{currentQuestion.topic}</span>
+                <span className="text-xs text-slate-500">{currentQuestion.section}</span>
+                <span className="text-slate-300">•</span>
+                <span className="text-xs text-slate-700 font-medium">{currentQuestion.topic}</span>
               </div>
 
               <div className="flex items-center gap-2">
-                <span className="text-xs text-slate-400">Difficulty:</span>
+                <span className="text-xs text-slate-400">Calibrated Level:</span>
                 <Badge
                   variant={
                     currentDifficulty === "easy"
@@ -196,27 +238,33 @@ export default function AdaptiveTestingPage() {
             </div>
 
             {/* Prompt */}
-            <div className="py-6 text-sm md:text-base font-medium text-slate-900 leading-relaxed whitespace-pre-line">
+            <div className="py-6 text-sm md:text-base font-normal text-slate-900 leading-relaxed whitespace-pre-line">
               {currentQuestion.prompt}
             </div>
 
             {/* Options */}
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {currentQuestion.options.map((opt) => {
                 const isSelected = selectedOption === opt.id;
                 const isCorrect = opt.id === currentQuestion.correctOptionId;
 
-                let stateClasses = "border-slate-200 hover:border-slate-300 hover:bg-slate-50";
+                let containerClasses = "border-slate-200 hover:border-slate-300 bg-white";
+                let badgeClasses = "bg-slate-100 text-slate-700 border-slate-300";
+
                 if (isAnswerSubmitted) {
                   if (isCorrect) {
-                    stateClasses = "bg-emerald-50 border-emerald-500 text-emerald-950 font-bold";
+                    containerClasses = "bg-emerald-50/70 border-emerald-500 text-emerald-950 font-medium";
+                    badgeClasses = "bg-emerald-600 text-white border-emerald-600";
                   } else if (isSelected && !isCorrect) {
-                    stateClasses = "bg-rose-50 border-rose-500 text-rose-950 font-medium";
+                    containerClasses = "bg-rose-50/70 border-rose-400 text-rose-950";
+                    badgeClasses = "bg-rose-600 text-white border-rose-600";
                   } else {
-                    stateClasses = "border-slate-200 opacity-60";
+                    containerClasses = "border-slate-200 opacity-50 bg-white";
+                    badgeClasses = "bg-slate-100 text-slate-400 border-slate-200";
                   }
                 } else if (isSelected) {
-                  stateClasses = "bg-indigo-50 border-indigo-600 text-indigo-950 font-semibold ring-1 ring-indigo-600";
+                  containerClasses = "bg-slate-50 border-slate-900 text-slate-900 font-medium ring-1 ring-slate-900";
+                  badgeClasses = "bg-slate-900 text-white border-slate-900";
                 }
 
                 return (
@@ -224,27 +272,19 @@ export default function AdaptiveTestingPage() {
                     key={opt.id}
                     disabled={isAnswerSubmitted}
                     onClick={() => handleSelectOption(opt.id)}
-                    className={`w-full text-left p-4 rounded-xl border text-xs md:text-sm flex items-start gap-3 transition-all ${stateClasses}`}
+                    className={`w-full text-left p-3.5 rounded-lg border text-xs md:text-sm flex items-start gap-3 transition-colors ${containerClasses}`}
                   >
                     <div
-                      className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 ${
-                        isAnswerSubmitted && isCorrect
-                          ? "bg-emerald-600 text-white"
-                          : isAnswerSubmitted && isSelected && !isCorrect
-                          ? "bg-rose-600 text-white"
-                          : isSelected
-                          ? "bg-indigo-600 text-white"
-                          : "bg-slate-100 text-slate-600 border border-slate-300"
-                      }`}
+                      className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-semibold shrink-0 mt-0.5 border ${badgeClasses}`}
                     >
                       {opt.id}
                     </div>
-                    <div className="flex-1 leading-snug">{opt.text}</div>
+                    <div className="flex-1 leading-relaxed pt-0.5">{opt.text}</div>
                     {isAnswerSubmitted && isCorrect && (
-                      <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                      <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
                     )}
                     {isAnswerSubmitted && isSelected && !isCorrect && (
-                      <XCircle className="w-5 h-5 text-rose-600 shrink-0" />
+                      <XCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
                     )}
                   </button>
                 );
@@ -252,16 +292,15 @@ export default function AdaptiveTestingPage() {
             </div>
 
             {/* Actions Bar */}
-            <div className="pt-6 mt-6 border-t border-slate-100 flex items-center justify-between">
+            <div className="pt-6 mt-6 border-t border-slate-200 flex items-center justify-between">
               {!isAnswerSubmitted ? (
                 <Button
                   variant="primary"
                   size="md"
                   disabled={!selectedOption}
                   onClick={handleSubmitAnswer}
-                  className="gap-2"
                 >
-                  Verify Answer
+                  Confirm Answer
                 </Button>
               ) : (
                 <Button
@@ -269,103 +308,126 @@ export default function AdaptiveTestingPage() {
                   size="md"
                   onClick={handleNextQuestion}
                   loading={isGenerating}
-                  className="gap-2 bg-indigo-600 hover:bg-indigo-700"
+                  className="gap-2"
                 >
-                  Next Adaptive Item <ArrowRight className="w-4 h-4" />
+                  Proceed to Next Item <ArrowRight className="w-4 h-4" />
                 </Button>
               )}
 
               {currentQuestion.aiHint && !isAnswerSubmitted && (
-                <div className="flex items-center gap-1.5 text-xs text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg">
-                  <Lightbulb className="w-3.5 h-3.5" />
-                  <span>Hint: {currentQuestion.aiHint}</span>
+                <div className="flex items-center gap-1.5 text-xs text-slate-600 bg-slate-100 px-3 py-1.5 rounded-md border border-slate-200">
+                  <Lightbulb className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Strategic Clue: {currentQuestion.aiHint}</span>
                 </div>
               )}
             </div>
           </Card>
 
-          {/* AI Explanation Accordion/Card */}
+          {/* Diagnostic Breakdown Card */}
           {aiExplanation && (
-            <Card className="bg-gradient-to-br from-indigo-50/70 via-white to-slate-50 border-indigo-200 p-5 space-y-3 animate-in fade-in duration-200">
-              <div className="flex items-center gap-2 pb-2 border-b border-indigo-100">
-                <Brain className="w-4 h-4 text-indigo-600" />
-                <h4 className="text-xs font-bold text-indigo-900 uppercase tracking-wider">
-                  AI Deep Pedagogical Explanation
-                </h4>
+            <Card className="p-5 border-slate-300 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+                <div className="flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-slate-700" />
+                  <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                    Diagnostic Analysis & Methodological Solution
+                  </h4>
+                </div>
+                <span className="text-[11px] text-slate-500 font-mono">Item #{questionCount} Review</span>
               </div>
 
-              <div className="text-xs space-y-2.5">
-                <p className="text-slate-800 leading-relaxed font-medium">{aiExplanation.whyCorrect}</p>
+              <div className="text-xs space-y-3">
+                <div>
+                  <span className="text-[11px] font-semibold text-slate-900 block mb-0.5">Solution Rationale:</span>
+                  <p className="text-slate-700 leading-relaxed">{aiExplanation.whyCorrect}</p>
+                </div>
+
                 {aiExplanation.whyUserWasWrong && (
-                  <div className="p-2.5 bg-rose-50 border border-rose-200/80 rounded-lg text-rose-900">
-                    <strong className="block text-[11px] mb-0.5">Misconception Analysis:</strong>
-                    {aiExplanation.whyUserWasWrong}
+                  <div className="p-3 bg-rose-50 border border-rose-200 rounded-md text-rose-900">
+                    <strong className="block text-[11px] font-semibold text-rose-950 mb-0.5">
+                      Distractor Analysis & Cognitive Error:
+                    </strong>
+                    <p className="leading-relaxed">{aiExplanation.whyUserWasWrong}</p>
                   </div>
                 )}
-                <div className="p-2.5 bg-slate-100/80 rounded-lg text-slate-700">
-                  <strong className="block text-[11px] text-slate-900 mb-0.5">Core Principle:</strong>
-                  {aiExplanation.underlyingConcept}
+
+                <div className="p-3 bg-slate-50 border border-slate-200 rounded-md text-slate-700">
+                  <strong className="block text-[11px] font-semibold text-slate-900 mb-0.5">
+                    Foundational Principle:
+                  </strong>
+                  <p className="leading-relaxed">{aiExplanation.underlyingConcept}</p>
                 </div>
-                <div className="p-2.5 bg-indigo-100/60 rounded-lg text-indigo-900 flex items-start gap-2">
-                  <Sparkles className="w-3.5 h-3.5 text-indigo-600 shrink-0 mt-0.5" />
-                  <span>{aiExplanation.proTip}</span>
+
+                <div className="p-3 bg-slate-100 border border-slate-200 rounded-md text-slate-800 flex items-start gap-2">
+                  <Lightbulb className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="text-[11px] font-semibold text-slate-900 block mb-0.5">Test Strategy:</span>
+                    <span className="leading-relaxed">{aiExplanation.proTip}</span>
+                  </div>
                 </div>
               </div>
             </Card>
           )}
         </div>
 
-        {/* Right 1 Span: Real-time Telemetry & Recommendations */}
+        {/* Right 1 Span: Session Telemetry & Recommendations */}
         <div className="space-y-4">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-xs uppercase tracking-wider text-slate-500">
-                Adaptive Telemetry
+                Session Telemetry
               </CardTitle>
             </CardHeader>
-            <div className="space-y-3 text-xs">
-              <div className="flex justify-between items-center py-1 border-b border-slate-100">
-                <span className="text-slate-500">Items Attempted</span>
-                <span className="font-bold text-slate-800">{questionCount}</span>
+            <div className="space-y-2.5 text-xs">
+              <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
+                <span className="text-slate-500">Items Calibrated</span>
+                <span className="font-semibold text-slate-900">{questionCount}</span>
               </div>
-              <div className="flex justify-between items-center py-1 border-b border-slate-100">
-                <span className="text-slate-500">Difficulty Trend</span>
-                <span className="font-semibold text-indigo-600 capitalize">{currentDifficulty}</span>
+              <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
+                <span className="text-slate-500">Operating Difficulty</span>
+                <span className="font-semibold text-slate-900 capitalize">{currentDifficulty}</span>
               </div>
-              <div className="flex justify-between items-center py-1 border-b border-slate-100">
-                <span className="text-slate-500">Streak Status</span>
-                <span className="font-semibold text-emerald-600">
-                  {consecutiveCorrect > 0 ? `${consecutiveCorrect} correct streak` : "Resetting"}
+              <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
+                <span className="text-slate-500">Consecutive Success</span>
+                <span className="font-semibold text-slate-900">
+                  {consecutiveCorrect > 0 ? `${consecutiveCorrect} correct in a row` : "Recalibrating"}
                 </span>
+              </div>
+              <div className="flex justify-between items-center py-1.5 border-b border-slate-100">
+                <span className="text-slate-500">Section Weight</span>
+                <span className="font-semibold text-slate-900">{currentQuestion.section}</span>
               </div>
             </div>
           </Card>
 
-          <Card className="bg-amber-50/50 border-amber-200/80">
+          <Card className="border-amber-200 bg-amber-50/40">
             <CardHeader className="pb-2">
               <CardTitle className="text-xs uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
-                <AlertCircle className="w-3.5 h-3.5 text-amber-600" /> Topic Weakness Alerts
+                <AlertCircle className="w-3.5 h-3.5 text-amber-700" /> Topic Pacing Observation
               </CardTitle>
             </CardHeader>
             <div className="text-xs text-amber-900 space-y-2">
-              <p className="leading-snug">
-                The algorithm detected a 25% hesitation increase on <strong>Nonlinear Coordinate Geometry</strong>.
+              <p className="leading-relaxed">
+                Response latency is 20% higher than average on <strong>Quadratic Factoring</strong>. Reviewing roots and Vieta's formulas will yield a 15–20 point gain.
               </p>
-              <Link href="/study-materials" className="inline-block text-indigo-700 font-semibold underline text-[11px]">
-                Read 12-Minute Circle Geometry Notes →
+              <Link
+                href="/study-materials"
+                className="inline-block text-slate-900 font-semibold underline text-[11px] hover:text-slate-700"
+              >
+                Access Algebraic Review Notes →
               </Link>
             </div>
           </Card>
 
           <Card>
-            <div className="text-center p-2">
-              <h5 className="font-bold text-xs text-slate-800">Ready to simulate full exam?</h5>
-              <p className="text-[11px] text-slate-500 mt-1 mb-3">
-                Transition to a full timed mock test to benchmark pacing across all sections.
+            <div className="p-2 space-y-2">
+              <h5 className="font-semibold text-xs text-slate-900">Full-Length Benchmark</h5>
+              <p className="text-[11px] text-slate-500 leading-relaxed">
+                Diagnostic drills isolate conceptual limits. For timing and pacing across sections, complete an official full-length simulation.
               </p>
-              <Link href="/exam-prep" className="block">
+              <Link href="/exam-prep" className="block pt-1">
                 <Button variant="outline" size="sm" className="w-full justify-center">
-                  Exit to Full Mock Tests
+                  View Full Mock Tests
                 </Button>
               </Link>
             </div>
@@ -375,4 +437,3 @@ export default function AdaptiveTestingPage() {
     </div>
   );
 }
-

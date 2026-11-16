@@ -1,23 +1,20 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   Search,
   Bell,
-  HelpCircle,
-  GraduationCap,
-  Users,
-  Briefcase,
-  ShieldCheck,
   CheckCircle2,
   Clock,
-  Sparkles,
+  LogOut,
+  User as UserIcon,
+  ChevronDown,
   ExternalLink,
+  BookOpen,
 } from "lucide-react";
 import { BRAND_CONFIG, SupportedExamId } from "@/config/brand.config";
 import { useApp } from "@/context/AppContext";
-import { useAIModal } from "@/context/AIModalContext";
 import { UserRole } from "@/lib/types";
 import { Modal } from "@/components/common/Modal";
 
@@ -27,6 +24,7 @@ interface HeaderProps {
 
 export function Header({ onOpenSearch }: HeaderProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const {
     profile,
     activeRole,
@@ -36,19 +34,20 @@ export function Header({ onOpenSearch }: HeaderProps) {
     notifications,
     markNotificationAsRead,
     markAllNotificationsAsRead,
+    logout,
   } = useApp();
-  const { openAssistant } = useAIModal();
 
   const [showRoleMenu, setShowRoleMenu] = useState(false);
   const [showExamMenu, setShowExamMenu] = useState(false);
   const [showNotifMenu, setShowNotifMenu] = useState(false);
-  const [showHelpModal, setShowHelpModal] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showGuideModal, setShowGuideModal] = useState(false);
 
   const roleMenuRef = useRef<HTMLDivElement>(null);
   const examMenuRef = useRef<HTMLDivElement>(null);
   const notifMenuRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
-  // Close menus on outside click
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (roleMenuRef.current && !roleMenuRef.current.contains(e.target as Node)) {
@@ -60,89 +59,64 @@ export function Header({ onOpenSearch }: HeaderProps) {
       if (notifMenuRef.current && !notifMenuRef.current.contains(e.target as Node)) {
         setShowNotifMenu(false);
       }
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setShowUserMenu(false);
+      }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Compute active module title
   const getModuleTitle = () => {
-    if (pathname === "/") return "Ecosystem Overview";
-    if (pathname.startsWith("/exam-prep")) return "AI Exam Preparation";
-    if (pathname.startsWith("/study-materials")) return "Resource Library & Notes";
-    if (pathname.startsWith("/flashcards")) return "Spaced Repetition & Recall";
-    if (pathname.startsWith("/interactive-learning")) return "Interactive STEM for Children";
-    if (pathname.startsWith("/career-counselling")) return "Career Guidance & Job Match";
-    if (pathname.startsWith("/study-planner")) return "Study Planner & Tasks";
-    if (pathname.startsWith("/analytics")) return "Predictive Readiness Analytics";
+    if (pathname === "/") return "Overview";
+    if (pathname.startsWith("/exam-prep/mock-test")) return "Examination Simulation";
+    if (pathname.startsWith("/exam-prep/results")) return "Diagnostic Score Report";
+    if (pathname.startsWith("/exam-prep/adaptive")) return "Adaptive Assessment";
+    if (pathname.startsWith("/exam-prep")) return "Exam Preparation";
+    if (pathname.startsWith("/study-materials")) return "Study Materials";
+    if (pathname.startsWith("/flashcards")) return "Flashcards & Recall";
+    if (pathname.startsWith("/interactive-learning")) return "Interactive Learning";
+    if (pathname.startsWith("/career-counselling")) return "Career Guidance";
+    if (pathname.startsWith("/study-planner")) return "Study Planner";
+    if (pathname.startsWith("/analytics")) return "Analytics & Readiness";
     if (pathname.startsWith("/admin")) return "Administrative Workspace";
-    if (pathname.startsWith("/settings")) return "Account & System Preferences";
+    if (pathname.startsWith("/settings")) return "Settings";
     return "Learning Platform";
   };
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
-  const rolesList: { id: UserRole; label: string; icon: React.ElementType; desc: string }[] = [
-    {
-      id: "student",
-      label: "Student",
-      icon: GraduationCap,
-      desc: "Exam prep, flashcard review, assignments & readiness",
-    },
-    {
-      id: "parent",
-      label: "Parent",
-      icon: Users,
-      desc: "Child STEM progress, screen time & activity controls",
-    },
-    {
-      id: "professional",
-      label: "Working Professional",
-      icon: Briefcase,
-      desc: "Career transitions, skill gap analysis & counselling",
-    },
-    {
-      id: "admin",
-      label: "Administrator",
-      icon: ShieldCheck,
-      desc: "Question bank authoring, audit logs & publishing",
-    },
-  ];
+  const handleLogout = () => {
+    logout();
+    router.replace("/login");
+  };
 
   return (
-    <header className="h-16 bg-white border-b border-slate-200/80 px-4 md:px-6 flex items-center justify-between sticky top-0 z-20">
-      {/* Left side: Module breadcrumb & Exam badge */}
+    <header className="h-14 bg-white border-b border-slate-200 px-4 md:px-6 flex items-center justify-between sticky top-0 z-20 shrink-0">
+      {/* Left: Breadcrumbs & Active Module */}
       <div className="flex items-center gap-3">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-sm md:text-base font-bold text-slate-900 tracking-tight">
-              {getModuleTitle()}
-            </h1>
-            <span className="hidden sm:inline-block text-[11px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-medium">
-              v{BRAND_CONFIG.version}
-            </span>
-          </div>
-          <p className="text-[11px] text-slate-400 hidden md:block">
-            Target: <span className="font-semibold text-slate-600 uppercase">{selectedExam}</span> • Exam Date:{" "}
-            {new Date(profile.targetDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-          </p>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-slate-400 font-medium">Platform</span>
+          <span className="text-xs text-slate-300">/</span>
+          <h1 className="text-xs md:text-sm font-semibold text-slate-900 tracking-tight">
+            {getModuleTitle()}
+          </h1>
         </div>
 
-        {/* Exam Switcher Quick Pill */}
+        {/* Exam switcher pill */}
         <div className="relative ml-2" ref={examMenuRef}>
           <button
             onClick={() => setShowExamMenu(!showExamMenu)}
-            className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200/80 rounded-lg hover:bg-indigo-100 transition-colors"
+            className="flex items-center gap-1.5 px-2 py-1 text-xs font-semibold text-slate-700 bg-slate-50 border border-slate-200 rounded hover:bg-slate-100 transition-colors"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-pulse" />
-            {BRAND_CONFIG.supportedExams.find((e) => e.id === selectedExam)?.name || "Exam"}
-            <span className="text-[10px] text-indigo-400">▼</span>
+            <span>{BRAND_CONFIG.supportedExams.find((e) => e.id === selectedExam)?.code || "SAT"}</span>
+            <ChevronDown className="w-3 h-3 text-slate-400" />
           </button>
 
           {showExamMenu && (
-            <div className="absolute left-0 mt-2 w-64 bg-white rounded-xl shadow-xl border border-slate-200 py-1.5 z-50 animate-in fade-in duration-100">
-              <div className="px-3 py-1.5 border-b border-slate-100 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                Select Active Exam
+            <div className="absolute left-0 mt-1.5 w-60 bg-white rounded-md shadow-md border border-slate-200 py-1 z-50 animate-in fade-in duration-75">
+              <div className="px-3 py-1 text-[10px] font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-100">
+                Examination Target
               </div>
               {BRAND_CONFIG.supportedExams.map((exam) => (
                 <button
@@ -152,14 +126,14 @@ export function Header({ onOpenSearch }: HeaderProps) {
                     setShowExamMenu(false);
                   }}
                   className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between hover:bg-slate-50 transition-colors ${
-                    selectedExam === exam.id ? "bg-indigo-50/60 font-semibold text-indigo-700" : "text-slate-700"
+                    selectedExam === exam.id ? "bg-slate-100 font-semibold text-slate-900" : "text-slate-700"
                   }`}
                 >
                   <div>
-                    <div className="font-medium">{exam.name}</div>
+                    <div>{exam.name}</div>
                     <div className="text-[10px] text-slate-400">{exam.provider} • Max {exam.maxScore}</div>
                   </div>
-                  {selectedExam === exam.id && <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600" />}
+                  {selectedExam === exam.id && <CheckCircle2 className="w-3.5 h-3.5 text-slate-900" />}
                 </button>
               ))}
             </div>
@@ -167,125 +141,61 @@ export function Header({ onOpenSearch }: HeaderProps) {
         </div>
       </div>
 
-      {/* Right side: Global Search, Role Switcher, AI Assistant, Notifications, User */}
+      {/* Right: Search, Notifications, Profile, Role Switcher */}
       <div className="flex items-center gap-2 md:gap-3">
-        {/* Global Search Button */}
+        {/* Search */}
         <button
           onClick={onOpenSearch}
-          className="flex items-center gap-2 px-3 py-1.5 text-xs text-slate-500 bg-slate-50 border border-slate-200/80 rounded-lg hover:bg-slate-100 hover:border-slate-300 transition-all text-left"
-          title="Search across exams, materials, flashcards, careers (Cmd+K)"
+          className="flex items-center gap-2 px-2.5 py-1 text-xs text-slate-400 bg-slate-50 border border-slate-200 rounded hover:bg-slate-100 transition-colors"
+          title="Search (Cmd+K)"
         >
           <Search className="w-3.5 h-3.5 text-slate-400" />
-          <span className="hidden sm:inline">Search platform...</span>
-          <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] bg-white border border-slate-200 rounded text-slate-400 font-mono shadow-2xs">
+          <span className="hidden sm:inline">Search...</span>
+          <kbd className="hidden sm:inline-block px-1 py-0.2 text-[10px] bg-white border border-slate-200 rounded text-slate-400 font-mono">
             ⌘K
           </kbd>
         </button>
 
-        {/* AI Quick Assistant Pill */}
-        <button
-          onClick={() => openAssistant({ module: pathname.replace("/", "") || "overview" })}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-lg hover:from-indigo-700 hover:to-indigo-800 shadow-sm transition-all active:scale-95"
-        >
-          <Sparkles className="w-3.5 h-3.5 text-indigo-200" />
-          <span className="hidden sm:inline">AI Tutor</span>
-        </button>
-
-        {/* Role Switcher Menu */}
-        <div className="relative" ref={roleMenuRef}>
-          <button
-            onClick={() => setShowRoleMenu(!showRoleMenu)}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-200/90 rounded-lg hover:bg-slate-50 transition-colors"
-          >
-            <span className="capitalize">{activeRole}</span>
-            <span className="text-[10px] text-slate-400">▼</span>
-          </button>
-
-          {showRoleMenu && (
-            <div className="absolute right-0 mt-2 w-72 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50 animate-in fade-in duration-100">
-              <div className="px-3 py-1 border-b border-slate-100 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                Switch Experience Mode
-              </div>
-              <div className="p-1 space-y-1">
-                {rolesList.map((role) => {
-                  const Icon = role.icon;
-                  const isSelected = activeRole === role.id;
-                  return (
-                    <button
-                      key={role.id}
-                      onClick={() => {
-                        setActiveRole(role.id);
-                        setShowRoleMenu(false);
-                      }}
-                      className={`w-full text-left p-2 rounded-lg text-xs flex items-start gap-2.5 transition-colors ${
-                        isSelected ? "bg-indigo-50 text-indigo-900" : "hover:bg-slate-50 text-slate-700"
-                      }`}
-                    >
-                      <div
-                        className={`p-1.5 rounded-md mt-0.5 ${
-                          isSelected ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-500"
-                        }`}
-                      >
-                        <Icon className="w-3.5 h-3.5" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="font-semibold flex items-center justify-between">
-                          {role.label}
-                          {isSelected && <span className="text-[10px] font-medium text-indigo-600">Active</span>}
-                        </div>
-                        <p className="text-[10px] text-slate-500 mt-0.5 leading-snug">{role.desc}</p>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Notifications Popover */}
+        {/* Notifications */}
         <div className="relative" ref={notifMenuRef}>
           <button
             onClick={() => setShowNotifMenu(!showNotifMenu)}
-            className="p-2 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 relative transition-colors"
-            aria-label="View notifications"
+            className="p-1.5 text-slate-500 hover:text-slate-800 rounded hover:bg-slate-100 relative transition-colors"
+            aria-label="Notifications"
           >
             <Bell className="w-4 h-4" />
             {unreadCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 ring-2 ring-white" />
+              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-slate-900 ring-2 ring-white" />
             )}
           </button>
 
           {showNotifMenu && (
-            <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-slate-200 py-2 z-50 animate-in fade-in duration-100">
+            <div className="absolute right-0 mt-1.5 w-80 bg-white rounded-md shadow-md border border-slate-200 py-1.5 z-50 animate-in fade-in duration-75">
               <div className="flex items-center justify-between px-3 py-1.5 border-b border-slate-100">
-                <span className="text-xs font-semibold text-slate-800">Notifications ({unreadCount} new)</span>
+                <span className="text-xs font-semibold text-slate-800">Notifications ({unreadCount})</span>
                 {unreadCount > 0 && (
                   <button
                     onClick={markAllNotificationsAsRead}
-                    className="text-[10px] font-medium text-indigo-600 hover:text-indigo-800"
+                    className="text-[10px] font-medium text-slate-500 hover:text-slate-900"
                   >
                     Mark all read
                   </button>
                 )}
               </div>
-              <div className="max-h-72 overflow-y-auto divide-y divide-slate-50">
-                {notifications.map((item) => (
+              <div className="max-h-64 overflow-y-auto divide-y divide-slate-50">
+                {notifications.map((n) => (
                   <div
-                    key={item.id}
-                    onClick={() => markNotificationAsRead(item.id)}
+                    key={n.id}
+                    onClick={() => markNotificationAsRead(n.id)}
                     className={`p-3 text-xs cursor-pointer hover:bg-slate-50 transition-colors ${
-                      !item.read ? "bg-indigo-50/40" : ""
+                      !n.read ? "bg-slate-50/70" : ""
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold text-slate-800">{item.title}</span>
-                      <span className="text-[10px] text-slate-400 flex items-center gap-1">
-                        <Clock className="w-2.5 h-2.5" />
-                        {item.timestamp}
-                      </span>
+                      <span className="font-semibold text-slate-800">{n.title}</span>
+                      <span className="text-[10px] text-slate-400">{n.timestamp}</span>
                     </div>
-                    <p className="text-[11px] text-slate-600 mt-1">{item.message}</p>
+                    <p className="text-[11px] text-slate-500 mt-1 leading-snug">{n.message}</p>
                   </div>
                 ))}
               </div>
@@ -293,89 +203,79 @@ export function Header({ onOpenSearch }: HeaderProps) {
           )}
         </div>
 
-        {/* Help & Support */}
-        <button
-          onClick={() => setShowHelpModal(true)}
-          className="p-2 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-100 transition-colors"
-          title="Help & System Guide"
-        >
-          <HelpCircle className="w-4 h-4" />
-        </button>
+        {/* User Profile & Role Switcher Dropdown */}
+        <div className="relative" ref={userMenuRef}>
+          <button
+            onClick={() => setShowUserMenu(!showUserMenu)}
+            className="flex items-center gap-2 pl-2 border-l border-slate-200 text-left hover:opacity-90"
+          >
+            <img
+              src={profile.avatarUrl}
+              alt={profile.name}
+              className="w-7 h-7 rounded-full border border-slate-200 object-cover"
+            />
+            <div className="hidden lg:block">
+              <div className="text-xs font-semibold text-slate-900 leading-tight">{profile.name}</div>
+              <div className="text-[10px] text-slate-400 capitalize">{activeRole}</div>
+            </div>
+            <ChevronDown className="w-3 h-3 text-slate-400 hidden lg:block" />
+          </button>
 
-        {/* Profile Avatar */}
-        <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
-          <img
-            src={profile.avatarUrl}
-            alt={profile.name}
-            className="w-8 h-8 rounded-full border border-slate-200 object-cover"
-          />
-          <div className="hidden lg:block text-left">
-            <div className="text-xs font-semibold text-slate-800 leading-none">{profile.name}</div>
-            <div className="text-[10px] text-slate-400 mt-0.5">{profile.email}</div>
-          </div>
+          {showUserMenu && (
+            <div className="absolute right-0 mt-1.5 w-64 bg-white rounded-md shadow-md border border-slate-200 py-1.5 z-50 text-xs animate-in fade-in duration-75">
+              <div className="px-3 py-2 border-b border-slate-100">
+                <div className="font-bold text-slate-900">{profile.name}</div>
+                <div className="text-[11px] text-slate-500 truncate">{profile.email}</div>
+              </div>
+
+              {/* Role Switcher Section */}
+              <div className="px-3 py-1.5 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                Switch Role View
+              </div>
+              <div className="px-1.5 space-y-0.5">
+                {[
+                  { id: "student" as UserRole, label: "Student Mode" },
+                  { id: "parent" as UserRole, label: "Parent Mode" },
+                  { id: "professional" as UserRole, label: "Professional Mode" },
+                  { id: "admin" as UserRole, label: "Admin Console" },
+                ].map((r) => (
+                  <button
+                    key={r.id}
+                    onClick={() => {
+                      setActiveRole(r.id);
+                      setShowUserMenu(false);
+                    }}
+                    className={`w-full text-left px-2.5 py-1.5 rounded text-xs flex items-center justify-between transition-colors ${
+                      activeRole === r.id ? "bg-slate-100 font-semibold text-slate-950" : "text-slate-600 hover:bg-slate-50"
+                    }`}
+                  >
+                    <span>{r.label}</span>
+                    {activeRole === r.id && <span className="text-[10px] font-bold text-slate-900">Active</span>}
+                  </button>
+                ))}
+              </div>
+
+              <div className="border-t border-slate-100 mt-1.5 pt-1.5 px-1.5">
+                <button
+                  onClick={() => {
+                    setShowUserMenu(false);
+                    router.push("/settings");
+                  }}
+                  className="w-full text-left px-2.5 py-1.5 rounded hover:bg-slate-50 text-slate-700 text-xs flex items-center gap-2"
+                >
+                  <UserIcon className="w-3.5 h-3.5 text-slate-400" /> Account Settings
+                </button>
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left px-2.5 py-1.5 rounded hover:bg-rose-50 text-rose-700 text-xs flex items-center gap-2 transition-colors"
+                >
+                  <LogOut className="w-3.5 h-3.5 text-rose-500" /> Sign Out
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Help & Support Modal */}
-      <Modal
-        isOpen={showHelpModal}
-        onClose={() => setShowHelpModal(false)}
-        title={`${BRAND_CONFIG.shortName} Ecosystem Guide`}
-        description="Comprehensive user guide, exam scoring methodologies, and platform resources"
-        maxWidth="2xl"
-      >
-        <div className="space-y-4 text-xs text-slate-600">
-          <div className="p-3.5 bg-indigo-50 border border-indigo-200 rounded-xl">
-            <h4 className="font-semibold text-indigo-900 text-sm mb-1">
-              About {BRAND_CONFIG.name}
-            </h4>
-            <p className="text-indigo-800 leading-relaxed">
-              {BRAND_CONFIG.description}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="p-3 border border-slate-200 rounded-lg">
-              <h5 className="font-semibold text-slate-900 mb-1">Exam Prep & Adaptive Tests</h5>
-              <p className="text-slate-500">
-                Official scoring for SAT (400-1600), GRE (260-340), GMAT (205-805), and JEE Main (+4/-1). Adaptive test engine dynamically adjusts question difficulty based on consecutive accuracy.
-              </p>
-            </div>
-            <div className="p-3 border border-slate-200 rounded-lg">
-              <h5 className="font-semibold text-slate-900 mb-1">SM-2 Spaced Repetition</h5>
-              <p className="text-slate-500">
-                Active recall schedule expands intervals based on your self-ratings (Again, Hard, Good, Easy) for 90%+ long-term retention.
-              </p>
-            </div>
-            <div className="p-3 border border-slate-200 rounded-lg">
-              <h5 className="font-semibold text-slate-900 mb-1">Interactive STEM for Kids</h5>
-              <p className="text-slate-500">
-                Interactive real-time simulations (Gravity orbital physics, visual algebra balance, fraction explorer) designed for ages 3-12.
-              </p>
-            </div>
-            <div className="p-3 border border-slate-200 rounded-lg">
-              <h5 className="font-semibold text-slate-900 mb-1">Predictive Readiness Engine</h5>
-              <p className="text-slate-500">
-                Data-driven probability model that calculates estimated score ranges, confidence bands, and limiting topic bottlenecks.
-              </p>
-            </div>
-          </div>
-
-          <div className="p-3 border border-slate-200 rounded-lg bg-slate-50 flex items-center justify-between">
-            <div>
-              <div className="font-semibold text-slate-800">Support Desk</div>
-              <div className="text-slate-500">{BRAND_CONFIG.supportEmail} • Helpline: {BRAND_CONFIG.counsellingHelpline}</div>
-            </div>
-            <a
-              href={`mailto:${BRAND_CONFIG.supportEmail}`}
-              className="inline-flex items-center gap-1 px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-100 font-medium"
-            >
-              Contact Support <ExternalLink className="w-3 h-3" />
-            </a>
-          </div>
-        </div>
-      </Modal>
     </header>
   );
 }
-

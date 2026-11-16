@@ -1,51 +1,68 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
 import { GlobalSearchModal } from "./GlobalSearchModal";
 import { ContextualAIAssistant } from "@/components/ai/ContextualAIAssistant";
-import { useAIModal } from "@/context/AIModalContext";
-import { Sparkles } from "lucide-react";
+import { useApp } from "@/context/AppContext";
 
 export function AppShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const router = useRouter();
+  const { isAuthenticated } = useApp();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const { isOpen, openAssistant } = useAIModal();
+
+  // Check if current route is an authentication or onboarding route
+  const isAuthRoute =
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/signup") ||
+    pathname.startsWith("/forgot-password") ||
+    pathname.startsWith("/reset-password") ||
+    pathname.startsWith("/verify-email") ||
+    pathname.startsWith("/onboarding");
+
+  // Route Protection: Unauthenticated users cannot view dashboard routes
+  useEffect(() => {
+    if (!isAuthenticated && !isAuthRoute) {
+      router.replace("/login");
+    }
+  }, [isAuthenticated, isAuthRoute, router]);
+
+  // If in auth flow, render clean auth layout directly without sidebar/header
+  if (isAuthRoute) {
+    return <main className="min-h-screen bg-white">{children}</main>;
+  }
+
+  // If not authenticated yet, show clean loading state while redirecting
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 text-slate-500 text-xs">
+        Verifying authorization credentials...
+      </div>
+    );
+  }
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-50 font-sans">
-      {/* Sidebar Navigation */}
+    <div className="flex h-screen w-screen overflow-hidden bg-slate-50 text-slate-900 font-sans antialiased">
+      {/* Structured Left Sidebar */}
       <Sidebar />
 
-      {/* Main Content Area */}
+      {/* Main Content Viewport */}
       <div className="flex-1 flex flex-col h-full min-w-0 overflow-hidden">
         <Header onOpenSearch={() => setIsSearchOpen(true)} />
 
-        <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-8 space-y-6">
-          <div className="max-w-7xl mx-auto">{children}</div>
+        <main className="flex-1 overflow-y-auto p-5 md:p-8">
+          <div className="max-w-6xl mx-auto space-y-6">{children}</div>
         </main>
       </div>
 
-      {/* Floating AI Assistant Trigger (when assistant is closed) */}
-      {!isOpen && (
-        <button
-          onClick={() => openAssistant()}
-          className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 bg-slate-900 hover:bg-black text-white rounded-full shadow-xl hover:shadow-2xl border border-slate-700/50 transition-all duration-200 active:scale-95 group"
-          title="Open AI Learning Assistant"
-        >
-          <div className="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center text-white">
-            <Sparkles className="w-3.5 h-3.5 text-indigo-200 group-hover:rotate-12 transition-transform" />
-          </div>
-          <span className="text-xs font-semibold tracking-tight pr-1">Apex AI</span>
-        </button>
-      )}
-
-      {/* Global Search Dialog (Cmd+K) */}
+      {/* Global Command-K Search Dialog */}
       <GlobalSearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
 
-      {/* Contextual AI Assistant Panel */}
+      {/* Contextual AI Assistant Panel (Invoked on-demand from Header or Study Tools) */}
       <ContextualAIAssistant />
     </div>
   );
 }
-

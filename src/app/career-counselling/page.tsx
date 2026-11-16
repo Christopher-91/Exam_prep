@@ -7,7 +7,6 @@ import {
   Briefcase,
   TrendingUp,
   Target,
-  Sparkles,
   Calendar,
   Star,
   CheckCircle2,
@@ -87,87 +86,78 @@ export default function CareerCounsellingPage() {
       timeSlot: bookingTime,
       status: "confirmed",
       preSessionNotes: preSessionNotes || "Discussing career roadmap and admissions strategy.",
-      meetingLink: `https://meet.apexlearn.ai/room-${Date.now()}`,
+      meetingLink: `https://meet.acuitylearning.org/room-${Date.now()}`,
     });
 
     setSelectedCounsellor(null);
     setPreSessionNotes("");
-    alert("Counselling session successfully confirmed! A calendar invite has been generated.");
+    alert("Counselling consultation confirmed. Meeting invitation details have been issued.");
   };
 
   return (
     <div className="space-y-6">
-      {/* Banner */}
-      <div className="bg-gradient-to-r from-slate-900 via-sky-950 to-slate-900 rounded-2xl p-6 text-white shadow-md">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30 flex items-center gap-1.5">
-                <Compass className="w-3.5 h-3.5" /> Career Discovery & Professional Trajectory
-              </span>
-              <span className="text-xs text-slate-400">• Intelligent Skill-Gap Analysis</span>
-            </div>
-            <h2 className="text-2xl font-bold tracking-tight">AI Career Counselling & Exploration Hub</h2>
-            <p className="text-xs text-slate-300 max-w-xl mt-1 leading-relaxed">
-              Explore high-growth career pathways, compare salary trajectories side-by-side, analyze your missing skill
-              gaps, and book 1:1 strategy meetings with verified admissions and tech leaders.
-            </p>
-          </div>
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Career Advisory & Professional Trajectory</h1>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Industry salary benchmarks, skill gap diagnostics, and 1:1 strategy consultations with verified practitioners.
+          </p>
+        </div>
 
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="md"
-              onClick={() => setActiveTab("assessment")}
-              className="gap-1.5 bg-slate-800 border-slate-700 text-white hover:bg-slate-700"
-            >
-              <Sparkles className="w-4 h-4 text-sky-300" /> Take Career Assessment
-            </Button>
-          </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setActiveTab("assessment")}
+            className="gap-1.5"
+          >
+            <Target className="w-4 h-4 text-slate-600" /> Complete Aptitude Assessment
+          </Button>
         </div>
       </div>
 
       {/* Main Tab Navigation */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-2 overflow-x-auto text-xs font-semibold">
+      <div className="flex items-center gap-1.5 border-b border-slate-200 pb-2 overflow-x-auto text-xs">
         <button
           onClick={() => setActiveTab("explorer")}
-          className={`px-3.5 py-2 rounded-xl transition-colors ${
+          className={`px-3 py-1.5 rounded-md transition-colors font-medium ${
             activeTab === "explorer"
-              ? "bg-slate-900 text-white shadow-sm"
+              ? "bg-slate-900 text-white font-semibold"
               : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
           }`}
         >
-          Career Explorer & Recommendations
+          Career Explorer
         </button>
         <button
           onClick={() => setActiveTab("compare")}
-          className={`px-3.5 py-2 rounded-xl transition-colors ${
+          className={`px-3 py-1.5 rounded-md transition-colors font-medium ${
             activeTab === "compare"
-              ? "bg-slate-900 text-white shadow-sm"
+              ? "bg-slate-900 text-white font-semibold"
               : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
           }`}
         >
-          Side-by-Side Comparison
+          Pathways Comparison
         </button>
         <button
           onClick={() => setActiveTab("assessment")}
-          className={`px-3.5 py-2 rounded-xl transition-colors ${
+          className={`px-3 py-1.5 rounded-md transition-colors font-medium ${
             activeTab === "assessment"
-              ? "bg-slate-900 text-white shadow-sm"
+              ? "bg-slate-900 text-white font-semibold"
               : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
           }`}
         >
-          Career Aptitude Assessment
+          RIASEC Assessment
         </button>
         <button
           onClick={() => setActiveTab("counsellors")}
-          className={`px-3.5 py-2 rounded-xl transition-colors ${
+          className={`px-3 py-1.5 rounded-md transition-colors font-medium ${
             activeTab === "counsellors"
-              ? "bg-slate-900 text-white shadow-sm"
+              ? "bg-slate-900 text-white font-semibold"
               : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
           }`}
         >
-          Book 1:1 Expert Counsellor ({counsellors.length})
+          Verified Counsellors ({counsellors.length})
         </button>
       </div>
 
@@ -176,34 +166,34 @@ export default function CareerCounsellingPage() {
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {careerProfiles.map((cp) => (
-              <Card key={cp.id} className="flex flex-col justify-between p-6">
+              <Card key={cp.id} className="flex flex-col justify-between p-5 border-slate-200">
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <Badge variant="primary">{cp.category}</Badge>
-                    <span className="text-sm font-extrabold text-emerald-600">{cp.matchScore}% Match</span>
+                    <Badge variant="neutral">{cp.category}</Badge>
+                    <span className="text-xs font-bold text-emerald-700">{cp.matchScore}% Alignment</span>
                   </div>
 
-                  <h3 className="text-base font-bold text-slate-900 mt-2">{cp.title}</h3>
-                  <p className="text-xs text-slate-600 mt-1 leading-relaxed">{cp.overview}</p>
+                  <h3 className="text-sm font-bold text-slate-900 mt-2">{cp.title}</h3>
+                  <p className="text-xs text-slate-500 mt-1 leading-relaxed">{cp.overview}</p>
 
-                  <div className="mt-4 pt-3 border-t border-slate-100 space-y-2 text-xs">
+                  <div className="mt-4 pt-3 border-t border-slate-100 space-y-1.5 text-xs">
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Median Salary:</span>
-                      <span className="font-bold text-slate-900">{cp.medianSalary}</span>
+                      <span className="text-slate-500">Median Compensation:</span>
+                      <span className="font-semibold text-slate-900">{cp.medianSalary}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400">Market Demand:</span>
-                      <span className="font-semibold text-emerald-600">{cp.demandGrowth}</span>
+                      <span className="text-slate-500">Industry Growth Rate:</span>
+                      <span className="font-semibold text-emerald-700">{cp.demandGrowth}</span>
                     </div>
                   </div>
 
                   {/* Missing Skills Alert */}
                   {cp.missingSkillsForUser && cp.missingSkillsForUser.length > 0 && (
-                    <div className="mt-3 p-2.5 rounded-lg bg-amber-50/70 border border-amber-200/60 text-xs text-amber-900">
-                      <span className="font-bold block text-[11px] mb-1 flex items-center gap-1">
-                        <AlertCircle className="w-3 h-3 text-amber-600" /> Skill Gaps to Bridge:
+                    <div className="mt-3 p-3 rounded-md bg-slate-50 border border-slate-200 text-xs">
+                      <span className="font-semibold text-slate-900 block text-[11px] mb-1 flex items-center gap-1">
+                        <AlertCircle className="w-3.5 h-3.5 text-slate-500" /> Skill Gaps to Bridge:
                       </span>
-                      <ul className="list-disc list-inside text-[11px] space-y-0.5 text-amber-800">
+                      <ul className="list-disc list-inside text-[11px] space-y-0.5 text-slate-600">
                         {cp.missingSkillsForUser.map((sk, i) => (
                           <li key={i}>{sk}</li>
                         ))}
@@ -212,7 +202,7 @@ export default function CareerCounsellingPage() {
                   )}
                 </div>
 
-                <div className="pt-4 mt-2">
+                <div className="pt-4 mt-2 border-t border-slate-100">
                   <Button
                     variant="outline"
                     size="sm"
@@ -233,9 +223,9 @@ export default function CareerCounsellingPage() {
 
       {/* Tab 2: Side-by-Side Comparison */}
       {activeTab === "compare" && (
-        <Card className="p-6">
+        <Card className="p-6 border-slate-200">
           <CardHeader className="pb-4">
-            <CardTitle className="text-base">Side-by-Side Career Evaluation Matrix</CardTitle>
+            <CardTitle className="text-sm">Side-by-Side Career Evaluation Matrix</CardTitle>
             <CardDescription>
               Direct benchmark of responsibilities, educational pathways, and growth trajectories
             </CardDescription>
@@ -245,10 +235,10 @@ export default function CareerCounsellingPage() {
             {selectedForCompare.map((id) => {
               const cp = careerProfiles.find((c) => c.id === id) || careerProfiles[0];
               return (
-                <div key={cp.id} className="p-5 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-4 text-xs">
+                <div key={cp.id} className="p-5 rounded-lg border border-slate-200 bg-slate-50/50 space-y-4 text-xs">
                   <div className="flex items-center justify-between pb-3 border-b border-slate-200">
                     <div>
-                      <h4 className="text-base font-bold text-slate-900">{cp.title}</h4>
+                      <h4 className="text-sm font-bold text-slate-900">{cp.title}</h4>
                       <span className="text-[11px] text-slate-500">{cp.category}</span>
                     </div>
                     <Badge variant="success" className="text-xs">
@@ -257,17 +247,17 @@ export default function CareerCounsellingPage() {
                   </div>
 
                   <div>
-                    <span className="font-bold text-slate-700 block mb-1">Median Compensation</span>
+                    <span className="font-semibold text-slate-700 block mb-0.5">Median Compensation</span>
                     <p className="text-slate-900 font-semibold">{cp.medianSalary}</p>
                   </div>
 
                   <div>
-                    <span className="font-bold text-slate-700 block mb-1">Industry Growth Projection</span>
+                    <span className="font-semibold text-slate-700 block mb-0.5">Industry Growth Projection</span>
                     <p className="text-emerald-700 font-semibold">{cp.demandGrowth}</p>
                   </div>
 
                   <div>
-                    <span className="font-bold text-slate-700 block mb-1">Educational Prerequisites</span>
+                    <span className="font-semibold text-slate-700 block mb-1">Educational Prerequisites</span>
                     <ul className="list-disc list-inside space-y-1 text-slate-600">
                       {cp.requiredQualifications.map((q, i) => (
                         <li key={i}>{q}</li>
@@ -276,10 +266,10 @@ export default function CareerCounsellingPage() {
                   </div>
 
                   <div>
-                    <span className="font-bold text-slate-700 block mb-1">Essential Skills</span>
-                    <div className="flex flex-wrap gap-1.5 pt-1">
+                    <span className="font-semibold text-slate-700 block mb-1">Essential Competencies</span>
+                    <div className="flex flex-wrap gap-1.5 pt-0.5">
                       {cp.essentialSkills.map((sk, i) => (
-                        <span key={i} className="px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700">
+                        <span key={i} className="px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-700 text-[11px]">
                           {sk}
                         </span>
                       ))}
@@ -287,11 +277,11 @@ export default function CareerCounsellingPage() {
                   </div>
 
                   <div>
-                    <span className="font-bold text-slate-700 block mb-1">Typical Progression</span>
+                    <span className="font-semibold text-slate-700 block mb-1">Typical Progression Milestones</span>
                     <div className="space-y-1 text-slate-600">
                       {cp.careerProgression.map((step, i) => (
                         <div key={i} className="flex items-center gap-2">
-                          <span className="text-indigo-600 font-bold">{i + 1}.</span>
+                          <span className="text-slate-900 font-bold">{i + 1}.</span>
                           <span>{step}</span>
                         </div>
                       ))}
@@ -306,21 +296,21 @@ export default function CareerCounsellingPage() {
 
       {/* Tab 3: Interactive Career Assessment */}
       {activeTab === "assessment" && (
-        <Card className="p-6 max-w-2xl mx-auto">
+        <Card className="p-6 max-w-2xl mx-auto border-slate-200">
           {!assessmentFinished ? (
             <div className="space-y-6">
               <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-                <span className="text-xs font-bold text-indigo-600 uppercase tracking-wider">
-                  Question {assessmentStep + 1} of {assessmentQuestions.length}
+                <span className="text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                  Assessment Question {assessmentStep + 1} of {assessmentQuestions.length}
                 </span>
                 <span className="text-xs text-slate-400">RIASEC Aptitude Alignment</span>
               </div>
 
-              <h3 className="text-base font-bold text-slate-900 leading-relaxed">
+              <h3 className="text-sm font-semibold text-slate-900 leading-relaxed">
                 {assessmentQuestions[assessmentStep].q}
               </h3>
 
-              <div className="space-y-2.5">
+              <div className="space-y-2">
                 {assessmentQuestions[assessmentStep].opts.map((opt, i) => (
                   <button
                     key={i}
@@ -332,23 +322,22 @@ export default function CareerCounsellingPage() {
                         setAssessmentFinished(true);
                       }
                     }}
-                    className="w-full text-left p-3.5 rounded-xl border border-slate-200 hover:border-indigo-600 hover:bg-indigo-50/50 text-xs font-medium text-slate-800 transition-all flex items-center justify-between group"
+                    className="w-full text-left p-3.5 rounded-lg border border-slate-200 hover:border-slate-400 hover:bg-slate-50 text-xs font-normal text-slate-800 transition-colors flex items-center justify-between group"
                   >
-                    <span>{opt}</span>
-                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-indigo-600" />
+                    <span className="leading-snug">{opt}</span>
+                    <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-900 shrink-0 ml-2" />
                   </button>
                 ))}
               </div>
             </div>
           ) : (
             <div className="text-center space-y-4 py-4">
-              <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
-                <CheckCircle2 className="w-8 h-8" />
+              <div className="w-12 h-12 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 flex items-center justify-center mx-auto">
+                <CheckCircle2 className="w-6 h-6" />
               </div>
-              <h3 className="text-lg font-bold text-slate-900">Career Trait Assessment Completed!</h3>
+              <h3 className="text-base font-bold text-slate-900">Career Trait Assessment Completed</h3>
               <p className="text-xs text-slate-600 max-w-md mx-auto leading-relaxed">
-                Your primary RIASEC orientation is <strong>Investigative & Enterprising</strong>. You show exceptional
-                natural affinity for AI Product Leadership, Statistical Architecture, and Quantitative Strategy.
+                Your primary RIASEC orientation is <strong>Investigative & Enterprising</strong>. You show strong natural affinity for Quantitative Modeling, Engineering Product Strategy, and Empirical Analytics.
               </p>
               <Button
                 variant="primary"
@@ -371,30 +360,30 @@ export default function CareerCounsellingPage() {
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {counsellors.map((c) => (
-              <Card key={c.id} className="p-6 flex flex-col justify-between">
+              <Card key={c.id} className="p-5 flex flex-col justify-between border-slate-200">
                 <div>
                   <div className="flex items-start gap-4">
-                    <img src={c.avatar} alt={c.name} className="w-16 h-16 rounded-xl object-cover border border-slate-200" />
+                    <img src={c.avatar} alt={c.name} className="w-14 h-14 rounded-lg object-cover border border-slate-200" />
                     <div>
-                      <h4 className="text-base font-bold text-slate-900">{c.name}</h4>
+                      <h4 className="text-sm font-bold text-slate-900">{c.name}</h4>
                       <p className="text-xs text-slate-500">{c.title}</p>
                       <div className="flex items-center gap-2 mt-1 text-xs">
-                        <span className="flex items-center text-amber-500 font-bold">
+                        <span className="flex items-center text-amber-600 font-semibold">
                           <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400 mr-0.5" />
                           {c.rating}
                         </span>
                         <span className="text-slate-400">({c.reviewCount} reviews)</span>
-                        <span>•</span>
+                        <span className="text-slate-300">•</span>
                         <span className="text-slate-600">{c.experienceYears} yrs experience</span>
                       </div>
                     </div>
                   </div>
 
-                  <p className="text-xs text-slate-600 mt-4 leading-relaxed">{c.bio}</p>
+                  <p className="text-xs text-slate-600 mt-3 leading-relaxed">{c.bio}</p>
 
                   <div className="mt-4 pt-3 border-t border-slate-100 flex flex-wrap gap-1">
                     {c.specialization.map((sp, i) => (
-                      <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                      <span key={i} className="text-[10px] px-2 py-0.5 rounded bg-slate-100 text-slate-700">
                         {sp}
                       </span>
                     ))}
@@ -403,17 +392,17 @@ export default function CareerCounsellingPage() {
 
                 <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
                   <div>
-                    <span className="text-xs font-bold text-slate-900">{c.hourlyRate}</span>
-                    <span className="block text-[10px] text-emerald-600 font-semibold">{c.nextAvailableSlot}</span>
+                    <span className="text-xs font-semibold text-slate-900">{c.hourlyRate}</span>
+                    <span className="block text-[10px] text-slate-500">{c.nextAvailableSlot}</span>
                   </div>
 
                   <Button
                     variant="primary"
                     size="sm"
                     onClick={() => setSelectedCounsellor(c)}
-                    className="gap-1.5 bg-indigo-600 hover:bg-indigo-700"
+                    className="gap-1.5"
                   >
-                    <Calendar className="w-3.5 h-3.5" /> Book Session
+                    <Calendar className="w-3.5 h-3.5" /> Schedule Consultation
                   </Button>
                 </div>
               </Card>
@@ -422,14 +411,14 @@ export default function CareerCounsellingPage() {
 
           {/* Active Bookings Summary */}
           {bookings.length > 0 && (
-            <Card className="p-6">
-              <CardTitle className="text-sm mb-3">Your Scheduled Counselling Appointments</CardTitle>
+            <Card className="p-5 border-slate-200">
+              <CardTitle className="text-sm mb-3">Your Scheduled Advisory Appointments</CardTitle>
               <div className="space-y-3 text-xs">
                 {bookings.map((b) => (
-                  <div key={b.id} className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex items-center justify-between">
+                  <div key={b.id} className="p-4 rounded-lg border border-slate-200 bg-slate-50 flex items-center justify-between">
                     <div>
-                      <div className="font-bold text-slate-800">{b.counsellorName}</div>
-                      <div className="text-[11px] text-slate-500">
+                      <div className="font-semibold text-slate-900">{b.counsellorName}</div>
+                      <div className="text-[11px] text-slate-500 mt-0.5">
                         📅 {b.date} • ⏰ {b.timeSlot}
                       </div>
                       <div className="text-[11px] text-slate-600 mt-1">{b.preSessionNotes}</div>
@@ -438,9 +427,9 @@ export default function CareerCounsellingPage() {
                       href={b.meetingLink}
                       target="_blank"
                       rel="noreferrer"
-                      className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium text-xs flex items-center gap-1.5"
+                      className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white rounded-md font-medium text-xs flex items-center gap-1.5"
                     >
-                      <Video className="w-3.5 h-3.5" /> Join Video Room
+                      <Video className="w-3.5 h-3.5" /> Join Conference Room
                     </a>
                   </div>
                 ))}
@@ -454,18 +443,18 @@ export default function CareerCounsellingPage() {
       <Modal
         isOpen={Boolean(selectedCounsellor)}
         onClose={() => setSelectedCounsellor(null)}
-        title={`Book Strategy Session with ${selectedCounsellor?.name}`}
-        description="Select your preferred date & time and submit background notes"
+        title={`Schedule Advisory Session with ${selectedCounsellor?.name}`}
+        description="Select date, time slot, and provide background context"
         maxWidth="md"
       >
         <form onSubmit={handleBookingSubmit} className="space-y-4 text-xs">
           <div>
-            <label className="font-semibold text-slate-700 mb-1 block">Preferred Date</label>
+            <label className="font-semibold text-slate-700 mb-1 block">Preferred Consultation Date</label>
             <input
               type="date"
               value={bookingDate}
               onChange={(e) => setBookingDate(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs"
+              className="w-full px-3 py-2 border border-slate-300 rounded-md text-xs"
               required
             />
           </div>
@@ -475,7 +464,7 @@ export default function CareerCounsellingPage() {
             <select
               value={bookingTime}
               onChange={(e) => setBookingTime(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs"
+              className="w-full px-3 py-2 border border-slate-300 rounded-md text-xs"
             >
               <option value="02:00 PM - 02:45 PM EST">02:00 PM - 02:45 PM EST</option>
               <option value="04:00 PM - 04:45 PM EST">04:00 PM - 04:45 PM EST</option>
@@ -484,12 +473,12 @@ export default function CareerCounsellingPage() {
           </div>
 
           <div>
-            <label className="font-semibold text-slate-700 mb-1 block">Pre-Session Goals / Questions</label>
+            <label className="font-semibold text-slate-700 mb-1 block">Pre-Session Goals / Focus Areas</label>
             <textarea
               rows={3}
               value={preSessionNotes}
               onChange={(e) => setPreSessionNotes(e.target.value)}
-              className="w-full p-2.5 border border-slate-300 rounded-lg text-xs"
+              className="w-full p-2.5 border border-slate-300 rounded-md text-xs"
               placeholder="What specific career transitions or graduate admissions questions would you like to discuss?"
               required
             />
@@ -508,4 +497,3 @@ export default function CareerCounsellingPage() {
     </div>
   );
 }
-

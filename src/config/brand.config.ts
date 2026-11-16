@@ -1,29 +1,27 @@
 /**
  * Centralized Branding Configuration
- * Change [Platform Name], company details, and default themes here.
+ * Clean enterprise EdTech design identity.
+ * Rebrand the entire platform by modifying properties in this file.
  */
 
 export const BRAND_CONFIG = {
-  // Centralized brand name - change here to update across the entire platform
-  name: "ApexLearn AI",
-  shortName: "ApexLearn",
-  legalName: "ApexLearn Education Inc.",
-  tagline: "Intelligent Learning, Exam Preparation & Career Acceleration Ecosystem",
-  description: "A unified AI-powered educational platform bringing together competitive exam prep, personalized spaced repetition, interactive STEM for young learners, career counselling, and academic productivity.",
-  version: "2.4.0",
+  name: "Acuity Learning Systems",
+  shortName: "Acuity",
+  legalName: "Acuity Educational Technologies, Inc.",
+  tagline: "Standardized Examination Preparation & Cognitive Development Platform",
+  description: "An enterprise-grade learning system providing rigorous examination preparation, spaced repetition memory retention, interactive STEM simulations, and career guidance.",
+  version: "3.0.0",
   
-  supportEmail: "support@apexlearn.ai",
-  counsellingHelpline: "+1 (800) 555-APEX",
+  supportEmail: "support@acuityedu.com",
+  admissionsHelpline: "+1 (800) 428-2848",
   
-  // Theme & Appearance
+  // Theme & Restrained Palette
   theme: {
-    primaryColor: "#4f46e5", // Indigo 600
-    accentColor: "#0ea5e9", // Sky 500
-    successColor: "#10b981", // Emerald 500
-    warningColor: "#f59e0b", // Amber 500
-    dangerColor: "#ef4444", // Rose 500
-    neutralDark: "#0f172a", // Slate 900
-    neutralBorder: "#e2e8f0", // Slate 200
+    primaryColor: "#1e3a8a", // Refined Oxford Navy
+    primaryDark: "#0f172a",  // Slate 900
+    accentColor: "#2563eb",  // Classic Royal Blue
+    neutralBackground: "#f8fafc", // Clean Slate 50
+    neutralBorder: "#e2e8f0",    // Crisp Slate 200
   },
 
   // Supported Examinations
@@ -35,49 +33,48 @@ export const BRAND_CONFIG = {
       provider: "College Board",
       maxScore: 1600,
       minScore: 400,
-      sections: ["Reading and Writing", "Mathematics"],
+      sections: ["Reading & Writing", "Mathematics"],
       defaultDurationMinutes: 134,
-      scoringFormula: "Scaled 400-1600 (200-800 per section)",
-      description: "Standardized admissions test widely used for college admissions in the United States."
+      scoringFormula: "Scaled 400–1600 (Sectional equating 200–800)",
+      description: "Standardized undergraduate college admissions examination."
     },
     {
       id: "gre",
       name: "GRE General Test",
       code: "GRE",
-      provider: "ETS",
+      provider: "Educational Testing Service (ETS)",
       maxScore: 340,
       minScore: 260,
       sections: ["Verbal Reasoning", "Quantitative Reasoning", "Analytical Writing"],
       defaultDurationMinutes: 118,
-      scoringFormula: "130-170 per section + 0-6 AWA",
-      description: "Graduate school entry exam measuring verbal, quantitative, and analytical writing skills."
+      scoringFormula: "Scaled 130–170 per section + 0–6 Analytical Writing",
+      description: "Graduate school admissions assessment measuring verbal, quantitative, and analytical reasoning."
     },
     {
       id: "gmat",
       name: "GMAT Focus Edition",
       code: "GMAT",
-      provider: "GMAC",
+      provider: "Graduate Management Admission Council (GMAC)",
       maxScore: 805,
       minScore: 205,
       sections: ["Quantitative Reasoning", "Verbal Reasoning", "Data Insights"],
       defaultDurationMinutes: 135,
-      scoringFormula: "Scaled 205-805 (in 10-point increments)",
-      description: "Premier assessment for admission to graduate business programs globally."
+      scoringFormula: "Scaled 205–805 in 10-point score intervals",
+      description: "Graduate business school admissions examination."
     },
     {
       id: "jee-main",
       name: "JEE Main",
       code: "JEE",
-      provider: "NTA",
+      provider: "National Testing Agency (NTA)",
       maxScore: 300,
       minScore: -75,
       sections: ["Physics", "Chemistry", "Mathematics"],
       defaultDurationMinutes: 180,
-      scoringFormula: "+4 for correct, -1 for incorrect, 0 for unattempted",
-      description: "National-level entrance exam for top engineering institutes including NITs and IIITs."
+      scoringFormula: "+4 marks for correct, -1 mark for incorrect, 0 for unattempted",
+      description: "National engineering entrance assessment for premier technical universities."
     }
   ]
 };
 
 export type SupportedExamId = "sat" | "gre" | "gmat" | "jee-main";
-

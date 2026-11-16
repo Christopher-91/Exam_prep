@@ -4,6 +4,7 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import {
   UserProfile,
   UserRole,
+  AuthUser,
   MockTest,
   TestAttemptResult,
   Flashcard,
@@ -49,6 +50,19 @@ interface AppNotification {
 }
 
 interface AppContextType {
+  // Authentication
+  isAuthenticated: boolean;
+  currentUser: AuthUser | null;
+  login: (email: string, password: string, rememberMe?: boolean) => Promise<{ success: boolean; error?: string }>;
+  loginWithGoogle: () => Promise<{ success: boolean }>;
+  signup: (name: string, email: string, password: string, role: UserRole) => Promise<{ success: boolean; error?: string }>;
+  logout: () => void;
+  forgotPassword: (email: string) => Promise<{ success: boolean }>;
+  resetPassword: (password: string) => Promise<{ success: boolean }>;
+  verifyEmail: (code: string) => Promise<{ success: boolean }>;
+  completeOnboarding: (data: Partial<UserProfile>) => void;
+
+  // Profile & Role
   profile: UserProfile;
   setProfile: React.Dispatch<React.SetStateAction<UserProfile>>;
   activeRole: UserRole;
@@ -104,6 +118,20 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
+  // Auth state: initialized with authenticated status or restored from localStorage
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>({
+    id: DEFAULT_USER_PROFILE.id,
+    name: DEFAULT_USER_PROFILE.name,
+    email: DEFAULT_USER_PROFILE.email,
+    avatarUrl: DEFAULT_USER_PROFILE.avatarUrl,
+    role: DEFAULT_USER_PROFILE.activeRole,
+    isEmailVerified: true,
+    onboarded: true,
+    institution: "Stanford University",
+    createdAt: "2026-09-01T08:00:00Z",
+  });
+
   const [profile, setProfile] = useState<UserProfile>(DEFAULT_USER_PROFILE);
   const [mockTests, setMockTests] = useState<MockTest[]>(INITIAL_MOCK_TESTS);
   const [testResults, setTestResults] = useState<TestAttemptResult[]>(INITIAL_TEST_RESULTS);
@@ -122,25 +150,25 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [notifications, setNotifications] = useState<AppNotification[]>([
     {
       id: "notif-1",
-      title: "18 Flashcards Due Today",
-      message: "Keep your 14-day study streak alive by clearing your SAT Math queue.",
-      timestamp: "10 mins ago",
+      title: "Spaced Repetition Review Queue",
+      message: "6 active recall cards scheduled for review today.",
+      timestamp: "10m ago",
       read: false,
       type: "flashcard",
     },
     {
       id: "notif-2",
-      title: "Counselling Session Confirmed",
-      message: "Dr. Elena Rostova confirmed your 1:1 strategy session for Nov 20.",
-      timestamp: "2 hours ago",
+      title: "Admissions Consultation Confirmed",
+      message: "Session with Dr. Elena Rostova confirmed for Nov 24, 04:00 PM EST.",
+      timestamp: "2h ago",
       read: false,
       type: "counselling",
     },
     {
       id: "notif-3",
-      title: "Predictive Score Update",
-      message: "Your estimated SAT score range increased to 1440 - 1510 after recent practice.",
-      timestamp: "1 day ago",
+      title: "Diagnostic Score Calibration",
+      message: "Predicted SAT score interval updated to 1440–1510 based on recent performance.",
+      timestamp: "1d ago",
       read: true,
       type: "exam",
     },
@@ -149,41 +177,201 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   // Load from localStorage if present
   useEffect(() => {
     try {
-      const savedProfile = localStorage.getItem("apex_profile");
+      const authStatus = localStorage.getItem("acuity_auth");
+      if (authStatus !== null) {
+        setIsAuthenticated(authStatus === "true");
+      }
+
+      const savedUser = localStorage.getItem("acuity_user");
+      if (savedUser) {
+        setCurrentUser(JSON.parse(savedUser));
+      }
+
+      const savedProfile = localStorage.getItem("acuity_profile");
       if (savedProfile) setProfile(JSON.parse(savedProfile));
 
-      const savedTasks = localStorage.getItem("apex_tasks");
+      const savedTasks = localStorage.getItem("acuity_tasks");
       if (savedTasks) setTasks(JSON.parse(savedTasks));
 
-      const savedCards = localStorage.getItem("apex_cards");
+      const savedCards = localStorage.getItem("acuity_cards");
       if (savedCards) setFlashcards(JSON.parse(savedCards));
 
-      const savedResults = localStorage.getItem("apex_results");
+      const savedResults = localStorage.getItem("acuity_results");
       if (savedResults) setTestResults(JSON.parse(savedResults));
     } catch (e) {
       // Ignore storage errors on SSR
     }
   }, []);
 
-  // Save updates to localStorage
   const saveState = (key: string, val: any) => {
     try {
       localStorage.setItem(key, JSON.stringify(val));
     } catch (e) {}
   };
 
+  // Auth Operations
+  const login = async (email: string, password: string, rememberMe = true) => {
+    // Standard mock credential validation
+    if (!email || !password) {
+      return { success: false, error: "Please enter both email and password." };
+    }
+
+    let role: UserRole = "student";
+    let name = "Alexander Vance";
+
+    if (email.includes("parent")) {
+      role = "parent";
+      name = "Sarah Vance";
+    } else if (email.includes("pro") || email.includes("mckinsey")) {
+      role = "professional";
+      name = "David K. Miller";
+    } else if (email.includes("admin")) {
+      role = "admin";
+      name = "Academic Administrator";
+    }
+
+    const authUser: AuthUser = {
+      id: `usr-${Date.now()}`,
+      name,
+      email,
+      avatarUrl: DEFAULT_USER_PROFILE.avatarUrl,
+      role,
+      isEmailVerified: true,
+      onboarded: true,
+      institution: "Stanford University",
+      createdAt: new Date().toISOString(),
+    };
+
+    setIsAuthenticated(true);
+    setCurrentUser(authUser);
+    setProfile((prev) => ({
+      ...prev,
+      name,
+      email,
+      activeRole: role,
+    }));
+
+    if (rememberMe) {
+      try {
+        localStorage.setItem("acuity_auth", "true");
+        localStorage.setItem("acuity_user", JSON.stringify(authUser));
+      } catch (e) {}
+    }
+
+    return { success: true };
+  };
+
+  const loginWithGoogle = async () => {
+    const authUser: AuthUser = {
+      id: `usr-google-${Date.now()}`,
+      name: "Alexander Vance",
+      email: "alexander.vance@stanford.edu",
+      avatarUrl: DEFAULT_USER_PROFILE.avatarUrl,
+      role: "student",
+      isEmailVerified: true,
+      onboarded: true,
+      institution: "Stanford University",
+      createdAt: new Date().toISOString(),
+    };
+
+    setIsAuthenticated(true);
+    setCurrentUser(authUser);
+    try {
+      localStorage.setItem("acuity_auth", "true");
+      localStorage.setItem("acuity_user", JSON.stringify(authUser));
+    } catch (e) {}
+    return { success: true };
+  };
+
+  const signup = async (name: string, email: string, password: string, role: UserRole) => {
+    if (!name || !email || !password) {
+      return { success: false, error: "All fields are required." };
+    }
+
+    const authUser: AuthUser = {
+      id: `usr-${Date.now()}`,
+      name,
+      email,
+      avatarUrl: `https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80`,
+      role,
+      isEmailVerified: false,
+      onboarded: false,
+      createdAt: new Date().toISOString(),
+    };
+
+    setIsAuthenticated(true);
+    setCurrentUser(authUser);
+    setProfile((prev) => ({
+      ...prev,
+      name,
+      email,
+      activeRole: role,
+    }));
+
+    try {
+      localStorage.setItem("acuity_auth", "true");
+      localStorage.setItem("acuity_user", JSON.stringify(authUser));
+    } catch (e) {}
+
+    return { success: true };
+  };
+
+  const logout = () => {
+    setIsAuthenticated(false);
+    setCurrentUser(null);
+    try {
+      localStorage.setItem("acuity_auth", "false");
+      localStorage.removeItem("acuity_user");
+    } catch (e) {}
+  };
+
+  const forgotPassword = async (email: string) => {
+    return { success: true };
+  };
+
+  const resetPassword = async (password: string) => {
+    return { success: true };
+  };
+
+  const verifyEmail = async (code: string) => {
+    if (currentUser) {
+      const updated = { ...currentUser, isEmailVerified: true };
+      setCurrentUser(updated);
+      saveState("acuity_user", updated);
+    }
+    return { success: true };
+  };
+
+  const completeOnboarding = (data: Partial<UserProfile>) => {
+    if (currentUser) {
+      const updatedUser = { ...currentUser, onboarded: true };
+      setCurrentUser(updatedUser);
+      saveState("acuity_user", updatedUser);
+    }
+    setProfile((prev) => {
+      const updated = { ...prev, ...data };
+      saveState("acuity_profile", updated);
+      return updated;
+    });
+  };
+
   const setActiveRole = (role: UserRole) => {
     setProfile((prev) => {
       const updated = { ...prev, activeRole: role };
-      saveState("apex_profile", updated);
+      saveState("acuity_profile", updated);
       return updated;
     });
+    if (currentUser) {
+      const updatedUser = { ...currentUser, role };
+      setCurrentUser(updatedUser);
+      saveState("acuity_user", updatedUser);
+    }
   };
 
   const setSelectedExam = (examId: SupportedExamId) => {
     setProfile((prev) => {
       const updated = { ...prev, selectedExam: examId };
-      saveState("apex_profile", updated);
+      saveState("acuity_profile", updated);
       return updated;
     });
   };
@@ -191,17 +379,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const submitTestResult = (result: TestAttemptResult) => {
     setTestResults((prev) => {
       const updated = [result, ...prev];
-      saveState("apex_results", updated);
+      saveState("acuity_results", updated);
       return updated;
     });
 
-    // Update profile streak and study time
     setProfile((prev) => {
       const updated = {
         ...prev,
         totalStudyHours: Number((prev.totalStudyHours + result.timeSpentSeconds / 3600).toFixed(1)),
       };
-      saveState("apex_profile", updated);
+      saveState("acuity_profile", updated);
       return updated;
     });
   };
@@ -223,7 +410,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           lastReviewed: new Date().toISOString(),
         };
       });
-      saveState("apex_cards", updated);
+      saveState("acuity_cards", updated);
       return updated;
     });
   };
@@ -245,7 +432,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
     setFlashcards((prev) => {
       const updated = [newCard, ...prev];
-      saveState("apex_cards", updated);
+      saveState("acuity_cards", updated);
       return updated;
     });
   };
@@ -259,7 +446,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       totalCards: 0,
       dueTodayCount: 0,
       masteredCount: 0,
-      color: "from-blue-600 to-indigo-600",
     };
     setDecks((prev) => [newDeck, ...prev]);
   };
@@ -276,7 +462,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         act.id === activityId ? { ...act, isCompleted: true, starsEarned: Math.max(act.starsEarned, stars) } : act
       )
     );
-    // Update child profile stars
     setChildProfiles((prev) =>
       prev.map((c, i) => (i === 0 ? { ...c, totalStars: c.totalStars + stars, completedActivities: c.completedActivities + 1 } : c))
     );
@@ -297,7 +482,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     };
     setTasks((prev) => {
       const updated = [newTask, ...prev];
-      saveState("apex_tasks", updated);
+      saveState("acuity_tasks", updated);
       return updated;
     });
   };
@@ -309,7 +494,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           ? { ...t, status: (t.status === "completed" ? "todo" : "completed") as TaskStatus }
           : t
       );
-      saveState("apex_tasks", updated);
+      saveState("acuity_tasks", updated);
       return updated;
     });
   };
@@ -317,7 +502,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const deleteTask = (taskId: string) => {
     setTasks((prev) => {
       const updated = prev.filter((t) => t.id !== taskId);
-      saveState("apex_tasks", updated);
+      saveState("acuity_tasks", updated);
       return updated;
     });
   };
@@ -334,8 +519,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         id: `log-${Date.now()}`,
         timestamp: new Date().toLocaleString(),
         action: "Question Approved",
-        user: "Admin (Current Session)",
-        details: `Approved Question #${questionId} into active test bank.`,
+        user: "Academic Reviewer",
+        details: `Item #${questionId} approved into active question bank.`,
       },
       ...prev,
     ]);
@@ -367,6 +552,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   return (
     <AppContext.Provider
       value={{
+        isAuthenticated,
+        currentUser,
+        login,
+        loginWithGoogle,
+        signup,
+        logout,
+        forgotPassword,
+        resetPassword,
+        verifyEmail,
+        completeOnboarding,
         profile,
         setProfile,
         activeRole: profile.activeRole,

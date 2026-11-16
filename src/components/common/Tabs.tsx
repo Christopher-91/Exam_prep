@@ -18,9 +18,9 @@ export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
             key={tab.id}
             onClick={() => onChange(tab.id)}
             className={cn(
-              "flex items-center gap-2 px-4 py-2.5 text-xs font-medium border-b-2 -mb-px transition-colors whitespace-nowrap",
+              "flex items-center gap-2 px-3.5 py-2 text-xs font-medium border-b-2 -mb-px transition-colors whitespace-nowrap",
               isActive
-                ? "border-indigo-600 text-indigo-600 font-semibold"
+                ? "border-slate-900 text-slate-950 font-semibold"
                 : "border-transparent text-slate-500 hover:text-slate-800 hover:border-slate-300"
             )}
           >
@@ -28,8 +28,8 @@ export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
             {tab.badge !== undefined && (
               <span
                 className={cn(
-                  "px-1.5 py-0.5 text-[10px] rounded-full",
-                  isActive ? "bg-indigo-100 text-indigo-700" : "bg-slate-100 text-slate-600"
+                  "px-1.5 py-0.2 text-[10px] rounded font-semibold",
+                  isActive ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600"
                 )}
               >
                 {tab.badge}
@@ -41,4 +41,3 @@ export function Tabs({ tabs, activeTab, onChange, className }: TabsProps) {
     </div>
   );
 }
-

@@ -5,12 +5,12 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   hover?: boolean;
 }
 
-export function Card({ className, hover = true, children, ...props }: CardProps) {
+export function Card({ className, hover = false, children, ...props }: CardProps) {
   return (
     <div
       className={cn(
-        "bg-white rounded-xl border border-slate-200/80 p-5 shadow-sm",
-        hover && "card-hover",
+        "bg-white rounded-lg border border-slate-200 shadow-[0_1px_2px_rgba(0,0,0,0.04)] p-5 transition-colors",
+        hover && "hover:border-slate-300",
         className
       )}
       {...props}
@@ -22,7 +22,7 @@ export function Card({ className, hover = true, children, ...props }: CardProps)
 
 export function CardHeader({ className, children, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn("flex items-center justify-between pb-3 border-b border-slate-100 mb-4", className)} {...props}>
+    <div className={cn("flex items-start justify-between pb-3.5 border-b border-slate-100 mb-4", className)} {...props}>
       {children}
     </div>
   );
@@ -30,7 +30,7 @@ export function CardHeader({ className, children, ...props }: React.HTMLAttribut
 
 export function CardTitle({ className, children, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
   return (
-    <h3 className={cn("text-base font-semibold text-slate-900 tracking-tight", className)} {...props}>
+    <h3 className={cn("text-sm font-semibold text-slate-900 tracking-tight", className)} {...props}>
       {children}
     </h3>
   );
@@ -38,9 +38,8 @@ export function CardTitle({ className, children, ...props }: React.HTMLAttribute
 
 export function CardDescription({ className, children, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p className={cn("text-xs text-slate-500 mt-0.5", className)} {...props}>
+    <p className={cn("text-xs text-slate-500 mt-0.5 font-normal", className)} {...props}>
       {children}
     </p>
   );
 }
-

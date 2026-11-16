@@ -8,7 +8,6 @@ import {
   GraduationCap,
   BookOpen,
   Layers,
-  Sparkles,
   Compass,
   Calendar,
   BarChart3,
@@ -16,9 +15,8 @@ import {
   ShieldCheck,
   ChevronLeft,
   ChevronRight,
-  Flame,
-  Brain,
-  Award,
+  Puzzle,
+  Building2,
 } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand.config";
 import { cn } from "@/lib/utils";
@@ -40,114 +38,100 @@ export function Sidebar() {
       title: "Overview",
       href: "/",
       icon: LayoutDashboard,
-      roles: ["student", "parent", "professional", "admin"],
     },
     {
       title: "Exam Preparation",
       href: "/exam-prep",
       icon: GraduationCap,
       badge: BRAND_CONFIG.supportedExams.find((e) => e.id === profile.selectedExam)?.code || "SAT",
-      roles: ["student", "parent", "admin"],
     },
     {
       title: "Study Materials",
       href: "/study-materials",
       icon: BookOpen,
-      roles: ["student", "professional", "admin"],
     },
     {
       title: "Flashcards",
       href: "/flashcards",
       icon: Layers,
-      badge: dueFlashcardCount > 0 ? `${dueFlashcardCount} due` : undefined,
-      badgeColor: "bg-indigo-100 text-indigo-700",
-      roles: ["student", "professional", "admin"],
+      badge: dueFlashcardCount > 0 ? `${dueFlashcardCount}` : undefined,
     },
     {
       title: "Interactive Learning",
       href: "/interactive-learning",
-      icon: Sparkles,
-      badge: "Kids 3-12",
-      badgeColor: "bg-emerald-100 text-emerald-700",
-      roles: ["student", "parent", "admin"],
+      icon: Puzzle,
     },
     {
       title: "Career Counselling",
       href: "/career-counselling",
       icon: Compass,
-      roles: ["student", "professional", "admin"],
     },
     {
       title: "Study Planner",
       href: "/study-planner",
       icon: Calendar,
       badge: pendingTaskCount > 0 ? `${pendingTaskCount}` : undefined,
-      roles: ["student", "parent", "professional", "admin"],
     },
     {
       title: "Analytics & Readiness",
       href: "/analytics",
       icon: BarChart3,
-      roles: ["student", "parent", "professional", "admin"],
     },
     {
       title: "Settings",
       href: "/settings",
       icon: Settings,
-      roles: ["student", "parent", "professional", "admin"],
     },
   ];
 
   return (
     <aside
       className={cn(
-        "relative flex flex-col bg-white border-r border-slate-200/80 transition-all duration-300 z-30 select-none",
-        collapsed ? "w-20" : "w-64"
+        "relative flex flex-col bg-white border-r border-slate-200 select-none transition-all duration-200 z-30 shrink-0",
+        collapsed ? "w-16" : "w-60"
       )}
     >
       {/* Brand Header */}
-      <div className="flex items-center justify-between h-16 px-4 border-b border-slate-100">
-        <Link href="/" className="flex items-center gap-3 overflow-hidden">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-200 shrink-0">
-            <Brain className="w-5 h-5 text-white" />
+      <div className="flex items-center justify-between h-14 px-4 border-b border-slate-200">
+        <Link href="/" className="flex items-center gap-2.5 overflow-hidden">
+          <div className="w-7 h-7 rounded bg-slate-900 flex items-center justify-center text-white shrink-0 font-bold text-xs tracking-tight shadow-2xs">
+            A
           </div>
           {!collapsed && (
             <div className="flex flex-col truncate">
-              <span className="text-sm font-bold text-slate-900 tracking-tight leading-tight">
+              <span className="text-xs font-bold text-slate-950 tracking-tight leading-none">
                 {BRAND_CONFIG.shortName}
               </span>
-              <span className="text-[10px] font-medium text-slate-400 tracking-wider uppercase">
-                EdTech Ecosystem
+              <span className="text-[10px] text-slate-400 font-medium tracking-wider uppercase mt-0.5">
+                Education Systems
               </span>
             </div>
           )}
         </Link>
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors hidden md:flex"
+          className="p-1 text-slate-400 hover:text-slate-700 rounded hover:bg-slate-100 transition-colors hidden md:flex"
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+          {collapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
         </button>
       </div>
 
       {/* Role Pill Banner */}
       {!collapsed && (
-        <div className="px-4 pt-3 pb-1">
-          <div className="flex items-center justify-between px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200/60">
-            <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wider">
-              Role
-            </span>
-            <span className="text-xs font-semibold text-indigo-700 capitalize flex items-center gap-1">
-              <Award className="w-3 h-3 text-indigo-600" />
-              {activeRole} Mode
+        <div className="px-3 pt-3 pb-1">
+          <div className="flex items-center justify-between px-2.5 py-1.5 rounded border border-slate-200 bg-slate-50/70 text-[11px]">
+            <span className="text-slate-500 font-medium">Workspace</span>
+            <span className="font-semibold text-slate-900 capitalize flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-slate-900" />
+              {activeRole}
             </span>
           </div>
         </div>
       )}
 
       {/* Navigation Links */}
-      <nav className="flex-1 px-3 py-3 space-y-1 overflow-y-auto">
+      <nav className="flex-1 px-2.5 py-2 space-y-0.5 overflow-y-auto">
         {navItems.map((item) => {
           const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
           const Icon = item.icon;
@@ -157,27 +141,25 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all group relative",
+                "flex items-center gap-2.5 px-2.5 py-2 rounded text-xs font-medium transition-colors relative group",
                 isActive
-                  ? "bg-indigo-50 text-indigo-700 font-semibold"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                  ? "bg-slate-100 text-slate-950 font-semibold"
+                  : "text-slate-600 hover:text-slate-950 hover:bg-slate-50"
               )}
               title={collapsed ? item.title : undefined}
             >
               <Icon
                 className={cn(
                   "w-4 h-4 shrink-0 transition-colors",
-                  isActive ? "text-indigo-600" : "text-slate-400 group-hover:text-slate-600"
+                  isActive ? "text-slate-900" : "text-slate-400 group-hover:text-slate-700"
                 )}
               />
-              {!collapsed && (
-                <span className="flex-1 truncate">{item.title}</span>
-              )}
+              {!collapsed && <span className="flex-1 truncate">{item.title}</span>}
               {!collapsed && item.badge && (
                 <span
                   className={cn(
-                    "text-[10px] px-1.5 py-0.5 rounded-md font-medium shrink-0",
-                    item.badgeColor || "bg-slate-100 text-slate-600"
+                    "text-[10px] px-1.5 py-0.2 rounded font-semibold shrink-0",
+                    isActive ? "bg-slate-200 text-slate-900" : "bg-slate-100 text-slate-600"
                   )}
                 >
                   {item.badge}
@@ -187,28 +169,28 @@ export function Sidebar() {
           );
         })}
 
-        {/* Administration link */}
-        <div className="pt-2 border-t border-slate-100 my-2">
+        {/* Administration workspace link */}
+        <div className="pt-2 border-t border-slate-100 my-1.5">
           <Link
             href="/admin"
             className={cn(
-              "flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-medium transition-all group",
+              "flex items-center gap-2.5 px-2.5 py-2 rounded text-xs font-medium transition-colors group",
               pathname === "/admin"
                 ? "bg-slate-900 text-white font-semibold"
-                : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                : "text-slate-600 hover:text-slate-950 hover:bg-slate-50"
             )}
             title={collapsed ? "Admin Workspace" : undefined}
           >
             <ShieldCheck
               className={cn(
                 "w-4 h-4 shrink-0",
-                pathname === "/admin" ? "text-indigo-400" : "text-slate-400 group-hover:text-slate-600"
+                pathname === "/admin" ? "text-white" : "text-slate-400 group-hover:text-slate-700"
               )}
             />
             {!collapsed && (
               <>
-                <span className="flex-1 truncate">Admin Workspace</span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-amber-100 text-amber-800 font-semibold">
+                <span className="flex-1 truncate">Admin Console</span>
+                <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-200 text-slate-800 font-semibold">
                   Staff
                 </span>
               </>
@@ -217,36 +199,24 @@ export function Sidebar() {
         </div>
       </nav>
 
-      {/* Footer Streak & Target Card */}
+      {/* Understated Institutional Footer status */}
       {!collapsed && (
-        <div className="p-3 m-3 rounded-xl bg-gradient-to-br from-slate-900 to-slate-800 text-white shadow-sm">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[11px] font-semibold text-slate-300 uppercase tracking-wider">
-              Exam Goal
-            </span>
-            <span className="flex items-center gap-1 text-xs font-bold text-amber-400">
-              <Flame className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
-              {profile.streakDays}d Streak
-            </span>
-          </div>
-          <div className="flex items-baseline justify-between">
-            <span className="text-xs text-slate-400">Target Score</span>
-            <span className="text-sm font-bold text-indigo-300">
+        <div className="p-3 m-2.5 rounded border border-slate-200 bg-slate-50/50 text-xs text-slate-600 space-y-1">
+          <div className="flex items-center justify-between text-[11px]">
+            <span className="font-semibold text-slate-700 uppercase tracking-wider text-[10px]">Candidate Goal</span>
+            <span className="font-bold text-slate-900">
               {profile.targetScore} ({BRAND_CONFIG.supportedExams.find((e) => e.id === profile.selectedExam)?.code})
             </span>
           </div>
-          <div className="w-full bg-slate-700/60 rounded-full h-1.5 mt-2.5 overflow-hidden">
-            <div
-              className="bg-indigo-400 h-full rounded-full transition-all duration-500"
-              style={{ width: "78%" }}
-            />
+          <div className="w-full bg-slate-200 rounded-full h-1 mt-1 overflow-hidden">
+            <div className="bg-slate-900 h-full rounded-full" style={{ width: "76%" }} />
           </div>
-          <p className="text-[10px] text-slate-400 mt-2 text-right">
-            Exam Date: {new Date(profile.targetDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-          </p>
+          <div className="text-[10px] text-slate-400 pt-0.5 flex items-center justify-between">
+            <span>Exam Date:</span>
+            <span>{new Date(profile.targetDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
+          </div>
         </div>
       )}
     </aside>
   );
 }
-

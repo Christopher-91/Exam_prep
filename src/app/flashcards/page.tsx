@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import {
   Layers,
-  Sparkles,
   Plus,
   RotateCw,
   CheckCircle2,
@@ -15,6 +14,7 @@ import {
   Filter,
   Play,
   Flame,
+  FileText,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/common/Card";
 import { Badge } from "@/components/common/Badge";
@@ -78,7 +78,7 @@ export default function FlashcardsPage() {
   // Launch review session
   const startReviewSession = () => {
     if (dueQueue.length === 0) {
-      alert("No cards currently due in this deck! Excellent job staying on top of your recall intervals.");
+      alert("No cards currently due in this deck! Review intervals are up to date.");
       return;
     }
     setReviewIndex(0);
@@ -97,7 +97,7 @@ export default function FlashcardsPage() {
       setReviewIndex((prev) => prev + 1);
     } else {
       setIsReviewOpen(false);
-      alert("Daily Review Queue Completed! Your SM-2 memory curves have been updated.");
+      alert("Daily Review Queue Completed! Spaced repetition intervals have been recalculated.");
     }
   };
 
@@ -120,13 +120,13 @@ export default function FlashcardsPage() {
     if (!notesToConvert) return;
     setAiGenerating(true);
     try {
-      const generated = await AIService.generateFlashcardsFromNotes(notesToConvert, "AI Study Notes");
+      const generated = await AIService.generateFlashcardsFromNotes(notesToConvert, "Study Notes");
       generated.forEach((g) => {
         addFlashcard(manualDeckId, g.front, g.back, g.tags);
       });
       setNotesToConvert("");
       setShowAiGenModal(false);
-      alert(`Successfully generated ${generated.length} high-yield active recall flashcards!`);
+      alert(`Successfully generated ${generated.length} active recall flashcards.`);
     } catch (err) {
       console.error(err);
     } finally {
@@ -147,102 +147,93 @@ export default function FlashcardsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Flashcard Header */}
-      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 rounded-2xl p-6 text-white shadow-md">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 flex items-center gap-1.5">
-                <Brain className="w-3.5 h-3.5" /> SuperMemo SM-2 Active Recall Engine
-              </span>
-              <span className="text-xs text-slate-400">• Spaced Repetition Protocol</span>
-            </div>
-            <h2 className="text-2xl font-bold tracking-tight">Active Recall & Flashcard Decks</h2>
-            <p className="text-xs text-slate-300 max-w-xl mt-1 leading-relaxed">
-              Achieve 90%+ long-term retention using mathematically calibrated spaced repetition. Self-rate recall
-              difficulty to adjust future review intervals exponentially.
-            </p>
-          </div>
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Active Recall & Flashcard Decks</h1>
+          <p className="text-xs text-slate-500 mt-0.5">
+            SuperMemo SM-2 spaced repetition protocol for long-term retention. Self-rate retrieval difficulty to optimize memory consolidation intervals.
+          </p>
+        </div>
 
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="md"
-              onClick={() => setShowAiGenModal(true)}
-              className="gap-1.5 bg-slate-800 border-slate-700 text-white hover:bg-slate-700"
-            >
-              <Sparkles className="w-4 h-4 text-indigo-300" /> AI From Notes
-            </Button>
-            <Button
-              variant="primary"
-              size="md"
-              onClick={() => setShowCreateCardModal(true)}
-              className="gap-1.5 bg-indigo-500 hover:bg-indigo-600"
-            >
-              <Plus className="w-4 h-4" /> Add Card
-            </Button>
-          </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowAiGenModal(true)}
+            className="gap-1.5"
+          >
+            <FileText className="w-4 h-4 text-slate-500" /> Generate from Notes
+          </Button>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => setShowCreateCardModal(true)}
+            className="gap-1.5"
+          >
+            <Plus className="w-4 h-4" /> Add Card
+          </Button>
         </div>
       </div>
 
       {/* 4 Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card hover={false}>
+        <Card className="p-4 border-slate-200">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500">Cards Due Today</span>
-            <div className="p-2 rounded-lg bg-rose-50 text-rose-600">
+            <div className="p-1.5 rounded-md bg-slate-100 text-slate-600">
               <Clock className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-2xl font-bold text-slate-900">{dueQueue.length}</span>
-            <span className="text-xs text-rose-600 font-medium">ready to review</span>
+            <span className="text-xs text-slate-500">ready for review</span>
           </div>
           <Button
             variant="primary"
             size="xs"
             onClick={startReviewSession}
             disabled={dueQueue.length === 0}
-            className="w-full mt-3 justify-center gap-1 bg-indigo-600"
+            className="w-full mt-3 justify-center gap-1"
           >
-            <Play className="w-3 h-3" /> Start Review ({dueQueue.length})
+            <Play className="w-3 h-3" /> Start Review Session ({dueQueue.length})
           </Button>
         </Card>
 
-        <Card hover={false}>
+        <Card className="p-4 border-slate-200">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500">Estimated Retention</span>
-            <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600">
+            <div className="p-1.5 rounded-md bg-slate-100 text-slate-600">
               <TrendingUp className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-2xl font-bold text-slate-900">{estimatedRetention}%</span>
-            <span className="text-xs text-emerald-600 font-medium">Stable</span>
+            <span className="text-xs text-emerald-700 font-medium">Calibrated</span>
           </div>
           <div className="w-full bg-slate-100 rounded-full h-1.5 mt-2.5 overflow-hidden">
-            <div className="bg-emerald-500 h-full rounded-full" style={{ width: `${estimatedRetention}%` }} />
+            <div className="bg-slate-900 h-full rounded-full" style={{ width: `${estimatedRetention}%` }} />
           </div>
         </Card>
 
-        <Card hover={false}>
+        <Card className="p-4 border-slate-200">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500">Review Streak</span>
-            <div className="p-2 rounded-lg bg-amber-50 text-amber-600">
-              <Flame className="w-4 h-4 fill-amber-500 text-amber-500" />
+            <div className="p-1.5 rounded-md bg-slate-100 text-slate-600">
+              <Flame className="w-4 h-4 text-slate-700" />
             </div>
           </div>
           <div className="mt-2 flex items-baseline gap-2">
             <span className="text-2xl font-bold text-slate-900">{profile.streakDays} Days</span>
-            <span className="text-xs text-amber-600 font-semibold">Active Streak</span>
+            <span className="text-xs text-slate-500">consecutive</span>
           </div>
-          <p className="text-[11px] text-slate-400 mt-2">Zero review lapses today</p>
+          <p className="text-[11px] text-slate-400 mt-2">No review lapses recorded today</p>
         </Card>
 
-        <Card hover={false}>
+        <Card className="p-4 border-slate-200">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500">Total Cards in Decks</span>
-            <div className="p-2 rounded-lg bg-indigo-50 text-indigo-600">
+            <span className="text-xs font-medium text-slate-500">Total Cards</span>
+            <div className="p-1.5 rounded-md bg-slate-100 text-slate-600">
               <Layers className="w-4 h-4" />
             </div>
           </div>
@@ -252,7 +243,7 @@ export default function FlashcardsPage() {
           </div>
           <button
             onClick={() => setShowCreateDeckModal(true)}
-            className="text-[11px] text-indigo-600 hover:text-indigo-800 font-semibold block mt-3"
+            className="text-[11px] text-slate-900 hover:text-slate-700 font-medium block mt-3 underline"
           >
             + Create New Deck
           </button>
@@ -260,12 +251,12 @@ export default function FlashcardsPage() {
       </div>
 
       {/* Deck Selector Tabs */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-1">
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
         <button
           onClick={() => setActiveDeckId("all")}
-          className={`px-3 py-1.5 rounded-xl border text-xs font-medium whitespace-nowrap transition-colors ${
+          className={`px-3 py-1.5 rounded-md border text-xs font-medium whitespace-nowrap transition-colors ${
             activeDeckId === "all"
-              ? "bg-slate-900 text-white font-semibold"
+              ? "bg-slate-900 text-white border-slate-900 font-semibold"
               : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
           }`}
         >
@@ -275,16 +266,16 @@ export default function FlashcardsPage() {
           <button
             key={deck.id}
             onClick={() => setActiveDeckId(deck.id)}
-            className={`px-3 py-1.5 rounded-xl border text-xs font-medium whitespace-nowrap transition-colors flex items-center gap-2 ${
+            className={`px-3 py-1.5 rounded-md border text-xs font-medium whitespace-nowrap transition-colors flex items-center gap-2 ${
               activeDeckId === deck.id
-                ? "bg-indigo-600 text-white font-semibold border-indigo-600"
+                ? "bg-slate-900 text-white border-slate-900 font-semibold"
                 : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
             }`}
           >
             <span>{deck.title}</span>
             <span
-              className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                activeDeckId === deck.id ? "bg-indigo-700 text-white" : "bg-slate-100 text-slate-500"
+              className={`text-[10px] px-1.5 py-0.2 rounded ${
+                activeDeckId === deck.id ? "bg-slate-800 text-white" : "bg-slate-100 text-slate-600"
               }`}
             >
               {flashcards.filter((c) => c.deckId === deck.id).length}
@@ -293,11 +284,11 @@ export default function FlashcardsPage() {
         ))}
       </div>
 
-      {/* Cards Table / Grid */}
-      <Card>
+      {/* Cards Table */}
+      <Card className="p-5 border-slate-200">
         <CardHeader className="flex-row items-center justify-between pb-3">
           <div>
-            <CardTitle className="text-sm">Flashcards in Selected Workspace</CardTitle>
+            <CardTitle className="text-sm">Flashcards Directory</CardTitle>
             <CardDescription>Active recall prompts, SM-2 ease factors and next review interval</CardDescription>
           </div>
 
@@ -307,8 +298,8 @@ export default function FlashcardsPage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search front, back, tags..."
-              className="w-full pl-8 pr-2.5 py-1 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              placeholder="Search prompts, answers, tags..."
+              className="w-full pl-8 pr-2.5 py-1 text-xs bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:ring-1 focus:ring-slate-900"
             />
           </div>
         </CardHeader>
@@ -321,7 +312,7 @@ export default function FlashcardsPage() {
               <div key={card.id} className="py-3 px-1 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex-1 space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-slate-900 text-xs">{card.front}</span>
+                    <span className="font-semibold text-slate-900 text-xs">{card.front}</span>
                     <Badge
                       variant={
                         card.state === "mastered"
@@ -335,7 +326,7 @@ export default function FlashcardsPage() {
                     >
                       {card.state.toUpperCase()}
                     </Badge>
-                    {isDue && <Badge variant="danger">DUE</Badge>}
+                    {isDue && <Badge variant="danger">DUE TODAY</Badge>}
                   </div>
                   <p className="text-slate-600 text-xs line-clamp-1">{card.back}</p>
                   <div className="flex flex-wrap gap-1 pt-0.5">
@@ -371,8 +362,8 @@ export default function FlashcardsPage() {
       <Modal
         isOpen={isReviewOpen}
         onClose={() => setIsReviewOpen(false)}
-        title={`Review Queue (${reviewIndex + 1} of ${dueQueue.length})`}
-        description="Active recall retrieval: Attempt recall before revealing back"
+        title={`Active Recall Review (${reviewIndex + 1} of ${dueQueue.length})`}
+        description="Attempt mental recall before flipping the card to check accuracy"
         maxWidth="xl"
       >
         {currentReviewCard ? (
@@ -380,20 +371,20 @@ export default function FlashcardsPage() {
             {/* The Flashcard (Interactive Flip) */}
             <div
               onClick={() => setIsFlipped(!isFlipped)}
-              className="min-h-[220px] p-6 rounded-2xl bg-gradient-to-br from-indigo-50/80 via-white to-slate-50 border-2 border-indigo-200 cursor-pointer flex flex-col justify-between shadow-sm hover:shadow transition-all text-center select-none"
+              className="min-h-[220px] p-6 rounded-lg bg-white border border-slate-300 cursor-pointer flex flex-col justify-between shadow-2xs hover:border-slate-400 transition-all text-center select-none"
             >
-              <div className="text-[10px] font-bold uppercase tracking-wider text-indigo-600">
-                {!isFlipped ? "Question / Prompt (Tap to reveal answer)" : "Verified Answer / Formula"}
+              <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">
+                {!isFlipped ? "Prompt / Question (Click to reveal solution)" : "Verified Solution / Key Concept"}
               </div>
 
-              <div className="my-auto py-4">
-                <h3 className="text-base md:text-lg font-bold text-slate-900 leading-relaxed whitespace-pre-line">
+              <div className="my-auto py-6">
+                <h3 className="text-base md:text-lg font-semibold text-slate-900 leading-relaxed whitespace-pre-line">
                   {!isFlipped ? currentReviewCard.front : currentReviewCard.back}
                 </h3>
               </div>
 
               <div className="text-[11px] text-slate-400">
-                {!isFlipped ? "Click anywhere to flip" : "How well did you recall this concept?"}
+                {!isFlipped ? "Click anywhere on the card to flip" : "Select recall difficulty below to recalculate interval"}
               </div>
             </div>
 
@@ -401,39 +392,39 @@ export default function FlashcardsPage() {
             {isFlipped ? (
               <div className="space-y-2 pt-2">
                 <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block text-center">
-                  Rate Retrieval Effort (Calculates Next Review Date)
+                  Retrieval Effort Rating
                 </span>
                 <div className="grid grid-cols-4 gap-2">
                   <button
                     onClick={() => handleRateCard(1)}
-                    className="p-3 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-800 text-center transition-colors"
+                    className="p-3 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-900 text-center transition-colors"
                   >
-                    <span className="block font-bold text-xs">Again [1]</span>
-                    <span className="text-[10px] text-rose-600 mt-0.5 block">&lt; 10 mins</span>
+                    <span className="block font-semibold text-xs">Again [1]</span>
+                    <span className="text-[10px] text-slate-500 mt-0.5 block">&lt; 10 mins</span>
                   </button>
 
                   <button
                     onClick={() => handleRateCard(2)}
-                    className="p-3 rounded-xl border border-amber-200 bg-amber-50 hover:bg-amber-100 text-amber-800 text-center transition-colors"
+                    className="p-3 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-900 text-center transition-colors"
                   >
-                    <span className="block font-bold text-xs">Hard [2]</span>
-                    <span className="text-[10px] text-amber-600 mt-0.5 block">2 days</span>
+                    <span className="block font-semibold text-xs">Hard [2]</span>
+                    <span className="text-[10px] text-slate-500 mt-0.5 block">2 days</span>
                   </button>
 
                   <button
                     onClick={() => handleRateCard(3)}
-                    className="p-3 rounded-xl border border-sky-200 bg-sky-50 hover:bg-sky-100 text-sky-800 text-center transition-colors"
+                    className="p-3 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-900 text-center transition-colors"
                   >
-                    <span className="block font-bold text-xs">Good [3]</span>
-                    <span className="text-[10px] text-sky-600 mt-0.5 block">4 days</span>
+                    <span className="block font-semibold text-xs">Good [3]</span>
+                    <span className="text-[10px] text-slate-500 mt-0.5 block">4 days</span>
                   </button>
 
                   <button
                     onClick={() => handleRateCard(4)}
-                    className="p-3 rounded-xl border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-center transition-colors"
+                    className="p-3 rounded-lg border border-slate-900 bg-slate-900 text-white text-center transition-colors hover:bg-slate-800"
                   >
-                    <span className="block font-bold text-xs">Easy [4]</span>
-                    <span className="text-[10px] text-emerald-600 mt-0.5 block">7 days</span>
+                    <span className="block font-semibold text-xs">Easy [4]</span>
+                    <span className="text-[10px] text-slate-300 mt-0.5 block">7 days</span>
                   </button>
                 </div>
               </div>
@@ -442,14 +433,14 @@ export default function FlashcardsPage() {
                 variant="primary"
                 size="md"
                 onClick={() => setIsFlipped(true)}
-                className="w-full justify-center bg-indigo-600"
+                className="w-full justify-center"
               >
                 Reveal Answer
               </Button>
             )}
           </div>
         ) : (
-          <div className="text-center py-8 text-slate-500 text-xs">Queue finished!</div>
+          <div className="p-8 text-center text-slate-500 text-xs">No active card in review queue.</div>
         )}
       </Modal>
 
@@ -457,17 +448,16 @@ export default function FlashcardsPage() {
       <Modal
         isOpen={showCreateCardModal}
         onClose={() => setShowCreateCardModal(false)}
-        title="Add Flashcard to Deck"
-        description="Craft an active recall prompt and answer pair"
-        maxWidth="lg"
+        title="Add Single Flashcard"
+        description="Author an active recall prompt and verified solution"
       >
         <form onSubmit={handleManualCreate} className="space-y-4 text-xs">
           <div>
-            <label className="font-semibold text-slate-700 mb-1 block">Target Deck</label>
+            <label className="font-semibold text-slate-700 mb-1 block">Select Deck</label>
             <select
               value={manualDeckId}
               onChange={(e) => setManualDeckId(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs"
+              className="w-full px-3 py-2 border border-slate-300 rounded-md text-xs"
             >
               {decks.map((d) => (
                 <option key={d.id} value={d.id}>
@@ -478,25 +468,25 @@ export default function FlashcardsPage() {
           </div>
 
           <div>
-            <label className="font-semibold text-slate-700 mb-1 block">Front (Question or Concept Prompt)</label>
+            <label className="font-semibold text-slate-700 mb-1 block">Front (Question / Prompt)</label>
             <textarea
               rows={3}
               value={manualFront}
               onChange={(e) => setManualFront(e.target.value)}
-              className="w-full p-2.5 border border-slate-300 rounded-lg text-xs focus:ring-1 focus:ring-indigo-500"
-              placeholder="e.g. What is the discriminant formula for a quadratic equation?"
+              placeholder="e.g., What is Vieta's formula for the product of roots in ax² + bx + c = 0?"
+              className="w-full px-3 py-2 border border-slate-300 rounded-md text-xs"
               required
             />
           </div>
 
           <div>
-            <label className="font-semibold text-slate-700 mb-1 block">Back (Verified Answer or Explanation)</label>
+            <label className="font-semibold text-slate-700 mb-1 block">Back (Verified Answer)</label>
             <textarea
               rows={3}
               value={manualBack}
               onChange={(e) => setManualBack(e.target.value)}
-              className="w-full p-2.5 border border-slate-300 rounded-lg text-xs focus:ring-1 focus:ring-indigo-500"
-              placeholder="e.g. Δ = b² - 4ac. If Δ > 0, 2 real roots; if Δ = 0, 1 real root; if Δ < 0, 2 complex roots."
+              placeholder="e.g., Product of roots = c/a"
+              className="w-full px-3 py-2 border border-slate-300 rounded-md text-xs"
               required
             />
           </div>
@@ -507,8 +497,8 @@ export default function FlashcardsPage() {
               type="text"
               value={manualTags}
               onChange={(e) => setManualTags(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs"
-              placeholder="SAT, Math, Algebra, Quadratic"
+              placeholder="algebra, formulas, roots"
+              className="w-full px-3 py-2 border border-slate-300 rounded-md text-xs"
             />
           </div>
 
@@ -517,27 +507,38 @@ export default function FlashcardsPage() {
               Cancel
             </Button>
             <Button variant="primary" size="sm" type="submit">
-              Save Card into Queue
+              Save Card
             </Button>
           </div>
         </form>
       </Modal>
 
-      {/* AI Generate Cards from Notes Modal */}
+      {/* AI Generate Cards Modal */}
       <Modal
         isOpen={showAiGenModal}
         onClose={() => setShowAiGenModal(false)}
-        title="AI Flashcard Synthesizer"
-        description="Paste lecture notes, book excerpts, or formulas to auto-generate active recall cards"
-        maxWidth="lg"
+        title="Generate Flashcards from Notes"
+        description="Convert lecture notes, cheatsheets, or textbook passages into active recall pairs"
       >
         <form onSubmit={handleAiGenerate} className="space-y-4 text-xs">
           <div>
-            <label className="font-semibold text-slate-700 mb-1 block">Target Deck</label>
+            <label className="font-semibold text-slate-700 mb-1 block">Paste Study Notes or Textbook Excerpt</label>
+            <textarea
+              rows={6}
+              value={notesToConvert}
+              onChange={(e) => setNotesToConvert(e.target.value)}
+              placeholder="Paste notes on quadratic equations, kinematics, biological cell mitosis, or economic principles..."
+              className="w-full px-3 py-2 border border-slate-300 rounded-md text-xs font-mono"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="font-semibold text-slate-700 mb-1 block">Destination Deck</label>
             <select
               value={manualDeckId}
               onChange={(e) => setManualDeckId(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs"
+              className="w-full px-3 py-2 border border-slate-300 rounded-md text-xs"
             >
               {decks.map((d) => (
                 <option key={d.id} value={d.id}>
@@ -547,32 +548,12 @@ export default function FlashcardsPage() {
             </select>
           </div>
 
-          <div>
-            <label className="font-semibold text-slate-700 mb-1 block">Study Notes / Content Text</label>
-            <textarea
-              rows={5}
-              value={notesToConvert}
-              onChange={(e) => setNotesToConvert(e.target.value)}
-              className="w-full p-2.5 border border-slate-300 rounded-lg text-xs focus:ring-1 focus:ring-indigo-500"
-              placeholder="Paste raw text, revision summaries, or formula excerpts here..."
-              required
-            />
-          </div>
-
-          <div className="p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-indigo-900 flex items-start gap-2">
-            <Sparkles className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
-            <span>
-              The AI analyzes cognitive retrieval anchors, eliminates trivia distractors, and outputs high-yield active
-              recall cards.
-            </span>
-          </div>
-
           <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
             <Button variant="outline" size="sm" type="button" onClick={() => setShowAiGenModal(false)}>
               Cancel
             </Button>
-            <Button variant="primary" size="sm" type="submit" loading={aiGenerating} className="gap-1.5">
-              <Sparkles className="w-3.5 h-3.5" /> Generate Active Recall Cards
+            <Button variant="primary" size="sm" type="submit" loading={aiGenerating}>
+              Extract & Generate
             </Button>
           </div>
         </form>
@@ -582,9 +563,8 @@ export default function FlashcardsPage() {
       <Modal
         isOpen={showCreateDeckModal}
         onClose={() => setShowCreateDeckModal(false)}
-        title="Create Flashcard Deck"
-        description="Organize cards by subject or specific examination domain"
-        maxWidth="md"
+        title="Create New Flashcard Deck"
+        description="Group flashcards by syllabus module or subject topic"
       >
         <form onSubmit={handleCreateDeckSubmit} className="space-y-4 text-xs">
           <div>
@@ -593,32 +573,35 @@ export default function FlashcardsPage() {
               type="text"
               value={newDeckTitle}
               onChange={(e) => setNewDeckTitle(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs"
-              placeholder="e.g. GRE High-Frequency Vocabulary"
+              placeholder="e.g., SAT Advanced Trigonometry & Radians"
+              className="w-full px-3 py-2 border border-slate-300 rounded-md text-xs"
               required
             />
           </div>
 
           <div>
-            <label className="font-semibold text-slate-700 mb-1 block">Subject</label>
-            <input
-              type="text"
+            <label className="font-semibold text-slate-700 mb-1 block">Subject Domain</label>
+            <select
               value={newDeckSubject}
               onChange={(e) => setNewDeckSubject(e.target.value)}
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-xs"
-              placeholder="e.g. Verbal Reasoning"
-              required
-            />
+              className="w-full px-3 py-2 border border-slate-300 rounded-md text-xs"
+            >
+              <option value="Mathematics">Mathematics</option>
+              <option value="Reading & Writing">Reading & Writing</option>
+              <option value="Physics">Physics</option>
+              <option value="Chemistry">Chemistry</option>
+              <option value="Vocabulary">Vocabulary</option>
+            </select>
           </div>
 
           <div>
             <label className="font-semibold text-slate-700 mb-1 block">Description</label>
-            <textarea
-              rows={2}
+            <input
+              type="text"
               value={newDeckDesc}
               onChange={(e) => setNewDeckDesc(e.target.value)}
-              className="w-full p-2 border border-slate-300 rounded-lg text-xs"
-              placeholder="What this deck aims to memorize..."
+              placeholder="e.g., High-yield unit circle values, sine rules, and identities"
+              className="w-full px-3 py-2 border border-slate-300 rounded-md text-xs"
             />
           </div>
 
@@ -635,4 +618,3 @@ export default function FlashcardsPage() {
     </div>
   );
 }
-

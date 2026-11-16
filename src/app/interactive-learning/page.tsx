@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import {
-  Sparkles,
   Star,
   ShieldCheck,
   Award,
@@ -25,7 +24,7 @@ import { BalanceScale } from "@/components/kids/BalanceScale";
 import { FractionExplorer } from "@/components/kids/FractionExplorer";
 
 export default function InteractiveLearningPage() {
-  const { childrenActivities, completeKidsActivity, childProfiles } = useApp();
+  const { childrenActivities, completeKidsActivity } = useApp();
 
   const [activeAgeGroup, setActiveAgeGroup] = useState<KidsAgeGroup>("6-8");
   const [activeSimulation, setActiveSimulation] = useState<KidsActivity | null>(null);
@@ -44,33 +43,22 @@ export default function InteractiveLearningPage() {
 
   return (
     <div className="space-y-6">
-      {/* Kids Studio Header */}
-      <div className="bg-gradient-to-r from-emerald-950 via-teal-950 to-slate-900 rounded-2xl p-6 text-white shadow-md">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2 mb-1.5">
-              <span className="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Interactive STEM Studio (Ages 3–12)
-              </span>
-              <span className="text-xs text-slate-400">• Playful Math & Physics Sandbox</span>
-            </div>
-            <h2 className="text-2xl font-bold tracking-tight">Hands-On Science & Mathematical Discovery</h2>
-            <p className="text-xs text-slate-300 max-w-xl mt-1 leading-relaxed">
-              Explore gravitational orbital mechanics, solve algebraic balance scales, and manipulate visual fractions
-              through interactive physical simulations and visual games.
-            </p>
-          </div>
-
-          <Link href="/">
-            <Button
-              variant="outline"
-              size="md"
-              className="gap-1.5 bg-slate-800 border-slate-700 text-white hover:bg-slate-700"
-            >
-              <ShieldCheck className="w-4 h-4 text-emerald-400" /> Parent Overview
-            </Button>
-          </Link>
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+            Interactive STEM & Science Studio
+          </h1>
+          <p className="text-xs text-slate-500 mt-0.5">
+            Hands-on physical simulations, algebraic balance puzzles, and visual fractions for young learners (Ages 3–12).
+          </p>
         </div>
+
+        <Link href="/">
+          <Button variant="outline" size="sm" className="gap-1.5">
+            <ShieldCheck className="w-4 h-4 text-emerald-600" /> Parent Portal Overview
+          </Button>
+        </Link>
       </div>
 
       {/* Age Group Tiers Switcher */}
@@ -100,17 +88,17 @@ export default function InteractiveLearningPage() {
             <button
               key={tier.id}
               onClick={() => setActiveAgeGroup(tier.id)}
-              className={`p-4 rounded-xl border text-left transition-all ${
+              className={`p-4 rounded-lg border text-left transition-all ${
                 isSelected
-                  ? "bg-white border-emerald-500 shadow-md ring-2 ring-emerald-500/20"
-                  : "bg-white/80 border-slate-200 hover:bg-white text-slate-700"
+                  ? "bg-white border-slate-900 shadow-xs ring-1 ring-slate-900 text-slate-900"
+                  : "bg-white border-slate-200 hover:border-slate-300 text-slate-700"
               }`}
             >
               <div className="flex items-center justify-between mb-1">
                 <span className="text-xs font-bold text-slate-900">{tier.title}</span>
                 <span
-                  className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${
-                    isSelected ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-600"
+                  className={`text-[10px] px-2 py-0.5 rounded font-medium ${
+                    isSelected ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600"
                   }`}
                 >
                   {tier.badge}
@@ -125,11 +113,11 @@ export default function InteractiveLearningPage() {
       {/* Interactive Units Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {filteredActivities.map((act) => (
-          <Card key={act.id} className="flex flex-col justify-between">
+          <Card key={act.id} className="flex flex-col justify-between p-5 border-slate-200">
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-3xl p-1 bg-slate-50 rounded-xl">{act.thumbnail}</span>
-                <div className="flex items-center gap-1 text-amber-500 font-bold text-xs">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-3xl p-2 bg-slate-50 rounded-lg border border-slate-100 inline-block">{act.thumbnail}</span>
+                <div className="flex items-center gap-1 text-amber-600 font-semibold text-xs">
                   <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
                   <span>
                     {act.starsEarned} / {act.maxStars} Stars
@@ -137,14 +125,14 @@ export default function InteractiveLearningPage() {
                 </div>
               </div>
 
-              <h3 className="text-sm font-bold text-slate-900 mt-2">{act.title}</h3>
-              <p className="text-xs text-slate-500 mt-1 leading-relaxed">{act.description}</p>
+              <h3 className="text-sm font-bold text-slate-900 mt-1">{act.title}</h3>
+              <p className="text-xs text-slate-500 mt-1.5 leading-relaxed">{act.description}</p>
 
               <div className="flex items-center gap-2 mt-4 pt-3 border-t border-slate-100 text-xs">
-                <Badge variant="primary">{act.category.toUpperCase()}</Badge>
+                <Badge variant="neutral">{act.category.toUpperCase()}</Badge>
                 <span className="text-slate-400">• Age {act.ageGroup}</span>
                 {act.isCompleted && (
-                  <span className="text-emerald-600 font-semibold ml-auto flex items-center gap-1 text-[11px]">
+                  <span className="text-emerald-700 font-semibold ml-auto flex items-center gap-1 text-[11px]">
                     <CheckCircle2 className="w-3.5 h-3.5" /> Completed
                   </span>
                 )}
@@ -156,25 +144,25 @@ export default function InteractiveLearningPage() {
                 variant="primary"
                 size="sm"
                 onClick={() => handleLaunchActivity(act)}
-                className="w-full justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700"
+                className="w-full justify-center gap-1.5"
               >
-                <Play className="w-3.5 h-3.5" /> Launch Interactive Experience
+                <Play className="w-3.5 h-3.5" /> Launch Activity
               </Button>
             </div>
           </Card>
         ))}
 
-        {/* Bonus Quick Exploration Card */}
-        <Card className="border-dashed border-2 border-emerald-300 bg-emerald-50/40 flex flex-col justify-between">
+        {/* Informational Standard Card */}
+        <Card className="p-5 border-dashed border-slate-300 bg-slate-50/60 flex flex-col justify-between">
           <div>
-            <div className="text-3xl mb-2">🚀</div>
-            <h3 className="text-sm font-bold text-emerald-950">More Scientific Demonstrations</h3>
-            <p className="text-xs text-emerald-800 mt-1">
-              New virtual laboratory experiments added weekly, including ecosystem food webs and optical light prisms.
+            <div className="text-2xl mb-2">🔬</div>
+            <h3 className="text-sm font-semibold text-slate-900">Curriculum-Aligned STEM Units</h3>
+            <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+              Demonstrations adhere to NGSS (Next Generation Science Standards) and Common Core Math practices.
             </p>
           </div>
           <div className="pt-4 mt-2">
-            <span className="text-[11px] font-semibold text-emerald-700">COPPA & FERPA Compliant</span>
+            <span className="text-[11px] font-medium text-slate-600">COPPA & FERPA Student Data Compliant</span>
           </div>
         </Card>
       </div>
@@ -199,9 +187,9 @@ export default function InteractiveLearningPage() {
           )}
           {(activeSimulation?.interactiveType === "counting_safari" ||
             activeSimulation?.interactiveType === "shapes_colors") && (
-            <div className="p-8 text-center bg-slate-50 rounded-2xl border border-slate-200 space-y-4">
+            <div className="p-8 text-center bg-slate-50 rounded-lg border border-slate-200 space-y-4">
               <div className="text-5xl">🦁 🐘 🦒</div>
-              <h4 className="text-base font-bold text-slate-800">Safari Animal Counting & Pattern Matching</h4>
+              <h4 className="text-base font-bold text-slate-900">Safari Animal Counting & Pattern Matching</h4>
               <p className="text-xs text-slate-600 max-w-sm mx-auto">
                 Count the animals on the savannah and select the corresponding number card to earn gold stars!
               </p>
@@ -217,7 +205,7 @@ export default function InteractiveLearningPage() {
                         alert("Try again! Count the animals carefully.");
                       }
                     }}
-                    className="w-12 h-12 rounded-xl bg-white border-2 border-indigo-200 hover:border-indigo-600 font-bold text-lg text-indigo-700 shadow-sm flex items-center justify-center transition-all hover:scale-105"
+                    className="w-12 h-12 rounded-lg bg-white border border-slate-300 hover:border-slate-900 font-bold text-lg text-slate-900 shadow-2xs flex items-center justify-center transition-colors"
                   >
                     {n}
                   </button>
@@ -236,4 +224,3 @@ export default function InteractiveLearningPage() {
     </div>
   );
 }
-

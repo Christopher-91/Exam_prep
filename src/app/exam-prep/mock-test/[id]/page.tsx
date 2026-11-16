@@ -9,9 +9,7 @@ import {
   ChevronRight,
   CheckCircle2,
   AlertTriangle,
-  HelpCircle,
   Calculator,
-  Save,
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { QuestionAttemptStatus, TestAttemptAnswer, TestAttemptResult } from "@/lib/types";
@@ -31,9 +29,9 @@ export default function MockTestTakingPage() {
   const [secondsRemaining, setSecondsRemaining] = useState(test.durationMinutes * 60);
   const [isTimerPaused, setIsTimerPaused] = useState(false);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
-  const [showDesmosCalculator, setShowDesmosCalculator] = useState(false);
+  const [showCalculator, setShowCalculator] = useState(false);
 
-  // User answers and status map
+  // Answers and status
   const [answers, setAnswers] = useState<Record<string, TestAttemptAnswer>>(() => {
     const initial: Record<string, TestAttemptAnswer> = {};
     test.questions.forEach((q, idx) => {
@@ -50,19 +48,17 @@ export default function MockTestTakingPage() {
   const currentQuestion = test.questions[currentIndex] || test.questions[0];
   const currentAnswer = answers[currentQuestion.id];
 
-  // Timer countdown
   useEffect(() => {
     if (isTimerPaused || secondsRemaining <= 0) return;
     const interval = setInterval(() => {
       setSecondsRemaining((prev) => {
         if (prev <= 1) {
           clearInterval(interval);
-          handleSubmitTest(); // auto-submit on timeout
+          handleSubmitTest();
           return 0;
         }
         return prev - 1;
       });
-      // Increment time spent on current question
       setAnswers((prev) => ({
         ...prev,
         [currentQuestion.id]: {
@@ -74,7 +70,6 @@ export default function MockTestTakingPage() {
     return () => clearInterval(interval);
   }, [isTimerPaused, secondsRemaining, currentQuestion.id]);
 
-  // Navigate to question and mark as visited/unanswered if not answered
   const handleSelectQuestion = (index: number) => {
     const targetQ = test.questions[index];
     if (!targetQ) return;
@@ -91,7 +86,6 @@ export default function MockTestTakingPage() {
     setCurrentIndex(index);
   };
 
-  // Option selection
   const handleSelectOption = (optionId: string) => {
     setAnswers((prev) => {
       const curr = prev[currentQuestion.id];
@@ -110,7 +104,6 @@ export default function MockTestTakingPage() {
     });
   };
 
-  // Toggle mark for review
   const handleToggleMarkForReview = () => {
     setAnswers((prev) => {
       const curr = prev[currentQuestion.id];
@@ -132,7 +125,6 @@ export default function MockTestTakingPage() {
     });
   };
 
-  // Clear current response
   const handleClearResponse = () => {
     setAnswers((prev) => {
       const curr = prev[currentQuestion.id];
@@ -148,7 +140,6 @@ export default function MockTestTakingPage() {
     });
   };
 
-  // Calculate final score and submit
   const handleSubmitTest = () => {
     let correctCount = 0;
     let incorrectCount = 0;
@@ -166,12 +157,10 @@ export default function MockTestTakingPage() {
       if (isCorr) correctCount += 1;
       else if (isAns) incorrectCount += 1;
 
-      // Topic breakdown
       if (!topicStats[q.topic]) topicStats[q.topic] = { total: 0, correct: 0 };
       topicStats[q.topic].total += 1;
       if (isCorr) topicStats[q.topic].correct += 1;
 
-      // Section breakdown
       if (!sectionStats[q.section]) {
         sectionStats[q.section] = { score: 0, maxScore: 0, correct: 0, total: 0, time: 0 };
       }
@@ -221,10 +210,10 @@ export default function MockTestTakingPage() {
       topicBreakdown,
       answers,
       aiFeedback: {
-        summary: `You achieved a ${scoreMetrics.scaledScore}/${scoreMetrics.maxScore} (${scoreMetrics.percentile}th percentile) with ${scoreMetrics.accuracy}% overall accuracy.`,
+        summary: `Scaled score: ${scoreMetrics.scaledScore}/${scoreMetrics.maxScore} (${scoreMetrics.percentile}th percentile) with ${scoreMetrics.accuracy}% accuracy.`,
         strengths: topicBreakdown.filter((t) => t.status === "strong").map((t) => t.topic),
         weaknesses: topicBreakdown.filter((t) => t.status !== "strong").map((t) => t.topic),
-        suggestedFocus: ["Review explanation steps for missed items", "Practice 15 adaptive drills on weak topics"],
+        suggestedFocus: ["Review diagnostic rationales for incorrect items", "Drill targeted practice sets in weak topics"],
       },
     };
 
@@ -233,7 +222,6 @@ export default function MockTestTakingPage() {
     router.push(`/exam-prep/results/${attemptResult.id}`);
   };
 
-  // Status counts for review modal and palette
   const countAnswered = Object.values(answers).filter(
     (a) => a.status === "answered" || a.status === "answered_and_marked"
   ).length;
@@ -242,98 +230,93 @@ export default function MockTestTakingPage() {
   ).length;
   const countUnanswered = test.totalQuestions - countAnswered;
 
-  const getStatusColor = (status: QuestionAttemptStatus, isCurrent: boolean) => {
-    if (isCurrent) return "ring-2 ring-indigo-600 bg-indigo-50 text-indigo-900 font-bold border-indigo-500";
+  const getStatusStyle = (status: QuestionAttemptStatus, isCurrent: boolean) => {
+    if (isCurrent) return "ring-2 ring-slate-950 font-bold bg-white text-slate-950 border-slate-950";
     switch (status) {
       case "answered":
-        return "bg-emerald-600 text-white border-emerald-600 font-semibold";
+        return "bg-slate-900 text-white border-slate-900 font-semibold";
       case "answered_and_marked":
-        return "bg-purple-600 text-white border-purple-600 font-semibold";
+        return "bg-slate-800 text-amber-300 border-amber-500 font-semibold";
       case "marked_for_review":
-        return "bg-amber-500 text-white border-amber-500 font-semibold";
+        return "bg-amber-50 text-amber-900 border-amber-400 font-semibold";
       case "unanswered":
-        return "bg-rose-50 text-rose-700 border-rose-300 font-semibold";
+        return "bg-slate-100 text-slate-700 border-slate-300";
       case "not_visited":
       default:
-        return "bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200";
+        return "bg-white text-slate-400 border-slate-200 hover:border-slate-300";
     }
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-6rem)] bg-slate-50 -m-4 md:-m-6 lg:-m-8">
-      {/* Test Bar Header */}
-      <header className="h-14 bg-slate-900 text-white px-4 md:px-6 flex items-center justify-between shrink-0 shadow-md">
+    <div className="flex flex-col h-[calc(100vh-5rem)] bg-white border border-slate-200 rounded-lg overflow-hidden shadow-xs">
+      {/* Official Testing Bar */}
+      <header className="h-12 bg-slate-900 text-white px-4 md:px-6 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">
-          <span className="text-xs font-bold px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 uppercase">
-            {test.examId}
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-300">
+            {test.examId} Simulation
           </span>
-          <h2 className="text-xs md:text-sm font-semibold truncate max-w-xs md:max-w-md">{test.title}</h2>
-          <span className="text-xs text-slate-400 hidden sm:inline">• {currentQuestion.section}</span>
+          <span className="text-slate-600">•</span>
+          <span className="text-xs text-slate-200 font-medium truncate max-w-xs">{currentQuestion.section}</span>
         </div>
 
         <div className="flex items-center gap-3">
-          {/* Scientific Calculator Tool Toggle */}
           <button
-            onClick={() => setShowDesmosCalculator(!showDesmosCalculator)}
-            className="flex items-center gap-1.5 px-2.5 py-1 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700 transition-colors"
-            title="Toggle Built-in Desmos Calculator"
+            onClick={() => setShowCalculator(!showCalculator)}
+            className="flex items-center gap-1.5 px-2.5 py-1 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 rounded border border-slate-700 transition-colors"
           >
-            <Calculator className="w-3.5 h-3.5 text-indigo-400" />
-            <span className="hidden sm:inline">Calculator</span>
+            <Calculator className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Graphing Calculator</span>
           </button>
 
-          {/* Countdown Timer */}
           <div
-            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-mono font-bold border ${
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-mono font-bold ${
               secondsRemaining < 300
-                ? "bg-rose-500/20 text-rose-300 border-rose-500/40 animate-pulse"
-                : "bg-slate-800 text-indigo-300 border-slate-700"
+                ? "bg-rose-900/80 text-rose-200 border border-rose-700 animate-pulse"
+                : "bg-slate-800 text-slate-200 border border-slate-700"
             }`}
           >
             <Clock className="w-3.5 h-3.5" />
             <span>{formatDuration(secondsRemaining)}</span>
           </div>
 
-          {/* Final Finish Button */}
           <Button
-            variant="primary"
+            variant="secondary"
             size="xs"
             onClick={() => setShowSubmitModal(true)}
-            className="bg-emerald-600 hover:bg-emerald-700 font-semibold"
+            className="bg-white text-slate-900 hover:bg-slate-100 font-semibold"
           >
-            Submit Exam
+            End Section
           </Button>
         </div>
       </header>
 
-      {/* Main Examination Body: Split into Question Area and Palette Sidebar */}
+      {/* Main Testing Viewport */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Left: Question Prompt and Answer Selection */}
-        <div className="flex-1 flex flex-col overflow-y-auto p-4 md:p-8 bg-white border-r border-slate-200">
-          <div className="max-w-3xl mx-auto w-full flex-1 flex flex-col justify-between">
-            {/* Question Top Metadata & Mark for Review */}
+        {/* Left: Problem Prompt and Radio Options */}
+        <div className="flex-1 flex flex-col overflow-y-auto p-6 md:p-10 border-r border-slate-200">
+          <div className="max-w-2xl mx-auto w-full flex-1 flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+              {/* Question metadata & review flag */}
+              <div className="flex items-center justify-between pb-3 border-b border-slate-200">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-slate-900">
+                  <span className="text-xs font-bold text-slate-900 uppercase">
                     Question {currentIndex + 1} of {test.totalQuestions}
                   </span>
-                  <span className="text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-600">
-                    {currentQuestion.topic}
-                  </span>
+                  <span className="text-slate-300">•</span>
+                  <span className="text-xs text-slate-500">{currentQuestion.topic}</span>
                 </div>
 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleToggleMarkForReview}
-                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium border transition-colors ${
+                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-medium border transition-colors ${
                       currentAnswer?.status === "marked_for_review" ||
                       currentAnswer?.status === "answered_and_marked"
-                        ? "bg-amber-50 text-amber-800 border-amber-300 font-semibold"
+                        ? "bg-amber-50 text-amber-900 border-amber-300 font-semibold"
                         : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
                     }`}
                   >
-                    <Flag className="w-3.5 h-3.5 text-amber-500" />
+                    <Flag className="w-3 h-3 text-amber-500" />
                     <span>
                       {currentAnswer?.status === "marked_for_review" ||
                       currentAnswer?.status === "answered_and_marked"
@@ -345,35 +328,35 @@ export default function MockTestTakingPage() {
                   <button
                     onClick={handleClearResponse}
                     disabled={!currentAnswer?.selectedOptionId}
-                    className="text-xs text-slate-400 hover:text-slate-700 disabled:opacity-30 disabled:pointer-events-none"
+                    className="text-xs text-slate-400 hover:text-slate-700 disabled:opacity-30"
                   >
-                    Clear Choice
+                    Clear
                   </button>
                 </div>
               </div>
 
               {/* Question Text */}
-              <div className="py-6 text-sm md:text-base text-slate-900 font-medium leading-relaxed whitespace-pre-line">
+              <div className="py-6 text-sm text-slate-900 font-medium leading-relaxed whitespace-pre-line">
                 {currentQuestion.prompt}
               </div>
 
-              {/* Options */}
-              <div className="space-y-3 mt-2">
+              {/* Multiple Choice Options */}
+              <div className="space-y-2.5">
                 {currentQuestion.options.map((opt) => {
                   const isSelected = currentAnswer?.selectedOptionId === opt.id;
                   return (
                     <button
                       key={opt.id}
                       onClick={() => handleSelectOption(opt.id)}
-                      className={`w-full text-left p-4 rounded-xl border text-xs md:text-sm flex items-start gap-3 transition-all ${
+                      className={`w-full text-left p-3.5 rounded border text-xs md:text-sm flex items-start gap-3 transition-colors ${
                         isSelected
-                          ? "bg-indigo-50/80 border-indigo-600 text-indigo-950 font-semibold shadow-sm ring-1 ring-indigo-600"
-                          : "bg-white border-slate-200 hover:border-slate-300 text-slate-800 hover:bg-slate-50/60"
+                          ? "bg-slate-50 border-slate-900 text-slate-950 font-semibold ring-1 ring-slate-900"
+                          : "bg-white border-slate-200 hover:border-slate-300 text-slate-800"
                       }`}
                     >
                       <div
-                        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 ${
-                          isSelected ? "bg-indigo-600 text-white" : "bg-slate-100 text-slate-600 border border-slate-300"
+                        className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 ${
+                          isSelected ? "bg-slate-900 text-white" : "border border-slate-300 text-slate-600 bg-white"
                         }`}
                       >
                         {opt.id}
@@ -385,19 +368,18 @@ export default function MockTestTakingPage() {
               </div>
             </div>
 
-            {/* Bottom Nav Controls */}
-            <div className="pt-6 mt-8 border-t border-slate-100 flex items-center justify-between">
+            {/* Bottom Controls */}
+            <div className="pt-6 mt-8 border-t border-slate-200 flex items-center justify-between">
               <Button
                 variant="outline"
                 size="sm"
                 disabled={currentIndex === 0}
                 onClick={() => handleSelectQuestion(currentIndex - 1)}
-                className="gap-1.5"
               >
                 <ChevronLeft className="w-4 h-4" /> Previous
               </Button>
 
-              <div className="text-xs text-slate-400">
+              <div className="text-xs text-slate-500">
                 {countAnswered} of {test.totalQuestions} Answered
               </div>
 
@@ -406,45 +388,41 @@ export default function MockTestTakingPage() {
                   variant="primary"
                   size="sm"
                   onClick={() => handleSelectQuestion(currentIndex + 1)}
-                  className="gap-1.5"
                 >
-                  Next Question <ChevronRight className="w-4 h-4" />
+                  Next <ChevronRight className="w-4 h-4" />
                 </Button>
               ) : (
                 <Button
                   variant="primary"
                   size="sm"
                   onClick={() => setShowSubmitModal(true)}
-                  className="bg-emerald-600 hover:bg-emerald-700"
                 >
-                  Review & Submit
+                  Review Section
                 </Button>
               )}
             </div>
           </div>
         </div>
 
-        {/* Right: Question Palette & Section Overview */}
-        <aside className="w-72 bg-slate-50 p-4 border-l border-slate-200 hidden md:flex flex-col justify-between overflow-y-auto">
+        {/* Right: Question Palette Navigator */}
+        <aside className="w-64 bg-slate-50 p-4 border-l border-slate-200 hidden md:flex flex-col justify-between overflow-y-auto">
           <div>
-            <div className="pb-3 border-b border-slate-200 mb-4">
-              <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Question Navigator</h3>
-              <p className="text-[11px] text-slate-500 mt-0.5">Jump to any question instantly</p>
+            <div className="pb-2.5 border-b border-slate-200 mb-3">
+              <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Question Navigator</h3>
+              <p className="text-[11px] text-slate-500 mt-0.5">Jump directly to any item</p>
             </div>
 
-            {/* Palette Grid */}
-            <div className="grid grid-cols-4 gap-2 mb-6">
+            <div className="grid grid-cols-4 gap-1.5 mb-5">
               {test.questions.map((q, idx) => {
                 const ans = answers[q.id];
                 const isCur = idx === currentIndex;
-                const colorClass = getStatusColor(ans?.status || "not_visited", isCur);
+                const styleClass = getStatusStyle(ans?.status || "not_visited", isCur);
 
                 return (
                   <button
                     key={q.id}
                     onClick={() => handleSelectQuestion(idx)}
-                    className={`h-9 rounded-lg border text-xs flex items-center justify-center transition-all ${colorClass}`}
-                    title={`Question ${idx + 1}: ${ans?.status.replace("_", " ")}`}
+                    className={`h-8 rounded border text-xs flex items-center justify-center transition-colors ${styleClass}`}
                   >
                     {idx + 1}
                   </button>
@@ -453,111 +431,96 @@ export default function MockTestTakingPage() {
             </div>
 
             {/* Legend */}
-            <div className="space-y-2 text-[11px] pt-4 border-t border-slate-200 text-slate-600">
+            <div className="space-y-1.5 text-[11px] pt-3 border-t border-slate-200 text-slate-600">
               <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded bg-emerald-600" />
+                <span className="w-2.5 h-2.5 rounded bg-slate-900" />
                 <span>Answered ({countAnswered})</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded bg-amber-500" />
+                <span className="w-2.5 h-2.5 rounded bg-amber-50 border border-amber-400" />
                 <span>Marked for Review ({countMarked})</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded bg-rose-50 border border-rose-300" />
+                <span className="w-2.5 h-2.5 rounded bg-slate-100 border border-slate-300" />
                 <span>Unanswered ({countUnanswered})</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-3 h-3 rounded bg-slate-100 border border-slate-300" />
-                <span>Not Visited</span>
               </div>
             </div>
           </div>
 
-          {/* Quick Submit CTA */}
-          <div className="pt-4 border-t border-slate-200">
+          <div className="pt-3 border-t border-slate-200">
             <Button
               variant="secondary"
               size="sm"
               onClick={() => setShowSubmitModal(true)}
               className="w-full justify-center"
             >
-              End Section & Submit
+              Submit Section
             </Button>
           </div>
         </aside>
       </div>
 
-      {/* Submit Confirmation Modal */}
+      {/* Confirmation Modal */}
       <Modal
         isOpen={showSubmitModal}
         onClose={() => setShowSubmitModal(false)}
         title="Confirm Examination Submission"
-        description="Verify your attempt summary before final scoring is computed"
+        description="Verify your responses before final scoring is computed"
         maxWidth="md"
       >
         <div className="space-y-4 text-xs">
-          <div className="grid grid-cols-3 gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 text-center">
-            <div className="p-2">
-              <span className="block text-lg font-bold text-emerald-600">{countAnswered}</span>
-              <span className="text-[10px] text-slate-500 uppercase font-medium">Answered</span>
+          <div className="grid grid-cols-3 gap-2 p-3 bg-slate-50 border border-slate-200 rounded text-center">
+            <div>
+              <div className="text-base font-bold text-slate-900">{countAnswered}</div>
+              <div className="text-[10px] text-slate-500 uppercase">Answered</div>
             </div>
-            <div className="p-2">
-              <span className="block text-lg font-bold text-rose-600">{countUnanswered}</span>
-              <span className="text-[10px] text-slate-500 uppercase font-medium">Unanswered</span>
+            <div>
+              <div className="text-base font-bold text-slate-900">{countUnanswered}</div>
+              <div className="text-[10px] text-slate-500 uppercase">Unanswered</div>
             </div>
-            <div className="p-2">
-              <span className="block text-lg font-bold text-amber-600">{countMarked}</span>
-              <span className="text-[10px] text-slate-500 uppercase font-medium">Marked</span>
+            <div>
+              <div className="text-base font-bold text-slate-900">{countMarked}</div>
+              <div className="text-[10px] text-slate-500 uppercase">Marked</div>
             </div>
           </div>
 
           {countUnanswered > 0 && (
-            <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 flex items-start gap-2">
+            <div className="p-3 bg-slate-50 border border-slate-200 rounded text-slate-700 flex items-start gap-2">
               <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
               <span>
-                You still have <strong>{countUnanswered} unanswered</strong> question(s). In tests without negative
-                marking (like the Digital SAT), guessing is always advantageous!
+                You have {countUnanswered} unanswered question(s). Unanswered questions are scored as 0 marks.
               </span>
             </div>
           )}
 
-          <p className="text-slate-500 text-xs">
-            Once submitted, your answers will be locked, scoring algorithms will compute your section percentiles, and
-            the AI diagnostic report will be compiled.
-          </p>
-
-          <div className="flex justify-end gap-2 pt-3 border-t border-slate-100">
+          <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
             <Button variant="outline" size="sm" onClick={() => setShowSubmitModal(false)}>
               Return to Test
             </Button>
-            <Button variant="primary" size="sm" onClick={handleSubmitTest} className="bg-emerald-600 hover:bg-emerald-700">
-              Confirm & View Results
+            <Button variant="primary" size="sm" onClick={handleSubmitTest}>
+              Confirm Submission
             </Button>
           </div>
         </div>
       </Modal>
 
-      {/* Embedded Desmos Calculator Drawer / Modal */}
-      {showDesmosCalculator && (
-        <div className="fixed bottom-4 right-4 z-50 w-96 bg-white rounded-xl shadow-2xl border border-slate-300 p-3 flex flex-col">
+      {/* Scientific Graphing Calculator Modal */}
+      {showCalculator && (
+        <div className="fixed bottom-4 right-4 z-50 w-80 bg-white rounded-lg shadow-lg border border-slate-300 p-3">
           <div className="flex items-center justify-between pb-2 border-b border-slate-200 mb-2">
-            <div className="flex items-center gap-1.5 font-bold text-xs text-slate-800">
-              <Calculator className="w-4 h-4 text-indigo-600" />
-              <span>Digital SAT Graphing Calculator</span>
-            </div>
-            <button
-              onClick={() => setShowDesmosCalculator(false)}
-              className="text-xs text-slate-400 hover:text-slate-600"
-            >
+            <span className="font-semibold text-xs text-slate-900 flex items-center gap-1.5">
+              <Calculator className="w-3.5 h-3.5 text-slate-600" /> Graphing Tool
+            </span>
+            <button onClick={() => setShowCalculator(false)} className="text-slate-400 hover:text-slate-700 text-xs">
               ✕
             </button>
           </div>
-          <div className="h-64 bg-slate-900 rounded-lg p-3 text-white flex flex-col justify-between font-mono text-xs">
-            <div className="text-right text-emerald-400 text-lg">f(x) = 3x² - 8x + 16</div>
+          <div className="h-52 bg-slate-900 rounded p-3 text-white font-mono text-xs flex flex-col justify-between">
+            <div className="text-right text-emerald-400 text-sm">f(x) = 2x² - 7x + 3</div>
             <div className="grid grid-cols-4 gap-1 text-center">
               {["sin", "cos", "tan", "√", "7", "8", "9", "÷", "4", "5", "6", "×", "1", "2", "3", "-", "0", ".", "=", "+"].map(
                 (btn, i) => (
-                  <button key={i} className="p-1.5 bg-slate-800 hover:bg-slate-700 rounded text-slate-200">
+                  <button key={i} className="p-1 bg-slate-800 hover:bg-slate-700 rounded text-slate-200 text-[11px]">
                     {btn}
                   </button>
                 )
@@ -569,4 +532,3 @@ export default function MockTestTakingPage() {
     </div>
   );
 }
-
