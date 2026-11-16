@@ -174,7 +174,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     },
   ]);
 
-  // Load from localStorage if present
+  // Load from localStorage if present and purge any legacy mock data
   useEffect(() => {
     try {
       const authStatus = localStorage.getItem("acuity_auth");
@@ -182,13 +182,40 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setIsAuthenticated(authStatus === "true");
       }
 
-      const savedUser = localStorage.getItem("acuity_user");
-      if (savedUser) {
-        setCurrentUser(JSON.parse(savedUser));
+      const savedUserStr = localStorage.getItem("acuity_user");
+      if (savedUserStr) {
+        const parsed = JSON.parse(savedUserStr);
+        // Automatically overwrite stale mock data from previous sessions
+        if (
+          !parsed.name ||
+          parsed.name === "Alexander Vance" ||
+          parsed.email?.includes("alexander.vance") ||
+          parsed.name?.toLowerCase().includes("vance")
+        ) {
+          parsed.name = "Rohan Christopher";
+          parsed.email = "rohan@acuitysystems.edu";
+          localStorage.setItem("acuity_user", JSON.stringify(parsed));
+        }
+        setCurrentUser(parsed);
       }
 
-      const savedProfile = localStorage.getItem("acuity_profile");
-      if (savedProfile) setProfile(JSON.parse(savedProfile));
+      const savedProfileStr = localStorage.getItem("acuity_profile");
+      if (savedProfileStr) {
+        const parsedProfile = JSON.parse(savedProfileStr);
+        if (
+          !parsedProfile.name ||
+          parsedProfile.name === "Alexander Vance" ||
+          parsedProfile.email?.includes("alexander.vance") ||
+          parsedProfile.name?.toLowerCase().includes("vance")
+        ) {
+          parsedProfile.name = "Rohan Christopher";
+          parsedProfile.email = "rohan@acuitysystems.edu";
+          parsedProfile.streakDays = 1;
+          parsedProfile.totalStudyHours = 1.5;
+          localStorage.setItem("acuity_profile", JSON.stringify(parsedProfile));
+        }
+        setProfile(parsedProfile);
+      }
 
       const savedTasks = localStorage.getItem("acuity_tasks");
       if (savedTasks) setTasks(JSON.parse(savedTasks));

@@ -597,7 +597,7 @@ export const INITIAL_CHILDREN_ACTIVITIES: KidsActivity[] = [
 export const INITIAL_CHILD_PROFILES: ChildProfile[] = [
   {
     id: "child-1",
-    name: "Maya Vance",
+    name: "Maya Christopher",
     age: 7,
     ageGroup: "6-8",
     avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Maya",
@@ -609,7 +609,7 @@ export const INITIAL_CHILD_PROFILES: ChildProfile[] = [
   },
   {
     id: "child-2",
-    name: "Leo Vance",
+    name: "Leo Christopher",
     age: 10,
     ageGroup: "9-12",
     avatar: "https://api.dicebear.com/7.x/bottts/svg?seed=Leo",
@@ -831,75 +831,8 @@ export const INITIAL_SCHEDULE_BLOCKS: StudyScheduleBlock[] = [
   },
 ];
 
-// Initial Test Results for Analytics & Predictive Engine
-export const INITIAL_TEST_RESULTS: TestAttemptResult[] = [
-  {
-    id: "att-sat-01",
-    testId: "sat-mock-1",
-    testTitle: "Digital SAT Diagnostic Practice Test 1",
-    examId: "sat",
-    completedAt: "2026-11-14T15:30:00Z",
-    timeSpentSeconds: 7200,
-    totalQuestions: 8,
-    answeredCount: 8,
-    correctCount: 7,
-    incorrectCount: 1,
-    rawScore: 7,
-    scaledScore: 1470,
-    maxScore: 1600,
-    percentile: 96,
-    accuracyPercentage: 88,
-    sectionBreakdown: [
-      { sectionName: "Reading and Writing", score: 720, maxScore: 800, accuracy: 85, timeSpentMinutes: 58 },
-      { sectionName: "Mathematics", score: 750, maxScore: 800, accuracy: 92, timeSpentMinutes: 62 },
-    ],
-    topicBreakdown: [
-      { topic: "Advanced Math & Quadratics", accuracy: 100, total: 3, correct: 3, status: "strong" },
-      { topic: "Craft and Structure: Vocabulary", accuracy: 100, total: 2, correct: 2, status: "strong" },
-      { topic: "Command of Evidence", accuracy: 67, total: 3, correct: 2, status: "moderate" },
-    ],
-    answers: {},
-    aiFeedback: {
-      summary: "Outstanding performance overall. Your mathematical problem solving is in the 96th percentile. Command of paired evidence in reading passages is your primary area for a 1550+ push.",
-      strengths: ["Algebraic Quadratic manipulation", "High-frequency contextual vocabulary", "Pacing in Math Section"],
-      weaknesses: ["Dual-passage synthesis", "Overlooking subtle qualification words in Reading"],
-      suggestedFocus: ["Practice 15 paired evidence passages", "Review Desmos quadratic regression shortcuts"],
-    },
-  },
-  {
-    id: "att-sat-00",
-    testId: "sat-mock-baseline",
-    testTitle: "Initial Baseline Diagnostic Assessment",
-    examId: "sat",
-    completedAt: "2026-11-04T10:15:00Z",
-    timeSpentSeconds: 6800,
-    totalQuestions: 8,
-    answeredCount: 8,
-    correctCount: 6,
-    incorrectCount: 2,
-    rawScore: 6,
-    scaledScore: 1390,
-    maxScore: 1600,
-    percentile: 91,
-    accuracyPercentage: 75,
-    sectionBreakdown: [
-      { sectionName: "Reading and Writing", score: 680, maxScore: 800, accuracy: 75, timeSpentMinutes: 55 },
-      { sectionName: "Mathematics", score: 710, maxScore: 800, accuracy: 75, timeSpentMinutes: 58 },
-    ],
-    topicBreakdown: [
-      { topic: "Advanced Math & Quadratics", accuracy: 66, total: 3, correct: 2, status: "moderate" },
-      { topic: "Craft and Structure: Vocabulary", accuracy: 50, total: 2, correct: 1, status: "weak" },
-      { topic: "Command of Evidence", accuracy: 100, total: 3, correct: 3, status: "strong" },
-    ],
-    answers: {},
-    aiFeedback: {
-      summary: "Good initial baseline. Demonstrates solid logical intuition with room for speed optimization in multi-step algebra.",
-      strengths: ["Reading comprehension fundamentals"],
-      weaknesses: ["Timed algebra pacing", "Contextual vocabulary nuance"],
-      suggestedFocus: ["Active recall flashcards for vocabulary", "Speed drills in systems of equations"],
-    },
-  },
-];
+// Initial Test Results for Analytics & Predictive Engine (Starts empty for genuine user data)
+export const INITIAL_TEST_RESULTS: TestAttemptResult[] = [];
 
 // Admin Audit Log
 export const INITIAL_ADMIN_LOGS: AdminAuditLog[] = [

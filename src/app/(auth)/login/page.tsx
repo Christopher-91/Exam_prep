@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Lock, Mail, ArrowRight, ShieldCheck, Check } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, ArrowRight, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/common/Button";
 import { useApp } from "@/context/AppContext";
 import { UserRole } from "@/lib/types";
@@ -27,7 +27,7 @@ export default function LoginPage() {
     try {
       const result = await login(email, password, rememberMe);
       if (result.success) {
-        router.push("/");
+        router.push("/dashboard");
       } else {
         setErrorMessage(result.error || "Invalid credentials.");
       }
@@ -42,7 +42,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await loginWithGoogle();
-      router.push("/");
+      router.push("/dashboard");
     } finally {
       setLoading(false);
     }
@@ -51,9 +51,9 @@ export default function LoginPage() {
   const handleDemoSignIn = async (role: UserRole) => {
     const demoAccounts: Record<UserRole, { email: string; pass: string }> = {
       student: { email: "rohan@acuitysystems.edu", pass: "password123" },
-      parent: { email: "sarah.vance@gmail.com", pass: "password123" },
-      professional: { email: "david.miller@mckinsey.com", pass: "password123" },
-      admin: { email: "admin@acuityedu.com", pass: "password123" },
+      parent: { email: "parent@acuitysystems.edu", pass: "password123" },
+      professional: { email: "pro@acuitysystems.edu", pass: "password123" },
+      admin: { email: "admin@acuitysystems.edu", pass: "password123" },
     };
 
     const target = demoAccounts[role];
@@ -62,20 +62,22 @@ export default function LoginPage() {
 
     setLoading(true);
     await login(target.email, target.pass, true);
-    router.push("/");
+    router.push("/dashboard");
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-bold text-slate-900 tracking-tight">Sign in to your account</h1>
-        <p className="text-xs text-slate-500 mt-1">
-          Access your personalized examination curriculum, active recall decks, and analytical readiness.
+        <h1 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+          Sign in to your account
+        </h1>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          Access your personalized curriculum, active recall decks, and diagnostic analytics.
         </p>
       </div>
 
       {errorMessage && (
-        <div className="p-3 bg-rose-50 border border-rose-200 text-rose-800 text-xs rounded-md">
+        <div className="p-3 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/60 text-rose-800 dark:text-rose-300 text-xs rounded-lg">
           {errorMessage}
         </div>
       )}
@@ -85,7 +87,7 @@ export default function LoginPage() {
         type="button"
         onClick={handleGoogleSignIn}
         disabled={loading}
-        className="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 bg-white border border-slate-300 hover:bg-slate-50 rounded-md text-xs font-semibold text-slate-700 shadow-2xs transition-colors"
+        className="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 bg-white dark:bg-[#181a24] border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-[#1e2230] rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-2xs transition-colors"
       >
         <svg className="w-4 h-4" viewBox="0 0 24 24">
           <path
@@ -105,27 +107,29 @@ export default function LoginPage() {
             d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
           />
         </svg>
-        <span>Continue with Google Single Sign-On</span>
+        <span>Continue with Google</span>
       </button>
 
       <div className="relative flex items-center justify-center">
-        <div className="border-t border-slate-200 w-full" />
-        <span className="bg-white px-3 text-[11px] text-slate-400 uppercase tracking-wider font-medium shrink-0">
+        <div className="border-t border-slate-200 dark:border-slate-800 w-full" />
+        <span className="bg-white dark:bg-[#161822] px-3 text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-semibold shrink-0">
           Or continue with email
         </span>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+      <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
         <div>
-          <label className="font-semibold text-slate-700 mb-1 block">Institutional or Personal Email</label>
+          <label className="font-semibold text-slate-700 dark:text-slate-300 mb-1 block">
+            Email address
+          </label>
           <div className="relative">
             <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="candidate@stanford.edu"
-              className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-md text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-950 focus:border-slate-950"
+              placeholder="rohan@example.com"
+              className="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-[#12141c] border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
               required
             />
           </div>
@@ -133,10 +137,12 @@ export default function LoginPage() {
 
         <div>
           <div className="flex items-center justify-between mb-1">
-            <label className="font-semibold text-slate-700 block">Password</label>
+            <label className="font-semibold text-slate-700 dark:text-slate-300 block">
+              Password
+            </label>
             <Link
               href="/forgot-password"
-              className="text-[11px] font-medium text-slate-600 hover:text-slate-900 transition-colors"
+              className="text-[11px] font-medium text-indigo-600 dark:text-indigo-400 hover:underline transition-colors"
             >
               Forgot password?
             </Link>
@@ -148,13 +154,13 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••••••"
-              className="w-full pl-9 pr-9 py-2 bg-white border border-slate-300 rounded-md text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-950 focus:border-slate-950"
+              className="w-full pl-9 pr-9 py-2 bg-slate-50 dark:bg-[#12141c] border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
               required
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600"
+              className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
             >
               {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
@@ -167,67 +173,72 @@ export default function LoginPage() {
               type="checkbox"
               checked={rememberMe}
               onChange={(e) => setRememberMe(e.target.checked)}
-              className="rounded border-slate-300 text-slate-900 focus:ring-slate-950"
+              className="rounded border-slate-300 dark:border-slate-700 text-indigo-600 focus:ring-indigo-500"
             />
-            <span className="text-xs text-slate-600">Keep me signed in on this device</span>
+            <span className="text-xs text-slate-600 dark:text-slate-400">Keep me signed in</span>
           </label>
         </div>
 
-        <Button
+        <button
           type="submit"
-          variant="primary"
-          size="md"
-          loading={loading}
-          className="w-full justify-center py-2.5"
+          disabled={loading}
+          className="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-sm transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50"
         >
-          Sign In to Portal <ArrowRight className="w-3.5 h-3.5" />
-        </Button>
+          <span>{loading ? "Authenticating..." : "Sign In to Dashboard"}</span>
+          <ArrowRight className="w-3.5 h-3.5" />
+        </button>
       </form>
 
-      {/* Demo Sign-in Shortcuts for Review */}
-      <div className="p-3 bg-slate-50 border border-slate-200 rounded-md space-y-2">
-        <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block">
-          One-Click Demo Credentials:
-        </span>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+      {/* Demo Sign-in Shortcuts */}
+      <div className="p-3 bg-slate-50 dark:bg-[#11131a] border border-slate-200 dark:border-slate-800 rounded-xl space-y-2">
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+            Quick Demo Sign-In
+          </span>
+          <span className="text-[10px] text-indigo-600 dark:text-indigo-400 font-medium">1-Click Access</span>
+        </div>
+        <div className="grid grid-cols-2 gap-1.5">
           <button
             type="button"
             onClick={() => handleDemoSignIn("student")}
-            className="p-1.5 text-[11px] font-medium bg-white border border-slate-200 rounded hover:bg-slate-100 text-slate-800"
+            className="p-2 text-left text-xs rounded-lg border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-[#181a24] hover:border-indigo-400 dark:hover:border-indigo-600 transition-colors"
           >
-            Student
+            <div className="font-semibold text-slate-900 dark:text-white text-[11px]">Student</div>
+            <div className="text-[10px] text-slate-400">Rohan Christopher</div>
           </button>
           <button
             type="button"
             onClick={() => handleDemoSignIn("parent")}
-            className="p-1.5 text-[11px] font-medium bg-white border border-slate-200 rounded hover:bg-slate-100 text-slate-800"
+            className="p-2 text-left text-xs rounded-lg border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-[#181a24] hover:border-indigo-400 dark:hover:border-indigo-600 transition-colors"
           >
-            Parent
+            <div className="font-semibold text-slate-900 dark:text-white text-[11px]">Parent</div>
+            <div className="text-[10px] text-slate-400">Family & STEM</div>
           </button>
           <button
             type="button"
             onClick={() => handleDemoSignIn("professional")}
-            className="p-1.5 text-[11px] font-medium bg-white border border-slate-200 rounded hover:bg-slate-100 text-slate-800"
+            className="p-2 text-left text-xs rounded-lg border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-[#181a24] hover:border-indigo-400 dark:hover:border-indigo-600 transition-colors"
           >
-            Professional
+            <div className="font-semibold text-slate-900 dark:text-white text-[11px]">Professional</div>
+            <div className="text-[10px] text-slate-400">GMAT & Executive</div>
           </button>
           <button
             type="button"
             onClick={() => handleDemoSignIn("admin")}
-            className="p-1.5 text-[11px] font-medium bg-white border border-slate-200 rounded hover:bg-slate-100 text-slate-800"
+            className="p-2 text-left text-xs rounded-lg border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-[#181a24] hover:border-indigo-400 dark:hover:border-indigo-600 transition-colors"
           >
-            Admin
+            <div className="font-semibold text-slate-900 dark:text-white text-[11px]">Administrator</div>
+            <div className="text-[10px] text-slate-400">Academic Staff</div>
           </button>
         </div>
       </div>
 
-      <div className="text-center text-xs text-slate-500">
-        New candidate or institution?{" "}
-        <Link href="/signup" className="font-semibold text-slate-900 underline hover:text-slate-800">
+      <div className="text-center text-xs text-slate-500 dark:text-slate-400 pt-1">
+        New candidate?{" "}
+        <Link href="/signup" className="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
           Create an account
         </Link>
       </div>
     </div>
   );
 }
-

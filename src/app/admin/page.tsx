@@ -296,8 +296,8 @@ export default function AdminWorkspacePage() {
                 status: "Active",
               },
               {
-                name: "Sarah Vance (Parent)",
-                email: "sarah.vance@gmail.com",
+                name: "Sarah Jenkins (Parent)",
+                email: "sarah.jenkins@gmail.com",
                 role: "Parent",
                 exam: "N/A",
                 streak: "7 days",

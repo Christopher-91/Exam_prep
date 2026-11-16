@@ -40,7 +40,7 @@ export default function SignUpPage() {
     try {
       const res = await signup(name, email, password, accountType);
       if (res.success) {
-        router.push("/onboarding");
+        router.push("/dashboard");
       } else {
         setErrorMessage(res.error || "Failed to create account.");
       }
@@ -106,23 +106,23 @@ export default function SignUpPage() {
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Eleanor Vance"
-              className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-md text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-950 focus:border-slate-950"
+              placeholder="e.g. Rohan Christopher"
+              className="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-[#12141c] border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
               required
             />
           </div>
         </div>
 
         <div>
-          <label className="font-semibold text-slate-700 mb-1 block">Institutional / Primary Email</label>
+          <label className="font-semibold text-slate-700 dark:text-slate-300 mb-1 block">Institutional / Primary Email</label>
           <div className="relative">
             <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="e.g. e.vance@stanford.edu"
-              className="w-full pl-9 pr-3 py-2 bg-white border border-slate-300 rounded-md text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-slate-950 focus:border-slate-950"
+              placeholder="e.g. rohan@example.com"
+              className="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-[#12141c] border border-slate-200 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-colors"
               required
             />
           </div>
