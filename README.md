@@ -1,9 +1,6 @@
 # ApexLearn AI — Intelligent Learning & Exam Preparation Ecosystem
 
 An AI-powered educational SaaS platform that brings together competitive exam preparation, active recall spaced repetition, interactive STEM simulations for young learners, career counselling, and academic productivity tools.
-
-Built following the **AdmitQ Design Standard**: clean typography, restrained color palette, spacious cards, structured tables, and purposeful micro-interactions.
-
 ---
 
 ## 🌟 Key Modules & Capabilities
@@ -108,3 +105,4 @@ src/config/brand.config.ts
 ```
 
 Change the brand configuration in one file to update branding across the entire platform.
+
