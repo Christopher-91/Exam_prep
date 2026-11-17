@@ -73,11 +73,11 @@ export function Sidebar() {
 
       {/* Navigation Scroll Container */}
       <nav className="flex-1 px-3 py-2 space-y-4 overflow-y-auto">
-        {/* ACADEMIC MODULES */}
+        {/* PREP MODULES */}
         <div>
           {!collapsed && (
             <div className="px-2.5 pb-1 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-              ACADEMIC
+              PREP
             </div>
           )}
 
@@ -123,7 +123,7 @@ export function Sidebar() {
                     : "text-slate-400 dark:text-slate-500"
                 )}
               />
-              {!collapsed && <span className="flex-1 truncate">Exam Preparation</span>}
+              {!collapsed && <span className="flex-1 truncate">Prep Hub</span>}
             </Link>
 
             {/* Adaptive Practice */}
@@ -268,11 +268,11 @@ export function Sidebar() {
           </div>
         </div>
 
-        {/* EXPLORE & TOOLS */}
+        {/* ADDITIONAL */}
         <div>
           {!collapsed && (
             <div className="px-2.5 pb-1 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
-              EXPLORE & TOOLS
+              ADDITIONAL
             </div>
           )}
 

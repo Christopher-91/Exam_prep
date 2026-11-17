@@ -37,29 +37,30 @@ export function LandingPage() {
   const [activeSheetTab, setActiveSheetTab] = useState<"sat" | "jee" | "gre" | "neet">("sat");
   const [exploreMenuOpen, setExploreMenuOpen] = useState(false);
 
-  // Topics for the right-hand hero widget (Tailored to competitive exams)
+  // Topics for the right-hand hero widget (Tailored to official competitive exams)
   const undergradTopics = [
-    { name: "Digital SAT Math", count: 340, link: "/exam-prep/adaptive?topic=math" },
-    { name: "Reading & Writing", count: 290, link: "/exam-prep/adaptive?topic=verbal" },
-    { name: "JEE Mechanics", count: 310, link: "/exam-prep/adaptive?topic=physics" },
-    { name: "Calculus & Limits", count: 265, link: "/exam-prep/adaptive?topic=math" },
-    { name: "Organic Chemistry", count: 220, link: "/exam-prep/adaptive?topic=chem" },
-    { name: "NEET Physiology", count: 380, link: "/exam-prep/adaptive?topic=bio" },
-    { name: "Genetics & DNA", count: 240, link: "/exam-prep/adaptive?topic=bio" },
-    { name: "Coordinate Geometry", count: 180, link: "/exam-prep/adaptive?topic=math" },
-    { name: "Thermodynamics", count: 215, link: "/exam-prep/adaptive?topic=physics" },
-    { name: "Electromagnetism", count: 250, link: "/exam-prep/adaptive?topic=physics" },
+    { name: "Digital SAT (Full 98 Qs)", count: 98, link: "/exam-prep/mock-test/sat-mock-full-98" },
+    { name: "Reading & Writing", count: 54, link: "/exam-prep/adaptive?topic=verbal" },
+    { name: "SAT Mathematics", count: 44, link: "/exam-prep/adaptive?topic=math" },
+    { name: "Linear Equations", count: 28, link: "/exam-prep/adaptive?topic=math" },
+    { name: "Quadratics & Parabolas", count: 22, link: "/exam-prep/adaptive?topic=math" },
+    { name: "Words in Context", count: 32, link: "/exam-prep/adaptive?topic=verbal" },
+    { name: "Cross-Text Evidence", count: 24, link: "/exam-prep/adaptive?topic=verbal" },
+    { name: "Standard Conventions", count: 26, link: "/exam-prep/adaptive?topic=verbal" },
+    { name: "Trigonometry & Circles", count: 18, link: "/exam-prep/adaptive?topic=math" },
   ];
 
   const gradTopics = [
-    { name: "GRE Quantitative", count: 280, link: "/exam-prep/adaptive?topic=quant" },
-    { name: "Verbal Reasoning", count: 265, link: "/exam-prep/adaptive?topic=verbal" },
-    { name: "GMAT Data Insights", count: 190, link: "/exam-prep/adaptive?topic=data" },
-    { name: "Text Completion", count: 210, link: "/exam-prep/adaptive?topic=vocab" },
-    { name: "Critical Reasoning", count: 230, link: "/exam-prep/adaptive?topic=verbal" },
-    { name: "Sentence Equivalence", count: 195, link: "/exam-prep/adaptive?topic=vocab" },
-    { name: "Problem Solving", count: 240, link: "/exam-prep/adaptive?topic=quant" },
-    { name: "Analytical Writing", count: 120, link: "/exam-prep/adaptive?topic=awa" },
+    { name: "GRE General (Full 55 Qs)", count: 55, link: "/exam-prep/mock-test/gre-mock-full-55" },
+    { name: "GMAT Focus (Full 64 Qs)", count: 64, link: "/exam-prep/mock-test/gmat-mock-full-64" },
+    { name: "Verbal Reasoning", count: 27, link: "/exam-prep/adaptive?topic=verbal" },
+    { name: "Quantitative Reasoning", count: 27, link: "/exam-prep/adaptive?topic=quant" },
+    { name: "GMAT Problem Solving", count: 21, link: "/exam-prep/adaptive?topic=quant" },
+    { name: "GMAT Critical Reasoning", count: 23, link: "/exam-prep/adaptive?topic=verbal" },
+    { name: "GMAT Data Insights", count: 20, link: "/exam-prep/adaptive?topic=data" },
+    { name: "Text Completion", count: 16, link: "/exam-prep/adaptive?topic=vocab" },
+    { name: "Sentence Equivalence", count: 14, link: "/exam-prep/adaptive?topic=vocab" },
+    { name: "Analytical Writing", count: 1, link: "/exam-prep/mock-test/gre-mock-full-55" },
   ];
 
   const currentTopicList = examCategory === "undergrad" ? undergradTopics : gradTopics;

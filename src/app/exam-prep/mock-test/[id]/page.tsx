@@ -30,6 +30,7 @@ export default function MockTestTakingPage() {
   const [isTimerPaused, setIsTimerPaused] = useState(false);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [showCalculator, setShowCalculator] = useState(false);
+  const [activeSectionFilter, setActiveSectionFilter] = useState<string>("all");
 
   // Answers and status
   const [answers, setAnswers] = useState<Record<string, TestAttemptAnswer>>(() => {
@@ -121,6 +122,29 @@ export default function MockTestTakingPage() {
       return {
         ...prev,
         [currentQuestion.id]: { ...curr, status: newStatus },
+      };
+    });
+  };
+
+  
+  const handleEssayChange = (text: string) => {
+    setAnswers((prev) => {
+      const curr = prev[currentQuestion.id];
+      const isMarked = curr.status === "marked_for_review" || curr.status === "answered_and_marked";
+      const hasText = text.trim().length > 0;
+      const newStatus: QuestionAttemptStatus = isMarked
+        ? (hasText ? "answered_and_marked" : "marked_for_review")
+        : (hasText ? "answered" : "unanswered");
+
+      return {
+        ...prev,
+        [currentQuestion.id]: {
+          ...curr,
+          essayResponse: text,
+          selectedOptionId: hasText ? "essay-submitted" : undefined,
+          isCorrect: hasText ? true : false,
+          status: newStatus,
+        },
       };
     });
   };
@@ -340,32 +364,68 @@ export default function MockTestTakingPage() {
                 {currentQuestion.prompt}
               </div>
 
-              {/* Multiple Choice Options */}
-              <div className="space-y-2.5">
-                {currentQuestion.options.map((opt) => {
-                  const isSelected = currentAnswer?.selectedOptionId === opt.id;
-                  return (
-                    <button
-                      key={opt.id}
-                      onClick={() => handleSelectOption(opt.id)}
-                      className={`w-full text-left p-3.5 rounded border text-xs md:text-sm flex items-start gap-3 transition-colors ${
-                        isSelected
-                          ? "bg-slate-50 border-slate-900 text-slate-950 font-semibold ring-1 ring-slate-900"
-                          : "bg-white border-slate-200 hover:border-slate-300 text-slate-800"
-                      }`}
-                    >
-                      <div
-                        className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 ${
-                          isSelected ? "bg-slate-900 text-white" : "border border-slate-300 text-slate-600 bg-white"
+              {/* Options or Essay Interface */}
+              {currentQuestion.questionType === "essay" ? (
+                <div className="space-y-4">
+                  <div className="p-4 rounded-lg bg-amber-50/80 border border-amber-200 text-xs text-amber-950 leading-relaxed">
+                    <div className="font-bold text-amber-950 mb-1 flex items-center gap-1.5">
+                      <span>Analytical Writing Task Instructions</span>
+                    </div>
+                    {currentQuestion.essayPrompt ||
+                      "Plan and compose an analytical response addressing the issue above. Support your position with pertinent evidence and historical or contemporary examples."}
+                  </div>
+
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs text-slate-500">
+                      <span className="font-medium text-slate-700">Type your essay response:</span>
+                      <div className="flex items-center gap-3">
+                        <span className="font-bold text-slate-900 font-mono">
+                          {currentAnswer?.essayResponse?.trim()
+                            ? currentAnswer.essayResponse.trim().split(/\s+/).length
+                            : 0}{" "}
+                          words
+                        </span>
+                        <span className="text-slate-300">•</span>
+                        <span className="font-mono">
+                          {currentAnswer?.essayResponse?.length || 0} chars
+                        </span>
+                      </div>
+                    </div>
+                    <textarea
+                      value={currentAnswer?.essayResponse || ""}
+                      onChange={(e) => handleEssayChange(e.target.value)}
+                      placeholder="Begin typing your analytical essay response here..."
+                      className="w-full h-80 p-4 text-sm font-sans rounded-lg border border-slate-300 focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 outline-none resize-y leading-relaxed text-slate-900 bg-white"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2.5">
+                  {currentQuestion.options.map((opt) => {
+                    const isSelected = currentAnswer?.selectedOptionId === opt.id;
+                    return (
+                      <button
+                        key={opt.id}
+                        onClick={() => handleSelectOption(opt.id)}
+                        className={`w-full text-left p-3.5 rounded-lg border text-xs md:text-sm flex items-start gap-3 transition-colors ${
+                          isSelected
+                            ? "bg-indigo-50/50 border-indigo-600 text-slate-950 font-semibold ring-1 ring-indigo-600"
+                            : "bg-white border-slate-200 hover:border-slate-300 text-slate-800"
                         }`}
                       >
-                        {opt.id}
-                      </div>
-                      <div className="flex-1 leading-snug">{opt.text}</div>
-                    </button>
-                  );
-                })}
-              </div>
+                        <div
+                          className={`w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 ${
+                            isSelected ? "bg-indigo-600 text-white" : "border border-slate-300 text-slate-600 bg-white"
+                          }`}
+                        >
+                          {opt.id}
+                        </div>
+                        <div className="flex-1 leading-snug">{opt.text}</div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             {/* Bottom Controls */}
@@ -405,29 +465,66 @@ export default function MockTestTakingPage() {
         </div>
 
         {/* Right: Question Palette Navigator */}
-        <aside className="w-64 bg-slate-50 p-4 border-l border-slate-200 hidden md:flex flex-col justify-between overflow-y-auto">
+        <aside className="w-72 bg-slate-50 p-4 border-l border-slate-200 hidden md:flex flex-col justify-between overflow-y-auto">
           <div>
             <div className="pb-2.5 border-b border-slate-200 mb-3">
               <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Question Navigator</h3>
               <p className="text-[11px] text-slate-500 mt-0.5">Jump directly to any item</p>
             </div>
 
-            <div className="grid grid-cols-4 gap-1.5 mb-5">
-              {test.questions.map((q, idx) => {
-                const ans = answers[q.id];
-                const isCur = idx === currentIndex;
-                const styleClass = getStatusStyle(ans?.status || "not_visited", isCur);
+            {/* Section filter tabs */}
+            {Array.from(new Set(test.questions.map((q) => q.section))).length > 1 && (
+              <div className="flex flex-wrap gap-1 mb-3 pb-2 border-b border-slate-200">
+                <button
+                  onClick={() => setActiveSectionFilter("all")}
+                  className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
+                    activeSectionFilter === "all"
+                      ? "bg-slate-900 text-white font-semibold"
+                      : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
+                  }`}
+                >
+                  All ({test.totalQuestions})
+                </button>
+                {Array.from(new Set(test.questions.map((q) => q.section))).map((sec) => {
+                  const secCount = test.questions.filter((q) => q.section === sec).length;
+                  return (
+                    <button
+                      key={sec}
+                      onClick={() => setActiveSectionFilter(sec)}
+                      className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors truncate max-w-[130px] ${
+                        activeSectionFilter === sec
+                          ? "bg-indigo-600 text-white font-semibold"
+                          : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
+                      }`}
+                      title={sec}
+                    >
+                      {sec.split(" ")[0]} ({secCount})
+                    </button>
+                  );
+                })}
+              </div>
+            )}
 
-                return (
-                  <button
-                    key={q.id}
-                    onClick={() => handleSelectQuestion(idx)}
-                    className={`h-8 rounded border text-xs flex items-center justify-center transition-colors ${styleClass}`}
-                  >
-                    {idx + 1}
-                  </button>
-                );
-              })}
+            <div className="grid grid-cols-5 gap-1.5 mb-5 max-h-96 overflow-y-auto pr-1">
+              {test.questions
+                .map((q, idx) => ({ q, originalIndex: idx }))
+                .filter((item) => activeSectionFilter === "all" || item.q.section === activeSectionFilter)
+                .map(({ q, originalIndex: idx }) => {
+                  const ans = answers[q.id];
+                  const isCur = idx === currentIndex;
+                  const styleClass = getStatusStyle(ans?.status || "not_visited", isCur);
+
+                  return (
+                    <button
+                      key={q.id}
+                      onClick={() => handleSelectQuestion(idx)}
+                      className={`h-8 rounded border text-xs flex items-center justify-center transition-colors ${styleClass}`}
+                      title={`${q.section} - Q${idx + 1}`}
+                    >
+                      {idx + 1}
+                    </button>
+                  );
+                })}
             </div>
 
             {/* Legend */}

@@ -149,6 +149,35 @@ export function Header({ onOpenSearch }: HeaderProps) {
           </kbd>
         </button>
 
+        {/* Gamification Badges: Streak & Points & Pro Button (Matching Screenshot 1) */}
+        <div className="hidden sm:flex items-center gap-1.5">
+          <div
+            className="flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-900/40"
+            title={`${profile.streakDays || 1} day study streak`}
+          >
+            <span className="text-xs">🔥</span>
+            <span className="tabular-nums font-mono">{profile.streakDays || 1}</span>
+          </div>
+
+          <div
+            className="flex items-center gap-1 px-2 py-1 rounded-md text-xs font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-900/40"
+            title="Study credits and points earned"
+          >
+            <span className="text-xs">🪙</span>
+            <span className="tabular-nums font-mono">
+              {profile.streakDays ? profile.streakDays * 35 + 85 : 120}
+            </span>
+          </div>
+
+          <a
+            href="/pricing"
+            className="flex items-center gap-1 px-2.5 py-1 text-xs font-bold rounded-md bg-amber-400/90 hover:bg-amber-400 text-amber-950 dark:bg-amber-500/20 dark:text-amber-300 dark:border dark:border-amber-500/30 transition-colors shadow-2xs"
+          >
+            <span>+</span>
+            <span>Plus</span>
+          </a>
+        </div>
+
         {/* Light / Dark Mode Toggle (Default: Light Mode) */}
         <ThemeToggle />
 

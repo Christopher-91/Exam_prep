@@ -331,32 +331,46 @@ export default function ExamResultsPage() {
                 {/* Prompt */}
                 <p className="text-sm font-normal text-slate-900 leading-relaxed whitespace-pre-line">{q.prompt}</p>
 
-                {/* Options display */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                  {q.options.map((opt) => {
-                    const isUserPick = userChoice === opt.id;
-                    const isRightOption = q.correctOptionId === opt.id;
+                {/* Essay or Multiple Choice Options display */}
+                {q.questionType === "essay" ? (
+                  <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+                    <div className="flex items-center justify-between text-xs text-slate-500 font-semibold">
+                      <span className="text-slate-800">Candidate Essay Submission:</span>
+                      <span className="font-mono text-slate-700">
+                        {ans?.essayResponse ? ans.essayResponse.trim().split(/\s+/).length : 0} words
+                      </span>
+                    </div>
+                    <div className="text-xs text-slate-800 whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto font-sans p-3 bg-white rounded-md border border-slate-200">
+                      {ans?.essayResponse || "(No essay response provided during the test)"}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                    {q.options.map((opt) => {
+                      const isUserPick = userChoice === opt.id;
+                      const isRightOption = q.correctOptionId === opt.id;
 
-                    let optClass = "bg-white border-slate-200 text-slate-700";
-                    if (isRightOption) {
-                      optClass = "bg-emerald-50/80 border-emerald-500 text-emerald-950 font-medium";
-                    } else if (isUserPick && !isRightOption) {
-                      optClass = "bg-rose-50/80 border-rose-400 text-rose-950 font-medium";
-                    }
+                      let optClass = "bg-white border-slate-200 text-slate-700";
+                      if (isRightOption) {
+                        optClass = "bg-emerald-50/80 border-emerald-500 text-emerald-950 font-medium";
+                      } else if (isUserPick && !isRightOption) {
+                        optClass = "bg-rose-50/80 border-rose-400 text-rose-950 font-medium";
+                      }
 
-                    return (
-                      <div key={opt.id} className={`p-2.5 rounded-md border flex items-center justify-between ${optClass}`}>
-                        <span>
-                          <strong className="mr-1.5">{opt.id}.</strong> {opt.text}
-                        </span>
-                        {isRightOption && <span className="text-[10px] text-emerald-700 font-semibold">✓ Correct Key</span>}
-                        {isUserPick && !isRightOption && (
-                          <span className="text-[10px] text-rose-700 font-semibold">✗ Your Choice</span>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
+                      return (
+                        <div key={opt.id} className={`p-2.5 rounded-md border flex items-center justify-between ${optClass}`}>
+                          <span>
+                            <strong className="mr-1.5">{opt.id}.</strong> {opt.text}
+                          </span>
+                          {isRightOption && <span className="text-[10px] text-emerald-700 font-semibold">✓ Correct Key</span>}
+                          {isUserPick && !isRightOption && (
+                            <span className="text-[10px] text-rose-700 font-semibold">✗ Your Choice</span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
 
                 {/* Explanation */}
                 <div className="p-3 bg-slate-50 border border-slate-200 rounded-md text-slate-700 space-y-1">

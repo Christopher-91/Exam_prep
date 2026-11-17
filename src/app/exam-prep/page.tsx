@@ -161,7 +161,7 @@ export default function ExamPrepPage() {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <Badge variant="neutral">
-                  {test.type.replace("_", " ").toUpperCase()}
+                  {(test.type || "full_length").replace("_", " ").toUpperCase()}
                 </Badge>
                 <span className="text-[11px] text-slate-500 font-medium flex items-center gap-1">
                   <Clock className="w-3.5 h-3.5" /> {test.durationMinutes} mins

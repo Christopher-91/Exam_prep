@@ -42,12 +42,17 @@ export interface Question {
   topic: string;
   difficulty: QuestionDifficulty;
   prompt: string;
+  passage?: string;
+  sourceExam?: string;
+  questionType?: "multiple_choice" | "essay" | "numeric_entry";
+  essayPrompt?: string;
   codeSnippet?: string;
   diagramUrl?: string;
   options: QuestionOption[];
   correctOptionId: string;
   explanation: string;
   aiHint?: string;
+  moduleNumber?: number;
   status?: "approved" | "pending_review" | "draft";
   author?: string;
   timesAttempted?: number;
@@ -61,23 +66,34 @@ export type QuestionAttemptStatus =
   | "marked_for_review" 
   | "answered_and_marked";
 
+export interface MockTestSection {
+  id: string;
+  name: string;
+  durationMinutes: number;
+  questionIds: string[];
+}
+
 export interface MockTest {
   id: string;
   title: string;
   examId: SupportedExamId;
   type: "full_length" | "section_wise" | "topic_specific" | "diagnostic" | "adaptive" | "timed_practice";
+  description?: string;
   section?: string;
   topic?: string;
   durationMinutes: number;
   totalQuestions: number;
-  difficulty: "mixed" | "easy" | "medium" | "hard";
+  difficulty?: "mixed" | "easy" | "medium" | "hard";
   questions: Question[];
-  instructions: string[];
+  instructions?: string[];
+  sections?: MockTestSection[];
+  isAdaptive?: boolean;
 }
 
 export interface TestAttemptAnswer {
   questionId: string;
   selectedOptionId?: string;
+  essayResponse?: string;
   timeSpentSeconds: number;
   status: QuestionAttemptStatus;
   isCorrect?: boolean;
