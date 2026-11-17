@@ -59,7 +59,7 @@ export function StudentDashboard() {
   const [editDate, setEditDate] = useState(profile.targetDate || "2027-05-08");
   const [editHours, setEditHours] = useState(profile.dailyStudyTargetHours || 2.0);
 
-  // Pinned subjects state (Matching TakeUForward dashboard pin feature)
+  // Pinned subjects state
   const [pinnedSubjects, setPinnedSubjects] = useState([
     {
       id: "sat-full",
