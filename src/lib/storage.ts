@@ -55,31 +55,16 @@ export const INITIAL_MOCK_TESTS: MockTest[] = [
   // 1. Digital SAT: Exactly 98 Questions (54 RW + 44 Math), 134 Minutes (2h 14m)
   {
     ...SAT_FULL_MOCK_TEST,
-    id: "sat-mock-1",
-    questions: SAT_QUESTIONS,
-  },
-  {
-    ...SAT_FULL_MOCK_TEST,
     id: "sat-mock-full-98",
     questions: SAT_QUESTIONS,
   },
   // 2. GRE General: Exactly 55 Questions (1 AW + 27 Verbal + 27 Quant), 118 Minutes (1h 58m)
   {
     ...GRE_FULL_MOCK_TEST,
-    id: "gre-mock-1",
-    questions: GRE_QUESTIONS,
-  },
-  {
-    ...GRE_FULL_MOCK_TEST,
     id: "gre-mock-full-55",
     questions: GRE_QUESTIONS,
   },
   // 3. GMAT Focus: Exactly 64 Questions (21 Quant + 23 Verbal + 20 Data Insights), 135 Minutes (2h 15m)
-  {
-    ...GMAT_FULL_MOCK_TEST,
-    id: "gmat-mock-1",
-    questions: GMAT_QUESTIONS,
-  },
   {
     ...GMAT_FULL_MOCK_TEST,
     id: "gmat-mock-full-64",

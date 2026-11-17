@@ -33,7 +33,13 @@ export default function ExamResultsPage() {
   const [filterMode, setFilterMode] = useState<"all" | "incorrect" | "correct">("all");
 
   const result = testResults.find((r) => r.id === resultId) || testResults[0];
-  const test = mockTests.find((t) => t.id === result?.testId) || mockTests[0];
+  const testIdAliasMap: Record<string, string> = {
+    "sat-mock-1": "sat-mock-full-98",
+    "gre-mock-1": "gre-mock-full-55",
+    "gmat-mock-1": "gmat-mock-full-64",
+  };
+  const resolvedTestId = result?.testId ? (testIdAliasMap[result.testId] || result.testId) : "";
+  const test = mockTests.find((t) => t.id === resolvedTestId) || mockTests.find((t) => t.id === result?.testId) || mockTests[0];
 
   if (!result) {
     return (

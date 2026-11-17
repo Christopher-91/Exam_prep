@@ -23,7 +23,14 @@ export default function MockTestTakingPage() {
   const testId = params?.id as string;
   const { mockTests, submitTestResult } = useApp();
 
-  const test = mockTests.find((t) => t.id === testId) || mockTests[0];
+  // Support canonical IDs as well as legacy shorthand ID aliases
+  const testIdAliasMap: Record<string, string> = {
+    "sat-mock-1": "sat-mock-full-98",
+    "gre-mock-1": "gre-mock-full-55",
+    "gmat-mock-1": "gmat-mock-full-64",
+  };
+  const resolvedTestId = testIdAliasMap[testId] || testId;
+  const test = mockTests.find((t) => t.id === resolvedTestId) || mockTests.find((t) => t.id === testId) || mockTests[0];
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [secondsRemaining, setSecondsRemaining] = useState(test.durationMinutes * 60);
