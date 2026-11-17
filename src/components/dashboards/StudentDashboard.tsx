@@ -822,6 +822,24 @@ export function StudentDashboard() {
                   link: "/exam-prep/mock-test/gmat-mock-full-64",
                   color: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-900/40",
                 },
+                {
+                  id: "aptitude-math",
+                  title: "Campus Quantitative Aptitude (Math)",
+                  exam: "placement",
+                  count: "TCS, Infosys, Accenture",
+                  duration: "Placement Drills",
+                  link: "/aptitude-practice/math",
+                  color: "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/40 dark:text-indigo-300 dark:border-indigo-900/40",
+                },
+                {
+                  id: "aptitude-english",
+                  title: "Campus Verbal Ability (English)",
+                  exam: "placement",
+                  count: "Cognizant, Wipro, Deloitte",
+                  duration: "Placement Drills",
+                  link: "/aptitude-practice/english",
+                  color: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-900/40",
+                },
               ].map((item) => {
                 const isPinned = pinnedSubjects.some((s) => s.id === item.id);
                 return (

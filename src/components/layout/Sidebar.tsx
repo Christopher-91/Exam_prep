@@ -21,6 +21,7 @@ import {
   PanelLeftClose,
   PanelLeft,
   ShieldCheck,
+  Target,
 } from "lucide-react";
 import { BRAND_CONFIG } from "@/config/brand.config";
 import { cn } from "@/lib/utils";
@@ -29,7 +30,8 @@ import { useApp } from "@/context/AppContext";
 export function Sidebar() {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
-  const [practiceOpen, setPracticeOpen] = useState(false);
+  const [practiceOpen, setPracticeOpen] = useState(pathname.startsWith("/exam-prep/adaptive"));
+  const [aptitudeOpen, setAptitudeOpen] = useState(true);
   const { profile, flashcards, tasks, activeRole, logout } = useApp();
 
   const dueFlashcards = flashcards.filter(
@@ -179,6 +181,66 @@ export function Sidebar() {
                 title="Adaptive Practice"
               >
                 <Code2 className="w-4 h-4" />
+              </Link>
+            )}
+
+            {/* Aptitude Practice */}
+            {!collapsed ? (
+              <div>
+                <button
+                  onClick={() => setAptitudeOpen(!aptitudeOpen)}
+                  className={cn(
+                    "w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors",
+                    pathname.startsWith("/aptitude-practice")
+                      ? "text-slate-900 dark:text-white"
+                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-50 dark:hover:bg-[#14161f]"
+                  )}
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Target className="w-4 h-4 text-slate-400 dark:text-slate-500" />
+                    <span>Aptitude practice</span>
+                  </div>
+                  {aptitudeOpen ? (
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                  ) : (
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+                  )}
+                </button>
+
+                {aptitudeOpen && (
+                  <div className="ml-6 pl-2 border-l border-slate-200 dark:border-slate-800 space-y-0.5 mt-0.5">
+                    <Link
+                      href="/aptitude-practice/math"
+                      className={cn(
+                        "block px-2 py-1 text-[11px] rounded transition-colors",
+                        pathname === "/aptitude-practice/math"
+                          ? "text-indigo-600 dark:text-indigo-400 font-semibold bg-indigo-50/50 dark:bg-indigo-950/30"
+                          : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-[#14161f]"
+                      )}
+                    >
+                      Math
+                    </Link>
+                    <Link
+                      href="/aptitude-practice/english"
+                      className={cn(
+                        "block px-2 py-1 text-[11px] rounded transition-colors",
+                        pathname === "/aptitude-practice/english"
+                          ? "text-indigo-600 dark:text-indigo-400 font-semibold bg-indigo-50/50 dark:bg-indigo-950/30"
+                          : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-[#14161f]"
+                      )}
+                    >
+                      English
+                    </Link>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                href="/aptitude-practice"
+                className="flex items-center justify-center p-2 rounded-lg text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-50 dark:hover:bg-[#14161f]"
+                title="Aptitude practice"
+              >
+                <Target className="w-4 h-4" />
               </Link>
             )}
 
