@@ -56,7 +56,7 @@ export function StudentDashboard() {
   const [showEditTargetModal, setShowEditTargetModal] = useState(false);
   const [showPinModal, setShowPinModal] = useState(false);
   const [editScore, setEditScore] = useState(profile.targetScore || 1520);
-  const [editDate, setEditDate] = useState(profile.targetDate || "2027-05-08");
+  const [editDate, setEditDate] = useState(profile.targetDate || "");
   const [editHours, setEditHours] = useState(profile.dailyStudyTargetHours || 2.0);
 
   // Pinned subjects state

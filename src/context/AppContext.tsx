@@ -103,6 +103,7 @@ interface AppContextType {
   toggleTask: (taskId: string) => void;
   deleteTask: (taskId: string) => void;
   scheduleBlocks: StudyScheduleBlock[];
+  toggleScheduleBlock: (blockId: string) => void;
 
   // Admin
   auditLogs: AdminAuditLog[];
@@ -212,9 +213,25 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           parsedProfile.email = "rohan@acuitysystems.edu";
           parsedProfile.streakDays = 1;
           parsedProfile.totalStudyHours = 1.5;
-          localStorage.setItem("acuity_profile", JSON.stringify(parsedProfile));
         }
+        // If profile has the legacy hardcoded mock date '2026-12-14', clear it so the user can set their actual date
+        if (parsedProfile.targetDate === "2026-12-14") {
+          parsedProfile.targetDate = "";
+        }
+        localStorage.setItem("acuity_profile", JSON.stringify(parsedProfile));
         setProfile(parsedProfile);
+      }
+
+      const savedBlocks = localStorage.getItem("acuity_schedule_blocks");
+      if (savedBlocks) {
+        try {
+          const parsedBlocks = JSON.parse(savedBlocks);
+          setScheduleBlocks(parsedBlocks);
+        } catch (e) {
+          setScheduleBlocks(INITIAL_SCHEDULE_BLOCKS);
+        }
+      } else {
+        setScheduleBlocks(INITIAL_SCHEDULE_BLOCKS);
       }
 
       const savedTasks = localStorage.getItem("acuity_tasks");
@@ -539,6 +556,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
+  const toggleScheduleBlock = (blockId: string) => {
+    setScheduleBlocks((prev) => {
+      const updated = prev.map((b) =>
+        b.id === blockId ? { ...b, completed: !b.completed } : b
+      );
+      saveState("acuity_schedule_blocks", updated);
+      return updated;
+    });
+  };
+
   const approveQuestion = (questionId: string) => {
     setMockTests((prev) =>
       prev.map((test) => ({
@@ -622,6 +649,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         toggleTask,
         deleteTask,
         scheduleBlocks,
+        toggleScheduleBlock,
         auditLogs,
         approveQuestion,
         addCustomQuestion,

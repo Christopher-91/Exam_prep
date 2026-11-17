@@ -12,6 +12,9 @@ import {
   Download,
   CalendarCheck,
   RotateCw,
+  Edit3,
+  Check,
+  X,
 } from "lucide-react";
 import { Card, CardHeader, CardTitle, CardDescription } from "@/components/common/Card";
 import { Badge } from "@/components/common/Badge";
@@ -22,7 +25,47 @@ import { StudyTask, TaskPriority } from "@/lib/types";
 import { AIService } from "@/lib/ai-service";
 
 export default function StudyPlannerPage() {
-  const { tasks, addTask, toggleTask, deleteTask, scheduleBlocks, selectedExam, profile } = useApp();
+  const {
+    tasks,
+    addTask,
+    toggleTask,
+    deleteTask,
+    scheduleBlocks,
+    toggleScheduleBlock,
+    selectedExam,
+    profile,
+    setProfile,
+  } = useApp();
+
+  const [showSetTargetModal, setShowSetTargetModal] = useState(false);
+  const [targetDateInput, setTargetDateInput] = useState(profile.targetDate || "");
+  const [targetScoreInput, setTargetScoreInput] = useState(profile.targetScore || 1520);
+
+  const hasTargetDate = Boolean(profile.targetDate && profile.targetDate.trim() !== "");
+  const daysRemaining = hasTargetDate
+    ? Math.max(
+        0,
+        Math.round(
+          (new Date(profile.targetDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
+        )
+      )
+    : 0;
+
+  const handleSaveTargetDate = (e: React.FormEvent) => {
+    e.preventDefault();
+    setProfile((prev) => {
+      const updated = {
+        ...prev,
+        targetDate: targetDateInput,
+        targetScore: Number(targetScoreInput),
+      };
+      try {
+        localStorage.setItem("acuity_profile", JSON.stringify(updated));
+      } catch (err) {}
+      return updated;
+    });
+    setShowSetTargetModal(false);
+  };
 
   const [activeView, setActiveView] = useState<"daily" | "tasks">("daily");
   const [showAddTaskModal, setShowAddTaskModal] = useState(false);
@@ -181,33 +224,55 @@ export default function StudyPlannerPage() {
                 {scheduleBlocks.map((block) => (
                   <div
                     key={block.id}
-                    className={`p-3.5 rounded-lg border flex items-center justify-between transition-colors ${
+                    onClick={() => toggleScheduleBlock(block.id)}
+                    className={`p-3.5 rounded-lg border flex items-center justify-between transition-colors cursor-pointer select-none group ${
                       block.completed
-                        ? "bg-slate-50 border-slate-200 opacity-60"
-                        : "bg-white border-slate-200 hover:border-slate-300"
+                        ? "bg-slate-50 border-slate-200 opacity-75"
+                        : "bg-white border-slate-200 hover:border-slate-300 shadow-2xs"
                     }`}
+                    title="Click to toggle scheduled/completed status"
                   >
                     <div className="flex items-center gap-3">
-                      <div
-                        className={`w-8 h-8 rounded-md flex items-center justify-center font-bold text-xs ${
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleScheduleBlock(block.id);
+                        }}
+                        className={`w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs transition-colors shrink-0 ${
                           block.completed
-                            ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                            : "bg-slate-100 text-slate-700 border border-slate-200"
+                            ? "bg-emerald-600 text-white shadow-xs"
+                            : "bg-slate-100 hover:bg-slate-200 text-slate-500 border border-slate-200"
                         }`}
+                        title={block.completed ? "Mark as Scheduled" : "Mark as Completed"}
                       >
-                        {block.completed ? <CheckCircle2 className="w-4 h-4" /> : <Clock className="w-4 h-4" />}
-                      </div>
+                        {block.completed ? <Check className="w-4 h-4 stroke-[3]" /> : <Clock className="w-4 h-4" />}
+                      </button>
                       <div>
-                        <div className="text-xs font-semibold text-slate-900">{block.topic}</div>
+                        <div
+                          className={`text-xs font-semibold transition-colors ${
+                            block.completed ? "line-through text-slate-400" : "text-slate-900"
+                          }`}
+                        >
+                          {block.topic}
+                        </div>
                         <div className="text-[11px] text-slate-500 mt-0.5">
                           {block.time} • {block.durationMinutes} mins • {block.subject}
                         </div>
                       </div>
                     </div>
 
-                    <Badge variant={block.completed ? "success" : "warning"}>
-                      {block.completed ? "COMPLETED" : "SCHEDULED"}
-                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full border transition-colors ${
+                          block.completed
+                            ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                            : "bg-amber-50 text-amber-700 border-amber-200"
+                        }`}
+                      >
+                        {block.completed ? "COMPLETED" : "SCHEDULED"}
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -217,23 +282,57 @@ export default function StudyPlannerPage() {
           {/* Right Summary */}
           <div className="space-y-4">
             <Card className="p-5 border-slate-200">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-xs uppercase tracking-wider text-slate-500">Official Exam Target</CardTitle>
-                <CardDescription>{selectedExam.toUpperCase()} Test Date</CardDescription>
+              <CardHeader className="pb-2 flex-row items-center justify-between">
+                <div>
+                  <CardTitle className="text-xs uppercase tracking-wider text-slate-500">Official Exam Target</CardTitle>
+                  <CardDescription>{selectedExam.toUpperCase()} Test Date</CardDescription>
+                </div>
+                {hasTargetDate && (
+                  <button
+                    onClick={() => {
+                      setTargetDateInput(profile.targetDate);
+                      setTargetScoreInput(profile.targetScore);
+                      setShowSetTargetModal(true);
+                    }}
+                    className="text-xs text-indigo-600 hover:underline font-semibold flex items-center gap-1"
+                  >
+                    <Edit3 className="w-3 h-3" /> Edit
+                  </button>
+                )}
               </CardHeader>
 
-              <div className="p-4 bg-slate-50 rounded-lg border border-slate-200 text-center space-y-1 mt-2">
-                <div className="text-3xl font-bold text-slate-900 tracking-tight">
-                  {Math.max(
-                    1,
-                    Math.round(
-                      (new Date(profile.targetDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
-                    )
-                  )}
+              {hasTargetDate ? (
+                <div className="p-4 bg-slate-50 rounded-lg border border-slate-200 text-center space-y-1 mt-2">
+                  <div className="text-3xl font-extrabold text-slate-900 tracking-tight tabular-nums">
+                    {daysRemaining}
+                  </div>
+                  <div className="text-xs font-semibold text-slate-700">Days Remaining</div>
+                  <p className="text-[11px] text-slate-500 pt-1">
+                    Exam Date: {new Date(profile.targetDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                  </p>
+                  <p className="text-[11px] text-slate-500">Target Score: {profile.targetScore}</p>
                 </div>
-                <div className="text-xs font-semibold text-slate-700">Days Remaining</div>
-                <p className="text-[11px] text-slate-500 pt-1">Target Score: {profile.targetScore}</p>
-              </div>
+              ) : (
+                <div className="p-4 bg-slate-50 rounded-lg border border-dashed border-slate-300 text-center space-y-2 mt-2">
+                  <CalendarIcon className="w-5 h-5 text-slate-400 mx-auto" />
+                  <div>
+                    <div className="text-xs font-bold text-slate-900">No Test Date Set</div>
+                    <p className="text-[11px] text-slate-500 mt-0.5">
+                      Set your upcoming exam date to activate days countdown and pacing.
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setTargetDateInput("");
+                      setTargetScoreInput(profile.targetScore || 1520);
+                      setShowSetTargetModal(true);
+                    }}
+                    className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold shadow-sm transition-colors inline-block"
+                  >
+                    + Set Target Test Date
+                  </button>
+                </div>
+              )}
             </Card>
 
             <Card className="p-5 border-slate-200">
@@ -492,6 +591,72 @@ export default function StudyPlannerPage() {
           </div>
         </div>
       </Modal>
+      {/* Set Target Date Modal */}
+      {showSetTargetModal && (
+        <div className="fixed inset-0 z-50 bg-slate-950/40 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-xl p-6 max-w-md w-full shadow-xl space-y-4 animate-in fade-in duration-100">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <h3 className="text-sm font-bold text-slate-900">
+                Set Target Exam Date & Target Score
+              </h3>
+              <button
+                onClick={() => setShowSetTargetModal(false)}
+                className="text-slate-400 hover:text-slate-700"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveTargetDate} className="space-y-4 text-xs">
+              <div>
+                <label className="block font-semibold text-slate-700 mb-1">
+                  Upcoming {selectedExam.toUpperCase()} Exam Date
+                </label>
+                <input
+                  type="date"
+                  value={targetDateInput}
+                  onChange={(e) => setTargetDateInput(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg border border-slate-300 text-slate-900 font-sans focus:border-indigo-600 outline-none"
+                  required
+                />
+                <p className="text-[11px] text-slate-400 mt-1">
+                  Choose the official date you plan to sit for the exam.
+                </p>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-700 mb-1">
+                  Target Score
+                </label>
+                <input
+                  type="number"
+                  value={targetScoreInput}
+                  onChange={(e) => setTargetScoreInput(Number(e.target.value))}
+                  className="w-full px-3 py-2 rounded-lg border border-slate-300 text-slate-900 font-mono focus:border-indigo-600 outline-none"
+                  min="400"
+                  max="1600"
+                />
+              </div>
+
+              <div className="pt-2 flex justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowSetTargetModal(false)}
+                  className="px-3 py-2 rounded-lg border border-slate-200 text-slate-700 font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-colors"
+                >
+                  Save Target
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

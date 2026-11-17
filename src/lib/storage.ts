@@ -40,7 +40,7 @@ export const DEFAULT_USER_PROFILE: UserProfile = {
   createdAt: "2026-09-01T08:00:00Z",
   activeRole: "student",
   selectedExam: "sat",
-  targetDate: "2026-12-14",
+  targetDate: "", // Not set by default until chosen by the user
   targetScore: 1520,
   currentPrepLevel: "intermediate",
   dailyStudyTargetHours: 2.0,
@@ -554,7 +554,7 @@ export const INITIAL_SCHEDULE_BLOCKS: StudyScheduleBlock[] = [
     topic: "Quadratic Discriminant & Vieta's Theorem",
     type: "concept_review",
     durationMinutes: 45,
-    completed: true,
+    completed: false,
   },
   {
     id: "block-2",
@@ -563,7 +563,7 @@ export const INITIAL_SCHEDULE_BLOCKS: StudyScheduleBlock[] = [
     topic: "Evidence-Pair Anchor Technique",
     type: "practice_questions",
     durationMinutes: 45,
-    completed: true,
+    completed: false,
   },
   {
     id: "block-3",

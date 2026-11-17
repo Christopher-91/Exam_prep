@@ -7,9 +7,11 @@ export function computePredictiveReadiness(
   targetDate: string,
   testHistory: TestAttemptResult[]
 ): PredictiveReadiness {
-  const targetTime = new Date(targetDate).getTime();
+  const targetTime = targetDate ? new Date(targetDate).getTime() : 0;
   const now = new Date().getTime();
-  const daysRemaining = Math.max(1, Math.round((targetTime - now) / (1000 * 60 * 60 * 24)));
+  const daysRemaining = targetDate && !isNaN(targetTime) && targetTime > now
+    ? Math.max(0, Math.round((targetTime - now) / (1000 * 60 * 60 * 24)))
+    : 0;
 
   if (!testHistory.length) {
     // Default baseline when no tests taken yet

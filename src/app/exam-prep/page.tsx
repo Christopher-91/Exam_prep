@@ -89,7 +89,9 @@ export default function ExamPrepPage() {
         <div>
           <span className="text-slate-400 block text-[10px] uppercase font-semibold">Examination Date</span>
           <span className="font-bold text-slate-900 text-sm">
-            {new Date(profile.targetDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+            {profile.targetDate
+              ? new Date(profile.targetDate).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
+              : "Not Set"}
           </span>
         </div>
         <div>
