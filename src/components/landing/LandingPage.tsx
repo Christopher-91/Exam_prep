@@ -35,7 +35,6 @@ import {
 import { ThemeToggle } from "@/components/common/ThemeToggle";
 import { BRAND_CONFIG } from "@/config/brand.config";
 import { useApp } from "@/context/AppContext";
-import { Modal } from "@/components/common/Modal";
 
 export function LandingPage() {
   const router = useRouter();
@@ -47,12 +46,6 @@ export function LandingPage() {
   const [selectedDuration, setSelectedDuration] = useState("30 days");
   const [activeSheetTab, setActiveSheetTab] = useState<"sat" | "jee" | "gre" | "neet" | "aptitude">("sat");
   const [exploreMenuOpen, setExploreMenuOpen] = useState(false);
-
-  // Donation state
-  const [showDonateModal, setShowDonateModal] = useState(false);
-  const [selectedAmount, setSelectedAmount] = useState<number | "custom">(15);
-  const [customAmount, setCustomAmount] = useState<string>("");
-  const [donationSubmitted, setDonationSubmitted] = useState(false);
 
   // Topics for the right-hand hero widget with semantic vibrant color accents
   const undergradTopics = [
@@ -961,85 +954,31 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ================= 7. COMMUNITY MISSION & DONATION ================= */}
-      <section className="py-16 md:py-20 max-w-5xl mx-auto px-4 sm:px-6">
-        <div className="rounded-3xl bg-gradient-to-b from-indigo-50/70 via-white to-slate-50/80 dark:from-[#131522] dark:via-[#11131c] dark:to-[#161424] border border-indigo-200/70 dark:border-indigo-900/40 p-8 sm:p-12 md:p-14 text-center relative overflow-hidden shadow-card space-y-6">
+      {/* ================= 7. COMMUNITY SUPPORT & DONATION ================= */}
+      <section className="py-10 md:py-14 max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="rounded-2xl bg-gradient-to-b from-indigo-50/70 via-white to-slate-50/80 dark:from-[#131522] dark:via-[#11131c] dark:to-[#161424] border border-indigo-200/70 dark:border-indigo-900/40 p-6 sm:p-8 md:p-10 text-center relative overflow-hidden shadow-card">
           {/* Subtle warm ambient glow behind the card */}
           <div className="absolute -top-24 -left-24 w-72 h-72 bg-rose-400/10 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="relative z-10 space-y-5 max-w-2xl mx-auto">
-            {/* Top Mission Pill */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-50 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/60 text-xs font-semibold text-rose-700 dark:text-rose-300 shadow-2xs">
-              <Heart className="w-3.5 h-3.5 fill-rose-500 text-rose-500" />
-              <span>Independent & Unbiased Education</span>
-            </div>
-
+          <div className="relative z-10 space-y-3 max-w-3xl mx-auto">
             {/* Heading requested by the user */}
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               Help Us Keep Acuity Free
             </h2>
 
             {/* Description requested by the user */}
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-xl mx-auto">
+            <p className="text-xs sm:text-sm md:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl mx-auto">
               Join thousands of students who use our platform every day. Your donation allows us to continue providing unbiased, data-driven exam prep without paywalls.
             </p>
 
-            {/* Quick-select donation amounts */}
-            <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">
-              {[5, 15, 25, 50].map((amt) => (
-                <button
-                  key={amt}
-                  type="button"
-                  onClick={() => {
-                    setSelectedAmount(amt);
-                    setCustomAmount("");
-                  }}
-                  className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
-                    selectedAmount === amt
-                      ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
-                      : "bg-white dark:bg-[#181a24] text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-800 hover:border-slate-300 hover:bg-slate-50"
-                  }`}
-                >
-                  ${amt}
-                </button>
-              ))}
-
-              <button
-                type="button"
-                onClick={() => setSelectedAmount("custom")}
-                className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
-                  selectedAmount === "custom"
-                    ? "bg-indigo-600 text-white border-indigo-600 shadow-sm"
-                    : "bg-white dark:bg-[#181a24] text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-800 hover:border-slate-300 hover:bg-slate-50"
-                }`}
-              >
-                Custom
-              </button>
-            </div>
-
-            {selectedAmount === "custom" && (
-              <div className="max-w-xs mx-auto pt-1">
-                <div className="relative">
-                  <span className="absolute left-3 top-2 text-slate-400 font-bold text-sm">$</span>
-                  <input
-                    type="number"
-                    min="1"
-                    placeholder="Enter custom amount"
-                    value={customAmount}
-                    onChange={(e) => setCustomAmount(e.target.value)}
-                    className="w-full pl-8 pr-3 py-2 text-xs rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-[#161822] text-slate-900 dark:text-white outline-none focus:border-indigo-500"
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* Donate Now Button with Bootstrap Currency Dollar Icon */}
+            {/* Donate Now Button linking to Buy Me a Coffee with Bootstrap Dollar Icon */}
             <div className="pt-2">
-              <button
-                type="button"
-                onClick={() => setShowDonateModal(true)}
-                className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-sm sm:text-base transition-all shadow-md shadow-emerald-500/20 inline-flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
+              <a
+                href="https://buymeacoffee.com/chris27"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold text-xs sm:text-sm transition-all shadow-md shadow-emerald-500/20 hover:scale-[1.02] active:scale-[0.98]"
               >
                 {/* Official Bootstrap Currency Dollar Icon */}
                 <svg
@@ -1052,134 +991,12 @@ export function LandingPage() {
                 >
                   <path d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718zm3.391-3.836c-1.253-.33-1.62-.777-1.62-1.603 0-.933.727-1.64 1.848-1.777v3.38zm1.043 1.956v3.428c1.378-.152 1.97-.837 1.97-1.748 0-.968-.617-1.523-1.97-1.68z" />
                 </svg>
-                <span>
-                  Donate Now
-                  {selectedAmount !== "custom" && ` ($${selectedAmount})`}
-                  {selectedAmount === "custom" && customAmount && ` ($${customAmount})`}
-                </span>
-              </button>
-            </div>
-
-            {/* Trust and Transparency Footnotes */}
-            <div className="flex flex-wrap items-center justify-center gap-4 text-slate-500 dark:text-slate-400 text-xs pt-4 border-t border-slate-200/70 dark:border-slate-800">
-              <span className="flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                <span>256-Bit Encrypted Secure Checkout</span>
-              </span>
-              <span>•</span>
-              <span>100% Directed to Free Question Banks & Compute</span>
-              <span>•</span>
-              <span>Zero Paywalls Guaranteed</span>
+                <span>Donate Now</span>
+              </a>
             </div>
           </div>
         </div>
       </section>
-
-      {/* Donation Modal */}
-      <Modal
-        isOpen={showDonateModal}
-        onClose={() => {
-          setShowDonateModal(false);
-          setDonationSubmitted(false);
-        }}
-        title="Support Acuity's Open Education Mission"
-        description="Your contribution keeps comprehensive standardized preparation free for all students."
-        maxWidth="md"
-      >
-        <div className="space-y-4 pt-2 text-xs">
-          {!donationSubmitted ? (
-            <>
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#12141c] border border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                <div>
-                  <span className="text-slate-400 block text-[10px] uppercase font-bold">Contribution Amount</span>
-                  <span className="text-xl font-extrabold text-slate-900 dark:text-white">
-                    ${selectedAmount === "custom" ? customAmount || "15" : selectedAmount} USD
-                  </span>
-                </div>
-                <div className="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 flex items-center justify-center font-bold">
-                  <Heart className="w-5 h-5 fill-emerald-600 text-emerald-600" />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="font-semibold text-slate-700 dark:text-slate-300 block">Select Payment Method</label>
-                <div className="grid grid-cols-3 gap-2">
-                  {["Credit Card", "UPI / GPay", "PayPal"].map((method, idx) => (
-                    <button
-                      key={method}
-                      type="button"
-                      className={`p-2.5 rounded-lg border text-center font-semibold text-xs ${
-                        idx === 0
-                          ? "border-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/30 text-indigo-700 dark:text-indigo-300"
-                          : "border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-50"
-                      }`}
-                    >
-                      {method}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-2 pt-1">
-                <label className="font-semibold text-slate-700 dark:text-slate-300 block">Contributor Name (Optional)</label>
-                <input
-                  type="text"
-                  placeholder="Anonymous Student / Supporter"
-                  className="w-full px-3 py-2 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#161822] text-slate-900 dark:text-white outline-none focus:border-indigo-500"
-                />
-              </div>
-
-              <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setDonationSubmitted(true);
-                    try {
-                      const confetti = require("canvas-confetti");
-                      confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
-                    } catch (e) {}
-                  }}
-                  className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-colors flex items-center justify-center gap-1.5"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    className="bi bi-currency-dollar shrink-0"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718zm3.391-3.836c-1.253-.33-1.62-.777-1.62-1.603 0-.933.727-1.64 1.848-1.777v3.38zm1.043 1.956v3.428c1.378-.152 1.97-.837 1.97-1.748 0-.968-.617-1.523-1.97-1.68z" />
-                  </svg>
-                  <span>Complete ${selectedAmount === "custom" ? customAmount || "15" : selectedAmount} Contribution</span>
-                </button>
-              </div>
-            </>
-          ) : (
-            <div className="py-6 text-center space-y-3">
-              <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
-                <CheckCircle2 className="w-6 h-6 text-emerald-600" />
-              </div>
-              <h4 className="text-base font-bold text-slate-900 dark:text-white">Thank You for Your Generosity!</h4>
-              <p className="text-xs text-slate-500 max-w-sm mx-auto leading-relaxed">
-                Your support ensures Acuity remains 100% open and accessible for candidates around the world. A receipt has been issued to your browser.
-              </p>
-              <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowDonateModal(false);
-                    setDonationSubmitted(false);
-                  }}
-                  className="px-6 py-2 rounded-lg bg-slate-900 text-white font-semibold text-xs"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </Modal>
 
       {/* ================= 8. CLEAN FOOTER ================= */}
       <footer className="py-12 bg-white dark:bg-[#0c0d12] text-xs text-slate-500 dark:text-slate-400 border-t border-slate-200/80 dark:border-slate-800">
