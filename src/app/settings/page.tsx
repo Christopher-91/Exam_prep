@@ -258,7 +258,7 @@ export default function SettingsPage() {
 
           <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg text-slate-600 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-600" />
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
               <span className="font-medium text-slate-800">Provider Health Status: Online (Latency 94ms)</span>
             </div>
             <Button

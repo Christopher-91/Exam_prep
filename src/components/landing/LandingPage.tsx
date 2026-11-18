@@ -215,10 +215,6 @@ export function LandingPage() {
 
   return (
     <div className="min-h-screen bg-slate-50/40 dark:bg-[#0c0d12] text-slate-900 dark:text-slate-100 font-sans selection:bg-indigo-100 selection:text-indigo-900 dark:selection:bg-indigo-950 dark:selection:text-indigo-200 relative overflow-x-hidden">
-      {/* Dynamic Background Glow Elements */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-gradient-to-tr from-indigo-300/20 via-purple-300/15 to-transparent rounded-full blur-3xl -z-10 pointer-events-none dark:from-indigo-900/20 dark:via-purple-900/10" />
-      <div className="absolute top-20 right-10 w-[450px] h-[450px] bg-gradient-to-bl from-sky-300/20 via-pink-300/15 to-transparent rounded-full blur-3xl -z-10 pointer-events-none dark:from-sky-900/15 dark:to-pink-900/10" />
-
       {/* ================= 1. CLEAN TOP NAVBAR ================= */}
       <header className="sticky top-0 z-50 bg-white/90 dark:bg-[#0c0d12]/90 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -266,25 +262,22 @@ export function LandingPage() {
                   <Link
                     href="/exam-prep"
                     onClick={() => setExploreMenuOpen(false)}
-                    className="flex items-center gap-2 px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#1f2330]"
+                    className="flex items-center px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#1f2330]"
                   >
-                    <span className="w-2 h-2 rounded-full bg-indigo-500" />
                     <span>Digital SAT (98 Qs)</span>
                   </Link>
                   <Link
                     href="/exam-prep"
                     onClick={() => setExploreMenuOpen(false)}
-                    className="flex items-center gap-2 px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#1f2330]"
+                    className="flex items-center px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#1f2330]"
                   >
-                    <span className="w-2 h-2 rounded-full bg-sky-500" />
                     <span>GRE General (55 Qs)</span>
                   </Link>
                   <Link
                     href="/exam-prep"
                     onClick={() => setExploreMenuOpen(false)}
-                    className="flex items-center gap-2 px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#1f2330]"
+                    className="flex items-center px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#1f2330]"
                   >
-                    <span className="w-2 h-2 rounded-full bg-emerald-500" />
                     <span>GMAT Focus (64 Qs)</span>
                   </Link>
 
@@ -294,25 +287,22 @@ export function LandingPage() {
                   <Link
                     href="/aptitude-practice"
                     onClick={() => setExploreMenuOpen(false)}
-                    className="flex items-center gap-2 px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#1f2330]"
+                    className="flex items-center px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#1f2330]"
                   >
-                    <span className="w-2 h-2 rounded-full bg-purple-500" />
                     <span>Campus Placement Aptitude</span>
                   </Link>
                   <Link
                     href="/exam-prep/adaptive"
                     onClick={() => setExploreMenuOpen(false)}
-                    className="flex items-center gap-2 px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#1f2330]"
+                    className="flex items-center px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#1f2330]"
                   >
-                    <span className="w-2 h-2 rounded-full bg-amber-500" />
                     <span>Adaptive IRT Diagnostic</span>
                   </Link>
                   <Link
                     href="/flashcards"
                     onClick={() => setExploreMenuOpen(false)}
-                    className="flex items-center gap-2 px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#1f2330]"
+                    className="flex items-center px-3 py-1.5 text-xs text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#1f2330]"
                   >
-                    <span className="w-2 h-2 rounded-full bg-rose-500" />
                     <span>SM-2 Spaced Flashcards</span>
                   </Link>
                 </div>
@@ -370,11 +360,8 @@ export function LandingPage() {
             {/* LEFT COLUMN: Hero Copy & CTAs */}
             <div className="lg:col-span-6 space-y-6">
               {/* Vibrant Learner Count Pill */}
-              <div className="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-indigo-200/80 dark:border-indigo-800/80 bg-gradient-to-r from-indigo-50/90 via-purple-50/80 to-pink-50/80 dark:from-indigo-950/50 dark:via-purple-950/40 dark:to-pink-950/30 text-xs font-semibold text-indigo-900 dark:text-indigo-200 shadow-2xs">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                </span>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-indigo-200/80 dark:border-indigo-800/80 bg-gradient-to-r from-indigo-50/90 via-purple-50/80 to-pink-50/80 dark:from-indigo-950/50 dark:via-purple-950/40 dark:to-pink-950/30 text-xs font-semibold text-indigo-900 dark:text-indigo-200 shadow-2xs">
+                <Users className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
                 <span>1,80,000+ candidates enrolled</span>
                 <span className="text-slate-300 dark:text-slate-700">•</span>
                 <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-100/70 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full">
@@ -957,10 +944,6 @@ export function LandingPage() {
       {/* ================= 7. COMMUNITY SUPPORT & DONATION ================= */}
       <section className="py-10 md:py-14 max-w-6xl mx-auto px-4 sm:px-6">
         <div className="rounded-2xl bg-gradient-to-b from-indigo-50/70 via-white to-slate-50/80 dark:from-[#131522] dark:via-[#11131c] dark:to-[#161424] border border-indigo-200/70 dark:border-indigo-900/40 p-6 sm:p-8 md:p-10 text-center relative overflow-hidden shadow-card">
-          {/* Subtle warm ambient glow behind the card */}
-          <div className="absolute -top-24 -left-24 w-72 h-72 bg-rose-400/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-indigo-400/10 rounded-full blur-3xl pointer-events-none" />
-
           <div className="relative z-10 space-y-3 max-w-3xl mx-auto">
             {/* Heading requested by the user */}
             <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">

@@ -12,6 +12,7 @@ import {
   Calendar,
   ChevronRight,
   BookOpen,
+  Loader2,
 } from "lucide-react";
 import { useAIModal } from "@/context/AIModalContext";
 import { useApp } from "@/context/AppContext";
@@ -213,7 +214,7 @@ export function ContextualAIAssistant() {
 
         {loading && (
           <div className="flex items-center gap-2 text-slate-500 text-xs py-2 px-1">
-            <div className="w-2 h-2 rounded-full bg-slate-900 animate-ping" />
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-slate-500" />
             <span>Consulting syllabus blueprints and pedagogical references...</span>
           </div>
         )}
