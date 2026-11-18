@@ -429,7 +429,7 @@ export function AptitudePracticeHub({ initialSection = "all" }: AptitudePractice
 
                 {/* Optional Passage Box for Reading Comprehension */}
                 {currentQuestion.passage && (
-                  <div className="my-4 p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-800 leading-relaxed font-serif">
+                  <div className="my-4 p-4 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-800 leading-relaxed font-sans">
                     <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">
                       Reading Passage
                     </span>

@@ -64,12 +64,11 @@ const config: Config = {
       },
       fontFamily: {
         sans: [
+          "Inter",
           "-apple-system",
           "BlinkMacSystemFont",
           "Segoe UI",
           "Roboto",
-          "Plus Jakarta Sans",
-          "Inter",
           "Helvetica Neue",
           "sans-serif",
         ],
